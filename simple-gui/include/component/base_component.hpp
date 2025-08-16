@@ -1,0 +1,119 @@
+#pragma once
+#include <SDL3/SDL_events.h>
+#include <vector>
+#include <memory>
+#include <functional>
+#include "math.hpp"
+#include "renderer.hpp"
+#include "common.hpp"
+
+
+namespace SimpleGui {
+	class BaseComponent {
+	public:
+		BaseComponent();
+		virtual ~BaseComponent() = default;
+
+		virtual bool HandleEvent(const SDL_Event& event);
+		virtual void Update();
+		virtual void Render(const Renderer& renderer);
+
+		inline Rect GetRect() const { return Rect{ m_position, m_size}; }
+		inline Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }
+
+		// 基于global_position的坐标系统，无法在组件被添加到父组件之前有效设置position(局部)
+		// 采用基于position(局部)的坐标系统，通过计算获得global_position
+
+		inline Vec2 GetPosition() const { return m_position; }
+		inline void SetPosition(const Vec2 pos) { m_position = pos; }
+		inline void SetPosition(float x, float y) { m_position.x = x; m_position.y = y; }
+		inline void SetPositionX(float x) { m_position.x = x; }
+		inline void SetPositionY(float y) { m_position.y = y; }
+
+		Vec2 GetGlobalPosition() const;
+		void SetGlobalPosition(const Vec2& pos);
+		void SetGlobalPosition(float x, float y);
+		void SetGlobalPositionX(float x);
+		void SetGlobalPositionY(float y);
+
+		inline Vec2 GetSize() const { return m_size; }
+		void SetSize(const Vec2& size);
+		void SetSize(float w, float h);
+		void SetWidth(float w);
+		void SetHeight(float h);
+
+		inline Vec2 GetMinSize() const { return m_minSize; }
+		void SetMinSize(const Vec2& size);
+		void SetMinSize(float w, float h);
+		void SetMinWidth(float w);
+		void SetMinHeight(float h);
+
+		inline ComponentPadding GetPadding() const { return m_padding; }
+		inline void SetPadding(const ComponentPadding& padding) { m_padding = padding; }
+		inline void SetPadding(float left, float top, float right, float bottom) { 
+			m_padding.left = left; m_padding.top = top; m_padding.right = right; m_padding.bottom = bottom; }
+
+		inline ComponentSizeConfigs GetSizeConfigs() const { return m_sizeConfigs; }
+		inline void SetSizeConfigs(const ComponentSizeConfigs& config) { m_sizeConfigs = config; }
+		inline void SetSizeConfigs(ComponentSizeConfig wConfig, ComponentSizeConfig hConfig) { 
+			m_sizeConfigs.first = wConfig; m_sizeConfigs.second = hConfig; }
+		inline void SetSizeConfigW(ComponentSizeConfig config) { m_sizeConfigs.first = config; }
+		inline void SetSizeConfigH(ComponentSizeConfig config) { m_sizeConfigs.second = config; }
+
+		inline bool IsVisible() const { return m_visible; }
+		inline void SetVisible(bool visible) { m_visible = visible; }
+
+		template<typename T, typename...Args>
+		T* AddChild(Args&& ...args) {
+			static_assert(std::is_base_of<BaseComponent, T>::value, "T 必须继承自 BaseComponent");
+			auto cmp = std::make_unique<T>(std::forward<Args>(args)...);
+			auto cmp_ptr = cmp.get();
+			AddChild(std::move(cmp));
+			return cmp_ptr;
+		}
+
+		template<typename T, typename...Args>
+		T* AddChildDeferred(Args&& ...args) {
+			static_assert(std::is_base_of<BaseComponent, T>::value, "T 必须继承自 BaseComponent");
+			auto cmp = std::make_unique<T>(std::forward<Args>(args)...);
+			auto cmp_ptr = cmp.get();
+			AddChildDeferred(std::move(cmp));
+			return cmp_ptr;
+		}
+
+		
+		inline BaseComponent* GetParent() const { return m_parent; }
+
+		void AddChild(std::unique_ptr<BaseComponent> child);
+		void AddChildDeferred(std::unique_ptr<BaseComponent> child);
+		BaseComponent* GetChildAt(size_t idx) const;
+		std::unique_ptr<BaseComponent> RemoveChild(BaseComponent* cmp);
+		std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp);
+		
+		size_t GetChildrenCount() const;
+		void ClearAllChildren();
+		void ClearAllChildrenDeferred();
+		void ForEachChild(std::function<void(BaseComponent*)> fn);
+
+
+	protected:
+		Vec2 m_position;		// 局部坐标
+		Vec2 m_size;
+		Vec2 m_minSize;
+		Rect m_visibleRect;		// 使用全局坐标
+
+		ComponentPadding m_padding;
+		ComponentSizeConfigs m_sizeConfigs;
+
+		bool m_visible = true;
+		bool m_needRemove;
+
+		BaseComponent* m_parent;
+		std::vector<std::unique_ptr<BaseComponent>> m_children;
+		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
+
+
+	protected:
+		void CalcVisibleRect();
+	};
+}
