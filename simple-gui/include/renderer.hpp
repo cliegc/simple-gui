@@ -19,6 +19,7 @@ namespace SimpleGui {
         void DrawLine(const Vec2& p1, const Vec2& p2, const Color& color) const;
         void DrawRect(const Rect& rect, const Color& color) const;
         void FillRect(const Rect& rect, const Color& color) const;
+        void FillRect(const Rect& rect, const GradientColor& color) const;
         void DrawTexture(SDL_Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const;
         void DrawText(TTF_Text* text, const Vec2& pos, const Color& color) const;
         void DrawText(TTF_Font* font, std::string_view text, const Vec2& pos, const Color& color, int wrap_width) const;

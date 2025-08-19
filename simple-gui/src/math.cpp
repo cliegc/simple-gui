@@ -271,7 +271,11 @@ namespace SimpleGui {
 #pragma endregion
 
 #pragma region Color
-    Color::Color(uint8 r, uint8 g, uint8 b, uint8 a) : r(r), g(g), b(b), a(a) {
+    Color::Color(uint8 r, uint8 g, uint8 b, uint8 a) {
+        this->r = SDL_clamp(r, 0, 255);
+        this->g = SDL_clamp(g, 0, 255);
+        this->b = SDL_clamp(b, 0, 255);
+        this->a = SDL_clamp(a, 0, 255);
     }
 
     Color::Color(const std::string& code) {
@@ -337,6 +341,29 @@ namespace SimpleGui {
         return { r, g, b, a };
     }
 
+    SDL_FColor Color::ToSDLFColor() const {
+        return SDL_FColor(
+            static_cast<float>(r) / 255.0f,
+            static_cast<float>(g) / 255.0f,
+            static_cast<float>(b) / 255.0f,
+            static_cast<float>(a) / 255.0f
+        );
+    }
+
+    Color Color::FromFloat(float r, float g, float b, float a) {
+        r = SDL_clamp(r, 0.f, 1.f);
+        g = SDL_clamp(r, 0.f, 1.f);
+        b = SDL_clamp(r, 0.f, 1.f);
+        a = SDL_clamp(r, 0.f, 1.f);
+
+        Color color;
+        color.r = static_cast<uint8>(SDL_lroundf(r * 255));
+        color.g = static_cast<uint8>(SDL_lroundf(g * 255));
+        color.b = static_cast<uint8>(SDL_lroundf(b * 255));
+        color.a = static_cast<uint8>(SDL_lroundf(a * 255));
+        return color;
+    }
+
     uint8 Color::ParseCol4(const std::string& str, int ofs) const {
         char character = str[ofs];
 
@@ -370,13 +397,14 @@ namespace SimpleGui {
         }
     }
 
+    const Color Color::TRANSPARENT{ 255, 255, 255, 0 };
     const Color Color::WHITE{ 255, 255, 255 };
     const Color Color::BLACK{ 0, 0, 0 };
     const Color Color::RED{ 255, 0, 0 };
     const Color Color::GREEN{ 0, 255, 0 };
     const Color Color::BLUE{ 0, 0, 255 };
     const Color Color::YELLOW{ 255, 255, 0 };
-    const Color Color::PURPLE{ 255, 0, 255 };
+    const Color Color::MAGENTA{ 255, 0, 255 };
     const Color Color::AQUA{ 0, 255, 255 };
 #pragma endregion
 }

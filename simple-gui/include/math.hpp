@@ -7,6 +7,7 @@ struct SDL_Point;
 struct SDL_FRect;
 struct SDL_Rect;
 struct SDL_Color;
+struct SDL_FColor;
 
 namespace SimpleGui {
 
@@ -97,13 +98,14 @@ namespace SimpleGui {
 
     struct Color final {
     public:
+        static const Color TRANSPARENT;
         static const Color WHITE;
         static const Color BLACK;
         static const Color RED;
         static const Color GREEN;
         static const Color BLUE;
         static const Color YELLOW;
-        static const Color PURPLE;
+        static const Color MAGENTA;
         static const Color AQUA;
 
     public:
@@ -121,6 +123,9 @@ namespace SimpleGui {
 
         std::string ToColorCode(bool prefix = true) const;
         SDL_Color ToSDLColor() const;
+        SDL_FColor ToSDLFColor() const;
+
+        static Color FromFloat(float r, float g, float b, float a = 1.f);
 
     private:
         uint8 ParseCol4(const std::string& str, int ofs) const;
@@ -128,5 +133,19 @@ namespace SimpleGui {
         uint8 ConvertParseCol4Result(uint8 value) const;
         void ToHexString(std::stringstream& ss, uint8 value) const;
     };
+
+    struct GradientColor final {
+        enum class Type {
+            Horizontal,
+            Vertival,
+            MainDiagonal,
+            SecondaryDiagonal,
+        };
+        
+        Color start;
+        Color end;
+        Type type;
+    };
+
 }
 

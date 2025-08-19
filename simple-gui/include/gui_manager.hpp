@@ -2,10 +2,14 @@
 #include <SDL3/SDL.h>
 #include <string_view>
 #include <memory>
+#include "deleter.hpp"
 #include "renderer.hpp"
+#include "style.hpp"
 #include "component/base_component.hpp"
 
+
 #define SG_GuiManager SimpleGui::GuiManager::GetInstance()
+
 
 namespace SimpleGui {
     class GuiManager final {
@@ -32,6 +36,12 @@ namespace SimpleGui {
         void SetDefaultFont(std::string_view path, float size);
         void SetDefaultFontSize(float size);
 
+        Style* GetCurrentStyle();
+        Style* GetStyle(const std::string& name);
+        void SwitchStyle(const std::string& name);
+        bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
+        bool UnregisterStyle(const std::string& name);
+
         void FrameStart();
         void FrameEnd();
         void HandleEvent(const SDL_Event&);
@@ -39,28 +49,14 @@ namespace SimpleGui {
         void Render();
 
     private:
-        struct TextEgineDeleter final {
-            void operator()(TTF_TextEngine* engine) {
-                if (!engine) return;
-                TTF_DestroyRendererTextEngine(engine);
-            }
-        };
-
-        struct FontDeleter final {
-            void operator()(TTF_Font* font) {
-                if (!font) return;
-                TTF_CloseFont(font);
-            }
-        };
-
-    private:
         static std::unique_ptr<GuiManager> s_guiManager;
 
         SDL_Window* m_window;
+        UniqueTextEnginePtr m_textEngine;
+        UniqueFontPtr m_defaultFont;
         std::unique_ptr<Renderer> m_renderer;
-        std::unique_ptr<TTF_TextEngine, TextEgineDeleter> m_textEngine;
-        std::unique_ptr<TTF_Font, FontDeleter> m_defaultFont;
         std::unique_ptr<BaseComponent> m_rootCmp;
+        std::unique_ptr<StyleManager> m_styleManager;
 
         GuiManager(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath);
         void SetRootComponentSizeToFillWindow();

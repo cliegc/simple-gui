@@ -15,17 +15,16 @@ namespace SimpleGui {
 			SDL_Log("%s\n", SDL_GetError());
 			exit(-1);
 		}
-		m_textEngine = std::unique_ptr<TTF_TextEngine, TextEgineDeleter>(engine);
+		m_textEngine = UniqueTextEnginePtr(engine);
 
 		auto font = TTF_OpenFont(fontPath.data(), 14);
 		if (!font) {
 			SDL_Log("%s\n", SDL_GetError());
 			exit(-1);
 		}
-		m_defaultFont = std::unique_ptr<TTF_Font, FontDeleter>(font);
+		m_defaultFont = UniqueFontPtr(font);
 
-		m_rootCmp = std::make_unique<BaseComponent>();
-		SetRootComponentSizeToFillWindow();
+		m_styleManager = std::make_unique<StyleManager>();
 	}
 
 	GuiManager::~GuiManager() {
@@ -37,6 +36,8 @@ namespace SimpleGui {
 	void GuiManager::Init(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath) {
 		if (!s_guiManager) {
 			s_guiManager = std::unique_ptr<GuiManager>(new GuiManager(window, renderer, fontPath));
+			s_guiManager->m_rootCmp = std::make_unique<BaseComponent>();
+			s_guiManager->SetRootComponentSizeToFillWindow();
 		}
 	}
 
@@ -58,12 +59,37 @@ namespace SimpleGui {
 
 	void GuiManager::SetDefaultFont(std::string_view path, float size) {
 		auto font = TTF_OpenFont(path.data(), size);
+		if (!font) {
+			SDL_Log("%s\n", SDL_GetError());
+			return;
+		}
 		m_defaultFont.reset(font);
 	}
 
 	void GuiManager::SetDefaultFontSize(float size) {
 		TTF_SetFontSize(m_defaultFont.get(), size);
 	}
+
+	Style* GuiManager::GetCurrentStyle() {
+		return m_styleManager->GetCurrentStyle();
+	}
+
+	Style* GuiManager::GetStyle(const std::string& name) {
+		return m_styleManager->GetStyle(name);
+	}
+
+	void GuiManager::SwitchStyle(const std::string& name) {
+		m_styleManager->SwitchStyle(name);
+	}
+
+	bool GuiManager::RegisterStyle(const std::string& name, std::unique_ptr<Style> style) {
+		return m_styleManager->RegisterStyle(name, std::move(style));
+	}
+
+	bool GuiManager::UnregisterStyle(const std::string& name) {
+		return m_styleManager->UnregisterStyle(name);
+	}
+
 
 	void GuiManager::HandleEvent(const SDL_Event& event) {
 		if (event.type == SDL_EVENT_WINDOW_RESIZED) {
@@ -85,8 +111,6 @@ namespace SimpleGui {
 	}
 
 	void GuiManager::FrameEnd() {
-		//m_rootCmp->HandleNeedRemoveRequest();
-		//m_rootCmp->HandleNeedAddRequest();
 	}
 
 	void GuiManager::SetRootComponentSizeToFillWindow() {

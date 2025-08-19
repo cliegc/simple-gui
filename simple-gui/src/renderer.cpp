@@ -32,6 +32,55 @@ namespace SimpleGui {
 		SDL_RenderFillRect(m_renderer, &rt);
 	}
 
+	void Renderer::FillRect(const Rect& rect, const GradientColor& color) const {
+		SDL_FColor topLeft = color.start.ToSDLFColor();
+		SDL_FColor topRight = color.end.ToSDLFColor();
+		SDL_FColor bottomRight = color.end.ToSDLFColor();
+		SDL_FColor bottomLeft = color.start.ToSDLFColor();
+
+		if (color.type == GradientColor::Type::Vertival) {
+			topRight = color.start.ToSDLFColor();
+			bottomLeft = color.end.ToSDLFColor();
+		}
+		else if (color.type == GradientColor::Type::MainDiagonal) {
+			SDL_FColor color = {
+				(topLeft.r + bottomRight.r) / 2.0f,
+				(topLeft.g + bottomRight.g) / 2.0f,
+				(topLeft.b + bottomRight.b) / 2.0f,
+				(topLeft.a + bottomRight.a) / 2.0f
+			};
+
+			topRight = color;
+			bottomLeft = color;
+		}
+		else if (color.type == GradientColor::Type::SecondaryDiagonal) {
+			SDL_FColor color = {
+				(topLeft.r + bottomRight.r) / 2.0f,
+				(topLeft.g + bottomRight.g) / 2.0f,
+				(topLeft.b + bottomRight.b) / 2.0f,
+				(topLeft.a + bottomRight.a) / 2.0f
+			};
+
+			topRight = topLeft;
+			bottomLeft = bottomRight;
+			topLeft = color;
+			bottomRight = color;
+		}
+
+		SDL_Vertex vertices[6] = {
+			// 第一个三角形 (左上、右上、左下)
+			{ rect.position.ToSDLFPoint(), topLeft, {0}},
+			{ rect.TopRight().ToSDLFPoint(), topRight, {0}},
+			{ rect.BottomLeft().ToSDLFPoint(), bottomLeft, {0}},
+
+			// 第二个三角形 (右上、右下、左下)
+			{ rect.TopRight().ToSDLFPoint(), topRight, { 0 } },
+			{ rect.BottomRight().ToSDLFPoint(), bottomRight, { 0 } },
+			{ rect.BottomLeft().ToSDLFPoint(), bottomLeft, {0}}
+		};
+		SDL_RenderGeometry(m_renderer, nullptr, vertices, 6, nullptr, 0);
+	}
+
 	void Renderer::DrawTexture(SDL_Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const {
 		auto sRt = srcRect.ToSDLFRect();
 		auto dRt = dstRect.ToSDLFRect();

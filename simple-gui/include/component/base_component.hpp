@@ -1,14 +1,27 @@
 #pragma once
 #include <SDL3/SDL_events.h>
 #include <vector>
+#include <unordered_map>
 #include <memory>
+#include <optional>
 #include <functional>
 #include "math.hpp"
 #include "renderer.hpp"
+#include "style.hpp"
 #include "common.hpp"
+#include "deleter.hpp"
 
 
 namespace SimpleGui {
+
+#define SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE if (!m_visible) return false;\
+										  if (m_disabled) return false;\
+										  if (m_visibleRect.size.IsZeroApprox()) return false
+#define SG_CMP_UPDATE_CONDITIONS if (!m_visible) return
+#define SG_CMP_RENDER_CONDITIONS if (!m_visible) return;\
+								 if (m_visibleRect.size.IsZeroApprox()) return
+
+
 	class BaseComponent {
 	public:
 		BaseComponent();
@@ -50,7 +63,7 @@ namespace SimpleGui {
 
 		inline ComponentPadding GetPadding() const { return m_padding; }
 		inline void SetPadding(const ComponentPadding& padding) { m_padding = padding; }
-		inline void SetPadding(float left, float top, float right, float bottom) { 
+		inline void SetPadding(int left, int top, int right, int bottom) {
 			m_padding.left = left; m_padding.top = top; m_padding.right = right; m_padding.bottom = bottom; }
 
 		inline ComponentSizeConfigs GetSizeConfigs() const { return m_sizeConfigs; }
@@ -62,6 +75,9 @@ namespace SimpleGui {
 
 		inline bool IsVisible() const { return m_visible; }
 		inline void SetVisible(bool visible) { m_visible = visible; }
+
+		inline bool IsDisabled() const { return m_disabled; }
+		inline void SetDisabled(bool disabled) { m_disabled = disabled; }
 
 		template<typename T, typename...Args>
 		T* AddChild(Args&& ...args) {
@@ -95,6 +111,15 @@ namespace SimpleGui {
 		void ClearAllChildrenDeferred();
 		void ForEachChild(std::function<void(BaseComponent*)> fn);
 
+		inline void SetFont(UniqueFontPtr font) { m_font = std::move(font); }
+		TTF_Font* GetFont() const;
+		void SetFont(std::string_view path, int size);
+		void SetFontSize(int size);
+
+		Color GetThemeColor(ThemeColorFlags flag);
+		void CustomThemeColor(ThemeColorFlags flag, const Color& color);
+		void ClearCustomThemeColor(ThemeColorFlags flag);
+		void ClearCustomThemeColors();
 
 	protected:
 		Vec2 m_position;		// 局部坐标
@@ -106,7 +131,11 @@ namespace SimpleGui {
 		ComponentSizeConfigs m_sizeConfigs;
 
 		bool m_visible = true;
+		bool m_disabled = false;
 		bool m_needRemove;
+
+		UniqueFontPtr m_font;
+		std::unordered_map<ThemeColorFlags, Color> m_themeColorCaches;
 
 		BaseComponent* m_parent;
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
@@ -114,6 +143,8 @@ namespace SimpleGui {
 
 
 	protected:
+		friend class GuiManager;
+
 		void CalcVisibleRect();
 	};
 }

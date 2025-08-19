@@ -1,5 +1,6 @@
 #include "component/base_component.hpp"
 #include <algorithm>
+#include "gui_manager.hpp"
 
 
 namespace SimpleGui {
@@ -7,6 +8,13 @@ namespace SimpleGui {
 		m_parent = nullptr;
 		m_needRemove = false;
 		m_padding = { 0 };
+
+		auto font = TTF_CopyFont(&SG_GuiManager.GetDefaultFont());
+		if (!font) {
+			SDL_Log("%s\n", SDL_GetError());
+		}
+		m_font = UniqueFontPtr(font);
+
 	}
 
 	void BaseComponent::CalcVisibleRect() {
@@ -22,8 +30,7 @@ namespace SimpleGui {
 	}
 
 	bool BaseComponent::HandleEvent(const SDL_Event& event) {
-		if (!m_visible) return false;
-		if (m_visibleRect.size.IsZeroApprox()) return false;
+		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		// handle events of m_children
 		for (auto& child : m_children) {
@@ -37,7 +44,7 @@ namespace SimpleGui {
 	}
 
 	void BaseComponent::Update() {
-		if (!m_visible) return;
+		SG_CMP_UPDATE_CONDITIONS;
 
 		// add caches of children to m_children, and clear caches
 		for (auto& child : m_childCaches) {
@@ -61,10 +68,12 @@ namespace SimpleGui {
 		// update child, and size configs of chid
 		for (auto& child : m_children) {
 			if (child->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
+				child->m_position.x = 0;
 				child->m_size.w = m_size.w;
 			}
 
 			if (child->m_sizeConfigs.second == ComponentSizeConfig::Expanding) {
+				child->m_position.y = 0;
 				child->m_size.h = m_size.h;
 			}
 
@@ -73,15 +82,16 @@ namespace SimpleGui {
 	}
 
 	void BaseComponent::Render(const Renderer& renderer) {
-		if (!m_visible) return;
-		if (m_visibleRect.size.IsZeroApprox()) return;
+		SG_CMP_RENDER_CONDITIONS;
+
+		if (m_disabled) {
+			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::Disabled));
+		}
 
 		// render m_children
 		for (auto& child : m_children) {
 			child->Render(renderer);
 		}
-
-		renderer.DrawRect(m_visibleRect, Color::RED);
 	}
 
 	Vec2 BaseComponent::GetGlobalPosition() const {
@@ -224,7 +234,7 @@ namespace SimpleGui {
 			[cmp](auto& child) {
 				return child.get() == cmp;
 			});
-
+		 
 		if (it != m_children.end()) {
 			std::unique_ptr<BaseComponent> child = std::move(*it);
 			child->m_parent = nullptr;
@@ -259,12 +269,52 @@ namespace SimpleGui {
 
 	void BaseComponent::ForEachChild(std::function<void(BaseComponent*)> fn) {
 		for (auto& child : m_children) {
+			if (!child || child->m_needRemove) continue;
 			fn(child.get());
 		}
 
 		for (auto& child : m_childCaches) {
+			if (!child || child->m_needRemove) continue;
 			fn(child.get());
 		}
+	}
+
+	TTF_Font* BaseComponent::GetFont() const {
+		if (m_font) return m_font.get();
+		return &SG_GuiManager.GetDefaultFont();
+	}
+
+	void BaseComponent::SetFont(std::string_view path, int size) {
+		auto font = TTF_OpenFont(path.data(), size);
+		if (!font) {
+			SDL_Log("%s\n", SDL_GetError());
+			return;
+		}
+		m_font.reset(font);
+	}
+
+	void BaseComponent::SetFontSize(int size) {
+		if (!TTF_SetFontSize(m_font.get(), size)) {
+			SDL_Log("%s\n", SDL_GetError());
+		}
+	}
+
+	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
+		if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
+		else return SG_GuiManager.GetCurrentStyle()->colors[flag];
+	}
+
+	void BaseComponent::CustomThemeColor(ThemeColorFlags flag, const Color& color) {
+		if (m_themeColorCaches[flag] == color) return;
+		m_themeColorCaches[flag] = color;
+	}
+
+	void BaseComponent::ClearCustomThemeColor(ThemeColorFlags flag) {
+		m_themeColorCaches.erase(flag);
+	}
+
+	void BaseComponent::ClearCustomThemeColors() {
+		m_themeColorCaches.clear();
 	}
 
 }

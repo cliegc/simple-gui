@@ -141,15 +141,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\component\button.hpp" />
+    <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
     <ClInclude Include="include\component\common.hpp" />
+    <ClInclude Include="include\component\label.hpp" />
+    <ClInclude Include="include\deleter.hpp" />
     <ClInclude Include="include\gui_manager.hpp" />
     <ClInclude Include="include\math.hpp" />
     <ClInclude Include="include\renderer.hpp" />
+    <ClInclude Include="include\signal.hpp" />
     <ClInclude Include="include\simple_gui.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\component\button.cpp" />
+    <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\component\base_component.cpp" />
+    <ClCompile Include="src\component\label.cpp" />
+    <ClCompile Include="src\deleter.cpp" />
     <ClCompile Include="src\gui_manager.cpp" />
     <ClCompile Include="src\math.cpp" />
     <ClCompile Include="src\renderer.cpp" />
