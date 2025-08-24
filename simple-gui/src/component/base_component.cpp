@@ -17,25 +17,34 @@ namespace SimpleGui {
 
 	}
 
-	void BaseComponent::CalcVisibleRect() {
-		if (!m_parent) {
-			m_visibleRect = GetGlobalRect();
+	void BaseComponent::CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) {
+		if (!parent) {
+			target->m_visibleGRect = target->GetGlobalRect();
 			return;
 		}
 
-		Rect parentGlobalRect = m_parent->GetGlobalRect();
-		Rect globalRect = GetGlobalRect();
-		if (parentGlobalRect.ContainRect(globalRect)) m_visibleRect = globalRect;
-		else m_visibleRect = parentGlobalRect.GetIntersection(globalRect);
+		if (parent->m_visibleGRect.Area() < parent->m_size.w * parent->m_size.h) {
+			Rect globalRect = target->GetGlobalRect();
+			Rect parentVisibaleRect = parent->m_visibleGRect;
+			if (parentVisibaleRect.ContainRect(globalRect)) target->m_visibleGRect = globalRect;
+			else target->m_visibleGRect = parentVisibaleRect.GetIntersection(globalRect);
+			return;
+		}
+
+		Rect globalRect = target->GetGlobalRect();
+		Rect parentContentRect = m_parent->GetContentRect();
+		parentContentRect.position += m_parent->GetGlobalPosition();		// 将局部坐标转为全局坐标
+		if (parentContentRect.ContainRect(globalRect)) target->m_visibleGRect = globalRect;
+		else target->m_visibleGRect = parentContentRect.GetIntersection(globalRect);
 	}
 
 	bool BaseComponent::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		// handle events of m_children
-		for (auto& child : m_children) {
-			if (!child || child->m_needRemove) continue;
-			if (child->HandleEvent(event)) return true;
+		for (auto it = m_children.rbegin(); it != m_children.rend(); ++it) {
+			if (!(*it) || (*it)->m_needRemove) continue;
+			if ((*it)->HandleEvent(event)) return true;
 		}
 
 		// handle events of chaches [X]
@@ -63,18 +72,18 @@ namespace SimpleGui {
 		}
 
 		// calc visible size
-		CalcVisibleRect();
+		CalcVisibleGlobalRect(m_parent, this);
 
 		// update child, and size configs of chid
 		for (auto& child : m_children) {
 			if (child->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
 				child->m_position.x = 0;
-				child->m_size.w = m_size.w;
+				child->m_size.w = GetContentRect().size.w;
 			}
 
 			if (child->m_sizeConfigs.second == ComponentSizeConfig::Expanding) {
 				child->m_position.y = 0;
-				child->m_size.h = m_size.h;
+				child->m_size.h = GetContentRect().size.h;
 			}
 
 			child->Update();
@@ -84,9 +93,10 @@ namespace SimpleGui {
 	void BaseComponent::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		if (m_disabled) {
+		/*if (m_disabled) {
 			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::Disabled));
-		}
+		}*/
+		
 
 		// render m_children
 		for (auto& child : m_children) {
@@ -94,8 +104,17 @@ namespace SimpleGui {
 		}
 	}
 
+	Rect BaseComponent::GetContentRect() const {
+		return Rect(
+			m_padding.left,
+			m_padding.top,
+			m_size.w - m_padding.left - m_padding.right,
+			m_size.h - m_padding.top - m_padding.bottom
+		);
+	}
+
 	Vec2 BaseComponent::GetGlobalPosition() const {
-		if (m_parent) return m_position + m_parent->GetGlobalPosition();
+		if (m_parent) return m_position + m_parent->GetGlobalPosition() + m_parent->GetContentRect().position;
 		return m_position;
 	}
 
@@ -279,9 +298,9 @@ namespace SimpleGui {
 		}
 	}
 
-	TTF_Font* BaseComponent::GetFont() const {
-		if (m_font) return m_font.get();
-		return &SG_GuiManager.GetDefaultFont();
+	TTF_Font& BaseComponent::GetFont() const {
+		if (m_font) return *m_font;
+		return SG_GuiManager.GetDefaultFont();
 	}
 
 	void BaseComponent::SetFont(std::string_view path, int size) {
@@ -301,7 +320,7 @@ namespace SimpleGui {
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
 		if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
-		else return SG_GuiManager.GetCurrentStyle()->colors[flag];
+		else return SG_GuiManager.GetCurrentStyle().colors[flag];
 	}
 
 	void BaseComponent::CustomThemeColor(ThemeColorFlags flag, const Color& color) {

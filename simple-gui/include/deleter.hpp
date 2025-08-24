@@ -19,4 +19,9 @@ namespace SimpleGui {
         void operator()(TTF_Text* text) const noexcept;
     };
     using UniqueTextPtr = std::unique_ptr<TTF_Text, TextDeleter>;
+
+    struct CursorDeleter {
+        void operator()(SDL_Cursor* cursor) const noexcept;
+    };
+    using UniqueCursorPtr = std::unique_ptr<SDL_Cursor, CursorDeleter>;
 }

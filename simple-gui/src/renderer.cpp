@@ -26,6 +26,15 @@ namespace SimpleGui {
 		SDL_RenderRect(m_renderer, &rt);
 	}
 
+	void Renderer::DrawTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color) const {
+		SetRenderColor(color);
+		SDL_FPoint points[4] = {
+			p1.ToSDLFPoint(), p2.ToSDLFPoint(), p3.ToSDLFPoint(), p1.ToSDLFPoint()
+		};
+
+		SDL_RenderLines(m_renderer, points, 4);
+	}
+
 	void Renderer::FillRect(const Rect& rect, const Color& color) const {
 		auto rt = rect.ToSDLFRect();
 		SetRenderColor(color);
@@ -79,6 +88,17 @@ namespace SimpleGui {
 			{ rect.BottomLeft().ToSDLFPoint(), bottomLeft, {0}}
 		};
 		SDL_RenderGeometry(m_renderer, nullptr, vertices, 6, nullptr, 0);
+	}
+
+	void Renderer::FillTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color) const {
+		SDL_FColor fc = color.ToSDLFColor();
+		SDL_Vertex vertices[3] = {
+			// 第一个三角形 (左上、右上、左下)
+			{ p1.ToSDLFPoint(), fc, {0}},
+			{ p2.ToSDLFPoint(), fc, {0}},
+			{ p3.ToSDLFPoint(), fc, {0}},
+		};
+		SDL_RenderGeometry(m_renderer, nullptr, vertices, 3, nullptr, 0);
 	}
 
 	void Renderer::DrawTexture(SDL_Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const {

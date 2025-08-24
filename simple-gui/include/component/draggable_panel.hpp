@@ -1,0 +1,66 @@
+#pragma once
+#include "base_component.hpp"
+#include "label.hpp"
+
+
+namespace SimpleGui {
+	class DraggablePanel final : public BaseComponent {
+	public:
+		DraggablePanel(std::string_view title);
+		~DraggablePanel() = default;
+
+		virtual bool HandleEvent(const SDL_Event& event) override;
+		virtual void Update() override;
+		virtual void Render(const Renderer& renderer) override;
+
+		inline std::string GetTitle() const { return m_titleLbl->GetText(); }
+		inline void SetTitle(std::string_view title) { m_titleLbl->SetText(title); }
+
+		inline bool IsHandleVisible() const { return m_handleVisible; }
+		inline void SetHandleVisible(bool visible) { m_handleVisible = visible; }
+
+		inline bool IsResizable() const { return m_resizable; }
+		inline void SetResizable(bool resizable) { m_resizable = resizable; }
+
+		inline bool IsGlobalDragEnable() const { return m_globalDragEnable; }
+		inline void SetGlobalDragEnable(bool enable) { m_globalDragEnable = enable; }
+
+		virtual Rect GetContentRect() const override;
+
+		virtual void SetFont(UniqueFontPtr font) override;
+		virtual void SetFont(std::string_view path, int size) override;
+		virtual void SetFontSize(int size) override;
+
+	private:
+		struct DragData {
+			Rect dragGRect;
+			Vec2 startMousePos;
+			Vec2 startData;
+			bool dragging;
+		};
+
+		struct FoldData {
+			Rect toggleGRect;
+			Vec2 unfoldSize;
+			bool isFolded;
+		};
+
+	private:
+		std::unique_ptr<Label> m_titleLbl;
+		UniqueCursorPtr m_resizeCursor;
+		float m_handleThickness;
+		bool m_handleVisible;
+		bool m_resizable;
+		bool m_globalDragEnable;
+
+		DragData m_dragData{};
+		DragData m_resizeData{};
+		FoldData m_foldData{};
+
+	private:
+		void ClampPosition();
+		bool HandleDragMotion(const SDL_Event& event, const Vec2& mousePos, bool globalDragEnable = false);
+		bool HandleDragResize(const SDL_Event& event, const Vec2& mousePos);
+		bool HandleToggleFold(const SDL_Event& event, const Vec2& mousePos);
+	};
+}

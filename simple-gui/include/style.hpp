@@ -25,6 +25,7 @@ namespace SimpleGui {
 		ButtonHovered,
 		ButtonPressed,
 		ButtonForeground,
+		ButtonBorder,
 
 		TextureRectBackround,
 		TextureRectBorder,
@@ -32,6 +33,7 @@ namespace SimpleGui {
 		DraggablePanelBackround,
 		DraggablePanelForeground,
 		DraggablePanelHandle,
+		DraggablePanelSizeGrip,
 		DraggablePanelBorder,
 
 		ScrollbarSlot,
@@ -67,7 +69,6 @@ namespace SimpleGui {
 	struct Style final {
 		ComponentPadding componentPadding{ 5,5,5,5 };
 		int itemSpacing = 5;
-		int dragHandleThickness = 15;
 		// ......
 
 		ThemeColors  colors;
@@ -93,9 +94,10 @@ namespace SimpleGui {
 
 		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
 		bool UnregisterStyle(const std::string& name);
-		Style* GetCurrentStyle() const;
-		Style* GetStyle(const std::string& name);
+		Style& GetCurrentStyle() const;
+		std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
 		void SwitchStyle(const std::string& name);
+		void SetStyleFollowSystem();
 
 		std::unique_ptr<Style> CreateLightStyle() const;
 		std::unique_ptr<Style> CreateDarkStyle() const;

@@ -127,16 +127,28 @@ namespace SimpleGui {
         return { static_cast<int>(x), static_cast<int>(y) };
     }
 
-    Vec2 Vec2::Max(const Vec2& other) {
+    Vec2 Vec2::Max(const Vec2& other) const {
         return Vec2(
             fmaxf(x, other.x),
             fmaxf(y, other.y));
     }
 
-    Vec2 Vec2::Min(const Vec2& other) {
+    Vec2 Vec2::Min(const Vec2& other) const {
         return Vec2(
             fminf(x, other.x),
             fminf(y, other.y));
+    }
+
+    Vec2 Vec2::Clamp(const Vec2& min, const Vec2& max) const {
+        return Vec2(
+            SDL_clamp(x, min.x, max.x),
+            SDL_clamp(y, min.y, max.y)
+        );
+    }
+
+    void Vec2::Clamp(const Vec2& min, const Vec2& max) {
+        x = SDL_clamp(x, min.x, max.x);
+        y = SDL_clamp(y, min.y, max.y);
     }
 
     bool Vec2::IsEqualApprox(const Vec2& other) const {

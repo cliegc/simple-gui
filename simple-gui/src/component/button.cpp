@@ -22,22 +22,39 @@ namespace SimpleGui {
 		SetSize(m_lbl->GetSize());
 	}
 
+	void Button::SetFont(UniqueFontPtr font) {
+		m_lbl->SetFont(std::move(font));
+	}
+
+	void Button::SetFont(std::string_view path, int size) {
+		m_lbl->SetFont(path, size);
+	}
+
+	void Button::SetFontSize(int size) {
+		m_lbl->SetFontSize(size);
+	}
+
 	bool Button::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		if (!m_visibleRect.ContainPoint(Vec2(event.motion.x, event.motion.y))) {
+		if (!m_visibleGRect.ContainPoint(Vec2(event.motion.x, event.motion.y))) {
 			m_mouseState = MouseState::Normal;
 			return false;
 		}
 
-		if (m_mouseState != MouseState::Pressed) m_mouseState = MouseState::Hovering;
-
 		if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 			m_mouseState = MouseState::Pressed;
+			return true;
 		}
-		else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
+		if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
 			m_mouseState = MouseState::Hovering;
 			clicked();
+			return true;
+		}
+
+		if (m_mouseState != MouseState::Pressed) {
+			m_mouseState = MouseState::Hovering;
+			return true;
 		}
 
 		return BaseComponent::HandleEvent(event);
@@ -46,33 +63,34 @@ namespace SimpleGui {
 	void Button::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
 
-		m_lbl->Update();
-
 		BaseComponent::Update();
+		m_lbl->SetGlobalPosition(GetGlobalPosition());
+		m_lbl->SetSize(m_size);
+		m_lbl->Update();
+		CalcVisibleGlobalRect(this, m_lbl.get());
 	}
 
 	void Button::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::Background));
+		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background));
 
 		if (m_mouseState == MouseState::Normal) {
-			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::ButtonNormal));
+			renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonNormal));
 		}
 		else if (m_mouseState == MouseState::Hovering) {
-			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::ButtonHovered));
+			renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonHovered));
 		}
 		else {
-			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::ButtonPressed));
+			renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonPressed));
 		}
-
-		m_lbl->SetGlobalPosition(GetGlobalPosition());
-		m_lbl->SetSize(m_size);
 
 		m_lbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::ButtonForeground));
 		m_lbl->Render(renderer);
 
-		renderer.DrawRect(m_visibleRect, GetThemeColor(ThemeColorFlags::Border));
+		renderer.SetClipRect(m_visibleGRect);
+		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ButtonBorder));
+		renderer.ClearClipRect();
 
 		BaseComponent::Render(renderer);
 	}

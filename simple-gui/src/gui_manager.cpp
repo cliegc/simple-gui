@@ -36,8 +36,9 @@ namespace SimpleGui {
 	void GuiManager::Init(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath) {
 		if (!s_guiManager) {
 			s_guiManager = std::unique_ptr<GuiManager>(new GuiManager(window, renderer, fontPath));
-			s_guiManager->m_rootCmp = std::make_unique<BaseComponent>();
-			s_guiManager->SetRootComponentSizeToFillWindow();
+			s_guiManager->m_rootCmp = std::unique_ptr<RootComponent>(new RootComponent());
+			//s_guiManager->m_rootCmp = std::make_unique<RootComponent>();
+			//s_guiManager->SetRootComponentSizeToFillWindow();
 		}
 	}
 
@@ -47,6 +48,14 @@ namespace SimpleGui {
 
 	GuiManager& GuiManager::GetInstance() {
 		return *s_guiManager;
+	}
+
+	SDL_Window& GuiManager::GetWindow() const {
+		return *m_window;
+	}
+
+	SDL_Renderer& GuiManager::GetRenderer() const {
+		return m_renderer->GetSDLRenderer();
 	}
 
 	TTF_TextEngine& GuiManager::GetTextEngine() const {
@@ -70,11 +79,11 @@ namespace SimpleGui {
 		TTF_SetFontSize(m_defaultFont.get(), size);
 	}
 
-	Style* GuiManager::GetCurrentStyle() {
+	Style& GuiManager::GetCurrentStyle() {
 		return m_styleManager->GetCurrentStyle();
 	}
 
-	Style* GuiManager::GetStyle(const std::string& name) {
+	std::optional<std::reference_wrapper<Style>> GuiManager::GetStyle(const std::string& name) {
 		return m_styleManager->GetStyle(name);
 	}
 
@@ -90,12 +99,11 @@ namespace SimpleGui {
 		return m_styleManager->UnregisterStyle(name);
 	}
 
+	void GuiManager::SetStyleFollowSystem() {
+		m_styleManager->SetStyleFollowSystem();
+	}
 
 	void GuiManager::HandleEvent(const SDL_Event& event) {
-		if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-			SetRootComponentSizeToFillWindow();
-		}
-
 		m_rootCmp->HandleEvent(event);
 	}
 
@@ -105,12 +113,6 @@ namespace SimpleGui {
 
 	void GuiManager::Render() {
 		m_rootCmp->Render(*m_renderer);
-	}
-
-	void GuiManager::FrameStart() {
-	}
-
-	void GuiManager::FrameEnd() {
 	}
 
 	void GuiManager::SetRootComponentSizeToFillWindow() {

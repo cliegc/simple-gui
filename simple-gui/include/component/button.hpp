@@ -6,13 +6,17 @@
 
 
 namespace SimpleGui {
-	class Button : public BaseComponent {
+	class Button final : public BaseComponent {
 	public:
 		explicit Button(std::string_view text);
 		virtual ~Button() = default;
 
 		std::string GetText() const;
 		void SetText(std::string_view text);
+
+		virtual void SetFont(UniqueFontPtr font) override;
+		virtual void SetFont(std::string_view path, int size) override;
+		virtual void SetFontSize(int size) override;
 
 		virtual bool HandleEvent(const SDL_Event&) override;
 		virtual void Update() override;

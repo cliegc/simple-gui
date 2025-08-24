@@ -56,8 +56,10 @@ namespace SimpleGui {
         SDL_FPoint ToSDLFPoint() const;
         SDL_Point ToSDLPoint() const;
 
-        Vec2 Max(const Vec2& other);
-        Vec2 Min(const Vec2& other);
+        Vec2 Max(const Vec2& other) const;
+        Vec2 Min(const Vec2& other) const;
+        Vec2 Clamp(const Vec2& min, const Vec2& max) const;
+        void Clamp(const Vec2& min, const Vec2& max);
         bool IsEqualApprox(const Vec2& other) const;
         bool IsZeroApprox() const;
     };
@@ -88,6 +90,10 @@ namespace SimpleGui {
         inline Vec2 BottomLeft() const { return Vec2(position.x, position.y + size.h); };
         inline Vec2 BottomRight() const { return Vec2(position.x + size.w, position.y + size.h); };
         inline Vec2 Center() const { return Vec2(position.x + size.w / 2, position.y + size.h / 2); };
+        inline float Left() const { return position.x; }
+        inline float Top() const { return position.y; }
+        inline float Right() const { return position.x + size.w; }
+        inline float Bottom() const { return position.y + size.h; }
 
         bool IsIntersect(const Rect& rect) const;
         Rect GetIntersection(const Rect& rect) const;

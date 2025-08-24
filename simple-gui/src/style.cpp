@@ -1,4 +1,5 @@
 #include "style.hpp"
+#include <SDL3/SDL_video.h>
 #include <SDL3/SDL_log.h>
 
 
@@ -32,11 +33,11 @@ namespace SimpleGui {
 		return false;
 	}
 
-	Style* StyleManager::GetStyle(const std::string& name) {
+	std::optional<std::reference_wrapper<Style>> StyleManager::GetStyle(const std::string& name) {
 		if (m_styles.contains(name)) {
-			return m_styles[name].get();
+			return *m_styles[name];
 		}
-		return nullptr;
+		return std::nullopt;
 	}
 
 	void StyleManager::SwitchStyle(const std::string& name) {
@@ -46,8 +47,18 @@ namespace SimpleGui {
 		m_currStyle = style;
 	}
 
-	Style* StyleManager::GetCurrentStyle() const {
-		return m_currStyle;
+	void StyleManager::SetStyleFollowSystem() {
+		SDL_SystemTheme theme = SDL_GetSystemTheme();
+		if (theme == SDL_SYSTEM_THEME_LIGHT) {
+			SwitchStyle(LightStyle);
+		}
+		else {
+			SwitchStyle(DarkStyle);
+		}
+	}
+
+	Style& StyleManager::GetCurrentStyle() const {
+		return *m_currStyle;
 	}
 
 	std::unique_ptr<Style> StyleManager::CreateLightStyle() const {
@@ -65,24 +76,38 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ButtonHovered] = Color(0x3498db64);
 		style->colors[ThemeColorFlags::ButtonPressed] = Color(0x3498db32);
 		style->colors[ThemeColorFlags::ButtonForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::ButtonBorder] = Color(0x7f8c8dff);
+
+		style->colors[ThemeColorFlags::DraggablePanelBackround] = Color(0xffffff64);
+		style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x7f8c8dff);
+		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
 		return std::move(style);
 	}
 
 	std::unique_ptr<Style> StyleManager::CreateDarkStyle() const {
 		auto style = std::make_unique<Style>();
-		style->colors[ThemeColorFlags::Background] = Color(47, 47, 47);
+		style->colors[ThemeColorFlags::Background] = Color(0x0d1117ff);
 		style->colors[ThemeColorFlags::Foreground] = Color::WHITE;
-		style->colors[ThemeColorFlags::Border] = Color(0x2c3e50ff);
+		style->colors[ThemeColorFlags::Border] = Color(0x3d444dff);
 
 		style->colors[ThemeColorFlags::LabelBackgound] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::LabelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::LabelBorder] = Color::TRANSPARENT;
 
-		style->colors[ThemeColorFlags::ButtonNormal] = Color(0x34495eff);
-		style->colors[ThemeColorFlags::ButtonHovered] = Color(0x34495e64);
-		style->colors[ThemeColorFlags::ButtonPressed] = Color(0x34495e32);
+		style->colors[ThemeColorFlags::ButtonNormal] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::ButtonHovered] = Color(0x8250df64);
+		style->colors[ThemeColorFlags::ButtonPressed] = Color(0x8250df32);
 		style->colors[ThemeColorFlags::ButtonForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::ButtonBorder] = Color(0x3d444dff);
+
+		style->colors[ThemeColorFlags::DraggablePanelBackround] = Color(47, 47, 47, 100);
+		style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x34495eff);
+		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
 		return std::move(style);
 	}

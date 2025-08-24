@@ -3,7 +3,6 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
-#include <optional>
 #include <functional>
 #include "math.hpp"
 #include "renderer.hpp"
@@ -16,10 +15,12 @@ namespace SimpleGui {
 
 #define SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE if (!m_visible) return false;\
 										  if (m_disabled) return false;\
-										  if (m_visibleRect.size.IsZeroApprox()) return false
+										  /*if (m_visibleRect.size.IsZeroApprox()) return false;*/
+
 #define SG_CMP_UPDATE_CONDITIONS if (!m_visible) return
+
 #define SG_CMP_RENDER_CONDITIONS if (!m_visible) return;\
-								 if (m_visibleRect.size.IsZeroApprox()) return
+								 if (m_visibleGRect.size.IsZeroApprox()) return
 
 
 	class BaseComponent {
@@ -33,6 +34,9 @@ namespace SimpleGui {
 
 		inline Rect GetRect() const { return Rect{ m_position, m_size}; }
 		inline Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }
+
+		// 获取内容矩形，使用局部坐标
+		virtual Rect GetContentRect() const;
 
 		// 基于global_position的坐标系统，无法在组件被添加到父组件之前有效设置position(局部)
 		// 采用基于position(局部)的坐标系统，通过计算获得global_position
@@ -111,10 +115,10 @@ namespace SimpleGui {
 		void ClearAllChildrenDeferred();
 		void ForEachChild(std::function<void(BaseComponent*)> fn);
 
-		inline void SetFont(UniqueFontPtr font) { m_font = std::move(font); }
-		TTF_Font* GetFont() const;
-		void SetFont(std::string_view path, int size);
-		void SetFontSize(int size);
+		inline virtual void SetFont(UniqueFontPtr font) { m_font = std::move(font); };
+		virtual void SetFont(std::string_view path, int size);
+		virtual void SetFontSize(int size);
+		virtual TTF_Font& GetFont() const;
 
 		Color GetThemeColor(ThemeColorFlags flag);
 		void CustomThemeColor(ThemeColorFlags flag, const Color& color);
@@ -125,7 +129,7 @@ namespace SimpleGui {
 		Vec2 m_position;		// 局部坐标
 		Vec2 m_size;
 		Vec2 m_minSize;
-		Rect m_visibleRect;		// 使用全局坐标
+		Rect m_visibleGRect;		// 使用全局坐标
 
 		ComponentPadding m_padding;
 		ComponentSizeConfigs m_sizeConfigs;
@@ -141,10 +145,7 @@ namespace SimpleGui {
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
 
-
 	protected:
-		friend class GuiManager;
-
-		void CalcVisibleRect();
+		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target);
 	};
 }

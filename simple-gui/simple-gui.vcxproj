@@ -142,6 +142,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
+    <ClInclude Include="include\component\draggable_panel.hpp" />
+    <ClInclude Include="include\component\root_component.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
     <ClInclude Include="include\component\common.hpp" />
@@ -155,6 +157,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
+    <ClCompile Include="src\component\draggable_panel.cpp" />
+    <ClCompile Include="src\component\root_component.cpp" />
     <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\component\base_component.cpp" />
     <ClCompile Include="src\component\label.cpp" />

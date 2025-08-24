@@ -5,7 +5,8 @@
 #include "deleter.hpp"
 #include "renderer.hpp"
 #include "style.hpp"
-#include "component/base_component.hpp"
+#include "component/root_component.hpp"
+//#include "component/base_component.hpp"
 
 
 #define SG_GuiManager SimpleGui::GuiManager::GetInstance()
@@ -31,19 +32,20 @@ namespace SimpleGui {
             return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
         }
 
+        SDL_Window& GetWindow() const;
+        SDL_Renderer& GetRenderer() const;
         TTF_TextEngine& GetTextEngine() const;
         TTF_Font& GetDefaultFont() const;
         void SetDefaultFont(std::string_view path, float size);
         void SetDefaultFontSize(float size);
 
-        Style* GetCurrentStyle();
-        Style* GetStyle(const std::string& name);
+        Style& GetCurrentStyle();
+        std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
         void SwitchStyle(const std::string& name);
         bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
         bool UnregisterStyle(const std::string& name);
+        void SetStyleFollowSystem();
 
-        void FrameStart();
-        void FrameEnd();
         void HandleEvent(const SDL_Event&);
         void Update();
         void Render();
@@ -55,7 +57,8 @@ namespace SimpleGui {
         UniqueTextEnginePtr m_textEngine;
         UniqueFontPtr m_defaultFont;
         std::unique_ptr<Renderer> m_renderer;
-        std::unique_ptr<BaseComponent> m_rootCmp;
+        //std::unique_ptr<BaseComponent> m_rootCmp;
+        std::unique_ptr<RootComponent> m_rootCmp;
         std::unique_ptr<StyleManager> m_styleManager;
 
         GuiManager(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath);

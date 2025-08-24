@@ -18,19 +18,20 @@ namespace SimpleGui {
 	void Label::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.SetClipRect(m_visibleRect);
-		renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::LabelBackgound));
+		renderer.SetClipRect(m_visibleGRect);
+		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LabelBackgound));
 		renderer.DrawText(m_ttfText.get(), m_textRect.position, GetThemeColor(ThemeColorFlags::LabelForeground));
+		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::LabelBorder));
 		renderer.ClearClipRect();
 
 		BaseComponent::Render(renderer);
 	}
 
 	void Label::Init(std::string_view text) {
-		auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), GetFont(), text.data(), text.size());
+		auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont(), text.data(), text.size());
 		m_ttfText = UniqueTextPtr(ttf_text);
 
-		m_padding = SG_GuiManager.GetCurrentStyle()->componentPadding;
+		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
 		AdjustSize(m_ttfText.get());
 
