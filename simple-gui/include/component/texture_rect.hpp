@@ -29,7 +29,7 @@ namespace SimpleGui {
 		TextureStretchMode m_textureStretchMode = TextureStretchMode::Scale;
 		SDL_ScaleMode m_scaleMode;
 		SDL_FlipMode m_flipMode;
-		Rect m_textureRect;
+		Rect m_textureGRect;
 
 		void UpdateTextureStretchMode();
 		void RenderTexture(SDL_Renderer* renderer);

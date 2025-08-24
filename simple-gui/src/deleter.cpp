@@ -21,4 +21,9 @@ namespace SimpleGui {
 		if (!cursor) return;
 		SDL_DestroyCursor(cursor);
 	}
+
+	void TextureDeleter::operator()(SDL_Texture* texture) const noexcept {
+		if (!texture) return;
+		SDL_DestroyTexture(texture);
+	}
 }

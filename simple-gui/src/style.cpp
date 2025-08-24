@@ -84,6 +84,9 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x3498dbff);
 		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
+		style->colors[ThemeColorFlags::TextureRectBackround] = Color(0xffffff64);
+		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x7f8c8dff);
+
 		return std::move(style);
 	}
 
@@ -108,6 +111,9 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x3d444dff);
 		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x34495eff);
 		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
+
+		style->colors[ThemeColorFlags::TextureRectBackround] = Color(47, 47, 47, 100);
+		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x3d444dff);
 
 		return std::move(style);
 	}

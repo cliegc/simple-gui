@@ -7,4 +7,5 @@
 #include "component/base_component.hpp"
 #include "component/label.hpp"
 #include "component/button.hpp"
+#include "component/texture_rect.hpp"
 #include "component/draggable_panel.hpp"

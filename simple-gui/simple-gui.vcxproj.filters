@@ -54,6 +54,9 @@
     <ClInclude Include="include\component\root_component.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\component\texture_rect.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -84,6 +87,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\component\root_component.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\texture_rect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,15 +8,7 @@ using namespace SimpleGui;
 
 
 
-struct TextureDeleter final {
-	void operator()(SDL_Texture* texture) {
-		if (!texture) return;
-		SDL_DestroyTexture(texture);
-	}
-};
-
-
-void TestDraggablePanel() {
+void TestDraggablePanel(SDL_Renderer* renderer) {
 	auto draggablePanel = SG_GuiManager.AddComponent<DraggablePanel>("test");
 	draggablePanel->SetSize(500, 500);
 	draggablePanel->SetPosition(300, 100);
@@ -28,6 +20,12 @@ void TestDraggablePanel() {
 	lbl2->SetFontSize(36);
 	lbl2->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GREEN);
 
+	SDL_Texture* tt = IMG_LoadTexture(renderer, "C:\\Users\\15310\\Desktop\\11.png");
+	std::shared_ptr<SDL_Texture> texture = std::shared_ptr<SDL_Texture>(tt, TextureDeleter());
+	auto textureRect = draggablePanel->AddChild<TextureRect>(texture);
+	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
+
 	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("test2");
 	draggablePanel2->SetSize(200, 200);
 
@@ -38,6 +36,8 @@ void TestDraggablePanel() {
 			draggablePanel->SetGlobalDragEnable(!draggablePanel->IsGlobalDragEnable());
 		}
 	);
+
+
 }
 
 
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 		}
 	);
 
-	TestDraggablePanel();
+	TestDraggablePanel(renderer);
 
 
 	while (running) {

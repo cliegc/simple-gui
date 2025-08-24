@@ -24,4 +24,8 @@ namespace SimpleGui {
         void operator()(SDL_Cursor* cursor) const noexcept;
     };
     using UniqueCursorPtr = std::unique_ptr<SDL_Cursor, CursorDeleter>;
+
+    struct TextureDeleter final {
+        void operator()(SDL_Texture* texture) const noexcept;
+    };
 }
