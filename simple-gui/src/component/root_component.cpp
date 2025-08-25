@@ -9,9 +9,7 @@ namespace SimpleGui {
 	}
 
 	void RootComponent::SetSizeToFillWindow() {
-		int w, h;
-		SDL_GetRenderOutputSize(&SG_GuiManager.GetRenderer(), &w, &h);
-		SetSize(w, h);
+		SetSize(SG_GuiManager.GetRenderer().GetRenderOutputSize());
 	}
 
 	bool RootComponent::HandleEvent(const SDL_Event& event) {

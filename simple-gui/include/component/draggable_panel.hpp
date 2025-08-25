@@ -25,11 +25,13 @@ namespace SimpleGui {
 		inline bool IsGlobalDragEnable() const { return m_globalDragEnable; }
 		inline void SetGlobalDragEnable(bool enable) { m_globalDragEnable = enable; }
 
-		virtual Rect GetContentRect() const override;
-
 		virtual void SetFont(UniqueFontPtr font) override;
 		virtual void SetFont(std::string_view path, int size) override;
 		virtual void SetFontSize(int size) override;
+
+	protected:
+		inline virtual Vec2 GetLocalCoordinateOriginOffset() const override;
+		inline virtual Vec2 GetContentSize() const override;
 
 	private:
 		struct DragData {

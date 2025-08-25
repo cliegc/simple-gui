@@ -24,18 +24,20 @@ namespace SimpleGui {
 	bool DraggablePanel::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 mousePos{};
+		Vec2 mousePos;
 		SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-		if (HandleToggleFold(event, mousePos)) return true;
-		if (HandleDragResize(event, mousePos)) return true;
-		if (HandleDragMotion(event, mousePos)) return true;
+		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPosition(mousePos);
+
+		if (HandleToggleFold(event, renderPos)) return true;
+		if (HandleDragResize(event, renderPos)) return true;
+		if (HandleDragMotion(event, renderPos)) return true;
 
 		if (BaseComponent::HandleEvent(event)) return true;
 
 		// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
-		if (HandleDragMotion(event, mousePos, m_globalDragEnable)) return true;
-		if (GetGlobalRect().ContainPoint(mousePos)) return true;
+		if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
+		if (GetGlobalRect().ContainPoint(renderPos)) return true;
 
 		return false;
 	}
@@ -129,17 +131,6 @@ namespace SimpleGui {
 		// TODO 重写绘制disabled
 	}
 
-	Rect DraggablePanel::GetContentRect() const {
-		float t = m_handleThickness;
-		if (!m_handleVisible) t = 0;
-		return Rect(
-			m_padding.left,
-			m_padding.top + t,
-			m_size.w - m_padding.left - m_padding.right,
-			m_size.h - m_padding.top - m_padding.bottom - t
-		);
-	}
-
 	void DraggablePanel::SetFont(UniqueFontPtr font) {
 		m_titleLbl->SetFont(std::move(font));
 	}
@@ -152,6 +143,21 @@ namespace SimpleGui {
 		m_titleLbl->SetFontSize(size);
 	}
 
+	inline Vec2 DraggablePanel::GetLocalCoordinateOriginOffset() const {
+		float t = m_handleThickness;
+		if (!m_handleVisible) t = 0;
+		return Vec2(m_padding.left, m_padding.top + t);
+	}
+
+	inline Vec2 DraggablePanel::GetContentSize() const {
+		float t = m_handleThickness;
+		if (!m_handleVisible) t = 0;
+		return Vec2(
+			m_size.w - m_padding.left - m_padding.right,
+			m_size.h - m_padding.top - m_padding.bottom - t
+		);
+	}
+
 	void DraggablePanel::ClampPosition() {
 		int w, h;
 		SDL_GetWindowSizeInPixels(&SG_GuiManager.GetWindow(), &w, &h);
@@ -161,9 +167,9 @@ namespace SimpleGui {
 
 		Vec2 min, max{w - m_size.w, h - t };
 		if (m_parent) {
-			Rect contentRect = m_parent->GetContentRect();
-			max.x = contentRect.size.w - m_size.w;
-			max.y = contentRect.size.h - t;
+			Vec2 contentSize = m_parent->GetContentGlobalRect().size;
+			max.x = contentSize.w - m_size.w;
+			max.y = contentSize.h - t;
 		}
 
 		if (max.x < 0) max.x = min.x;

@@ -6,7 +6,40 @@
 
 using namespace SimpleGui;
 
+void TestLabelAndButton() {
+	auto lbl1 = SG_GuiManager.AddComponent<Label>("this is a label");
+	lbl1->SetPosition(100, 100);
+	lbl1->SetSize(200, 200);
+	lbl1->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
 
+	lbl1->SetFontSize(36);
+	lbl1->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);
+	lbl1->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0, 0, 0, 100));
+	//lbl1->ClearCustomThemeColors();
+
+	lbl1->AddChild<Label>("test label2");
+
+	auto btn1 = SG_GuiManager.AddComponent<Button>("click me");
+	btn1->SetPosition(100, 300);
+	btn1->SetSize(300, 300);
+	btn1->SetFontSize(36);
+
+	auto style = SG_GuiManager.GetStyle(StyleManager::DarkStyle);
+	if (style.has_value()) style.value().get().colors[ThemeColorFlags::LabelForeground] = Color::AQUA;
+
+	
+	btn1->clicked.Connect("on_clicked",
+		[]() {
+			SDL_Log("switch style\n");
+			static std::string styleName = StyleManager::DarkStyle;
+			SG_GuiManager.SwitchStyle(styleName);
+			if (styleName == StyleManager::DarkStyle)
+				styleName = StyleManager::LightStyle;
+			else
+				styleName = StyleManager::DarkStyle;
+		}
+	);
+}
 
 void TestDraggablePanel(SDL_Renderer* renderer) {
 	auto draggablePanel = SG_GuiManager.AddComponent<DraggablePanel>("test");
@@ -27,7 +60,7 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
 
 	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("test2");
-	draggablePanel2->SetSize(200, 200);
+	//draggablePanel2->SetSize(200, 200);
 
 	auto btn = draggablePanel2->AddChild<Button>("test button");
 	btn->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
@@ -36,8 +69,23 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 			draggablePanel->SetGlobalDragEnable(!draggablePanel->IsGlobalDragEnable());
 		}
 	);
+}
 
+void TestBoxLayout() {
+	auto layout = SG_GuiManager.AddComponent<BoxLayout>(Direction::Horizontal);
+	layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+	layout->SetAlignment(Alignment::End);
+	layout->SetWeights({ 2, 5 });
+	layout->SetDirection(Direction::Vertical);
 
+	auto lbl1 = layout->AddChild<Label>("Label 1");
+	lbl1->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
+	//lbl1->SetSizeConfigW(ComponentSizeConfig::Expanding);
+	//lbl1->SetSizeConfigH(ComponentSizeConfig::Expanding);
+
+	auto btn1 = layout->AddChild<Button>("Button 1");
+	//btn1->SetSizeConfigW(ComponentSizeConfig::Expanding);
+	//btn1->SetSizeConfigH(ComponentSizeConfig::Expanding);
 }
 
 
@@ -59,40 +107,9 @@ int main(int argc, char** argv) {
 	SG_GuiManager.SwitchStyle(StyleManager::LightStyle);
 	SG_GuiManager.SetStyleFollowSystem();
 
-	auto lbl1 = SG_GuiManager.AddComponent<Label>("this is a label");
-	lbl1->SetPosition(100, 100);
-	lbl1->SetSize(200, 200);
-	lbl1->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
-
-	lbl1->SetFontSize(36);
-	lbl1->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);
-	lbl1->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0, 0, 0, 100));
-	//lbl1->ClearCustomThemeColors();
-
-	lbl1->AddChild<Label>("test label2");
-
-	auto btn1 = SG_GuiManager.AddComponent<Button>("click me");
-	btn1->SetPosition(100, 300);
-	btn1->SetSize(300, 300);
-	btn1->SetFontSize(36);
-
-	auto style = SG_GuiManager.GetStyle(StyleManager::DarkStyle);
-	if (style.has_value()) style.value().get().colors[ThemeColorFlags::LabelForeground] = Color::AQUA;
-
-	std::string styleName = StyleManager::DarkStyle;
-	btn1->clicked.Connect("on_clicked", 
-		[&styleName]() {
-			SDL_Log("switch style\n");
-			SG_GuiManager.SwitchStyle(styleName);
-			if (styleName == StyleManager::DarkStyle)
-				styleName = StyleManager::LightStyle;
-			else
-				styleName = StyleManager::DarkStyle;
-		}
-	);
-
-	TestDraggablePanel(renderer);
-
+	//TestLabelAndButton();
+	//TestDraggablePanel(renderer);
+	TestBoxLayout();
 
 	while (running) {
 		while (SDL_PollEvent(&event)) {
@@ -113,8 +130,8 @@ int main(int argc, char** argv) {
 		//SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		//SDL_RenderFillRect(renderer, &rect);
 		//SDL_SetRenderLogicalPresentation(renderer, 640, 360, SDL_LOGICAL_PRESENTATION_DISABLED);
-
 		SG_GuiManager.Render();
+		//SDL_SetRenderLogicalPresentation(renderer, 640, 360, SDL_LOGICAL_PRESENTATION_DISABLED);
 
 		SDL_RenderPresent(renderer);
 

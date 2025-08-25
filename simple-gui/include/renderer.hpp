@@ -25,6 +25,12 @@ namespace SimpleGui {
         void DrawTexture(SDL_Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const;
         void DrawText(TTF_Text* text, const Vec2& pos, const Color& color) const;
         void DrawText(TTF_Font* font, std::string_view text, const Vec2& pos, const Color& color, int wrap_width) const;
+        
+        Vec2 GetRenderPosition(const Vec2& mousePos) const;
+        Vec2 GetRenderPositionFromMouse() const;
+        Vec2 GetRenderOutputSize() const;
+
+        std::shared_ptr<SDL_Texture> CreateTexture(std::string_view path);
 
         inline SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
 

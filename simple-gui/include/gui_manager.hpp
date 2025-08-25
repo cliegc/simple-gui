@@ -33,7 +33,7 @@ namespace SimpleGui {
         }
 
         SDL_Window& GetWindow() const;
-        SDL_Renderer& GetRenderer() const;
+        Renderer& GetRenderer() const;
         TTF_TextEngine& GetTextEngine() const;
         TTF_Font& GetDefaultFont() const;
         void SetDefaultFont(std::string_view path, float size);

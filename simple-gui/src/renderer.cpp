@@ -123,6 +123,18 @@ namespace SimpleGui {
 		SDL_DestroySurface(textSurface);
 	}
 
+	Vec2 Renderer::GetRenderPosition(const Vec2& mousePos) const {
+		Vec2 pos;
+		SDL_RenderCoordinatesFromWindow(m_renderer, mousePos.x, mousePos.y, &pos.x, &pos.y);
+		return pos;
+	}
+
+	Vec2 Renderer::GetRenderOutputSize() const {
+		int w, h;
+		SDL_GetRenderOutputSize(m_renderer, &w, &h);
+		return Vec2(w, h);
+	}
+
 	void Renderer::SetRenderColor(const Color& color) const {
 		SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	}

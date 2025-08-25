@@ -35,8 +35,7 @@ namespace SimpleGui {
 		inline Rect GetRect() const { return Rect{ m_position, m_size}; }
 		inline Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }
 
-		// 获取内容矩形，使用局部坐标
-		virtual Rect GetContentRect() const;
+		inline Rect GetContentGlobalRect() const;
 
 		// 基于global_position的坐标系统，无法在组件被添加到父组件之前有效设置position(局部)
 		// 采用基于position(局部)的坐标系统，通过计算获得global_position
@@ -126,7 +125,7 @@ namespace SimpleGui {
 		void ClearCustomThemeColors();
 
 	protected:
-		Vec2 m_position;		// 局部坐标
+		Vec2 m_position;			// 局部坐标
 		Vec2 m_size;
 		Vec2 m_minSize;
 		Rect m_visibleGRect;		// 使用全局坐标
@@ -146,6 +145,9 @@ namespace SimpleGui {
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
 
 	protected:
+		void PreparationOfUpdateChildren();
 		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target);
+		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
+		inline virtual Vec2 GetContentSize() const;
 	};
 }

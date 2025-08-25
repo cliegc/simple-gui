@@ -1,4 +1,5 @@
 #include "component/button.hpp"
+#include "gui_manager.hpp"
 
 
 
@@ -37,25 +38,31 @@ namespace SimpleGui {
 	bool Button::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		if (!m_visibleGRect.ContainPoint(Vec2(event.motion.x, event.motion.y))) {
+		Vec2 mousePos;
+		SDL_GetMouseState(&mousePos.x, &mousePos.y);
+
+		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPosition(mousePos);
+
+		if (!m_visibleGRect.ContainPoint(renderPos)) {
 			m_mouseState = MouseState::Normal;
-			return false;
 		}
+		else {
+			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+				m_mouseState = MouseState::Pressed;
+				return true;
+			}
+			if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
+				m_mouseState = MouseState::Hovering;
+				clicked();
+				return true;
+			}
 
-		if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-			m_mouseState = MouseState::Pressed;
-			return true;
+			if (m_mouseState != MouseState::Pressed) {
+				m_mouseState = MouseState::Hovering;
+				return true;
+			}
 		}
-		if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
-			m_mouseState = MouseState::Hovering;
-			clicked();
-			return true;
-		}
-
-		if (m_mouseState != MouseState::Pressed) {
-			m_mouseState = MouseState::Hovering;
-			return true;
-		}
+		
 
 		return BaseComponent::HandleEvent(event);
 	}

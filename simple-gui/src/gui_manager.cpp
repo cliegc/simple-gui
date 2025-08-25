@@ -54,8 +54,8 @@ namespace SimpleGui {
 		return *m_window;
 	}
 
-	SDL_Renderer& GuiManager::GetRenderer() const {
-		return m_renderer->GetSDLRenderer();
+	Renderer& GuiManager::GetRenderer() const {
+		return *m_renderer;
 	}
 
 	TTF_TextEngine& GuiManager::GetTextEngine() const {

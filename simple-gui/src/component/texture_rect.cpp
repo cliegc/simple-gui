@@ -12,9 +12,7 @@ namespace SimpleGui {
 		if (m_texture) {
 			m_size.w = m_texture->w;
 			m_size.h = m_texture->h;
-			m_textureGRect = GetContentRect();
-			m_textureGRect.position += GetGlobalPosition();
-
+			m_textureGRect = GetContentGlobalRect();
 			SDL_SetTextureScaleMode(m_texture.get(), m_scaleMode);
 		}
 	}
@@ -101,8 +99,7 @@ namespace SimpleGui {
 		//KeepAspectCovered,				// 图片大小跟随组件大小（超过组件大小），保证图片的宽高比，并在组件中心位置显示
 
 		Rect globaleRect = GetGlobalRect();
-		Rect contentRect = GetContentRect();
-		contentRect.position += globaleRect.position;
+		Rect contentRect = GetContentGlobalRect();
 
 		switch (m_textureStretchMode) {
 		case TextureStretchMode::Scale:

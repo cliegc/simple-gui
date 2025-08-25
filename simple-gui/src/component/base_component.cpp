@@ -17,6 +17,24 @@ namespace SimpleGui {
 
 	}
 
+	void BaseComponent::PreparationOfUpdateChildren() {
+		// add caches of children to m_children, and clear caches
+		for (auto& child : m_childCaches) {
+			m_children.push_back(std::move(child));
+		}
+		m_childCaches.clear();
+
+		// remove NeedRemove children from m_children
+		for (auto it = m_children.begin(); it != m_children.end();) {
+			if (!(*it) || (*it)->m_needRemove) {
+				it = m_children.erase(it);
+			}
+			else {
+				++it;
+			}
+		}
+	}
+
 	void BaseComponent::CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) {
 		if (!parent) {
 			target->m_visibleGRect = target->GetGlobalRect();
@@ -32,11 +50,22 @@ namespace SimpleGui {
 		}
 
 		Rect globalRect = target->GetGlobalRect();
-		Rect parentContentRect = m_parent->GetContentRect();
-		parentContentRect.position += m_parent->GetGlobalPosition();		// 将局部坐标转为全局坐标
+		Rect parentContentRect = m_parent->GetContentGlobalRect();
 		if (parentContentRect.ContainRect(globalRect)) target->m_visibleGRect = globalRect;
 		else target->m_visibleGRect = parentContentRect.GetIntersection(globalRect);
 	}
+
+	inline Vec2 BaseComponent::GetLocalCoordinateOriginOffset() const {
+		return Vec2(m_padding.left, m_padding.top);
+	}
+
+	inline Vec2 BaseComponent::GetContentSize() const {
+		return Vec2(
+			m_size.w - m_padding.left - m_padding.right,
+			m_size.h - m_padding.top - m_padding.bottom
+		);
+	}
+
 
 	bool BaseComponent::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
@@ -55,21 +84,7 @@ namespace SimpleGui {
 	void BaseComponent::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
 
-		// add caches of children to m_children, and clear caches
-		for (auto& child : m_childCaches) {
-			m_children.push_back(std::move(child));
-		}
-		m_childCaches.clear();
-
-		// remove NeedRemove children from m_children
-		for (auto it = m_children.begin(); it != m_children.end();) {
-			if (!(*it) || (*it)->m_needRemove) {
-				it = m_children.erase(it);
-			}
-			else {
-				++it;
-			}
-		}
+		PreparationOfUpdateChildren();
 
 		// calc visible size
 		CalcVisibleGlobalRect(m_parent, this);
@@ -78,12 +93,12 @@ namespace SimpleGui {
 		for (auto& child : m_children) {
 			if (child->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
 				child->m_position.x = 0;
-				child->m_size.w = GetContentRect().size.w;
+				child->m_size.w = GetContentSize().w;
 			}
 
 			if (child->m_sizeConfigs.second == ComponentSizeConfig::Expanding) {
 				child->m_position.y = 0;
-				child->m_size.h = GetContentRect().size.h;
+				child->m_size.h = GetContentSize().h;
 			}
 
 			child->Update();
@@ -104,17 +119,13 @@ namespace SimpleGui {
 		}
 	}
 
-	Rect BaseComponent::GetContentRect() const {
-		return Rect(
-			m_padding.left,
-			m_padding.top,
-			m_size.w - m_padding.left - m_padding.right,
-			m_size.h - m_padding.top - m_padding.bottom
-		);
+	inline Rect BaseComponent::GetContentGlobalRect() const {
+		Vec2 pos = GetGlobalPosition() + GetLocalCoordinateOriginOffset();
+		return Rect(pos, GetContentSize());
 	}
 
 	Vec2 BaseComponent::GetGlobalPosition() const {
-		if (m_parent) return m_position + m_parent->GetGlobalPosition() + m_parent->GetContentRect().position;
+		if (m_parent) return m_position + m_parent->GetGlobalPosition() + m_parent->GetLocalCoordinateOriginOffset();
 		return m_position;
 	}
 
