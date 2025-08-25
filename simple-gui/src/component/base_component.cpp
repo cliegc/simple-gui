@@ -14,7 +14,6 @@ namespace SimpleGui {
 			SDL_Log("%s\n", SDL_GetError());
 		}
 		m_font = UniqueFontPtr(font);
-
 	}
 
 	void BaseComponent::PreparationOfUpdateChildren() {
@@ -55,6 +54,18 @@ namespace SimpleGui {
 		else target->m_visibleGRect = parentContentRect.GetIntersection(globalRect);
 	}
 
+	void BaseComponent::UpdateChildSizeConfigs(BaseComponent* cmp) {
+		if (cmp->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
+			cmp->m_position.x = 0;
+			cmp->m_size.w = GetContentSize().w;
+		}
+
+		if (cmp->m_sizeConfigs.second == ComponentSizeConfig::Expanding) {
+			cmp->m_position.y = 0;
+			cmp->m_size.h = GetContentSize().h;
+		}
+	}
+
 	inline Vec2 BaseComponent::GetLocalCoordinateOriginOffset() const {
 		return Vec2(m_padding.left, m_padding.top);
 	}
@@ -91,16 +102,7 @@ namespace SimpleGui {
 
 		// update child, and size configs of chid
 		for (auto& child : m_children) {
-			if (child->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
-				child->m_position.x = 0;
-				child->m_size.w = GetContentSize().w;
-			}
-
-			if (child->m_sizeConfigs.second == ComponentSizeConfig::Expanding) {
-				child->m_position.y = 0;
-				child->m_size.h = GetContentSize().h;
-			}
-
+			UpdateChildSizeConfigs(child.get());
 			child->Update();
 		}
 	}
@@ -280,6 +282,20 @@ namespace SimpleGui {
 			[](auto& child) {
 				return child != nullptr;
 			});
+	}
+
+	bool BaseComponent::HasChild(BaseComponent* cmp) {
+		auto it = std::find_if(m_children.begin(), m_children.end(), 
+			[cmp](auto& child) {
+				return child.get() == cmp;
+			});
+
+		auto cachesIt = std::find_if(m_childCaches.begin(), m_childCaches.end(),
+			[cmp](auto& child) {
+				return child.get() == cmp;
+			});
+
+		return it != m_children.end() || cachesIt != m_childCaches.end();
 	}
 
 	void BaseComponent::ClearAllChildren() {

@@ -36,6 +36,8 @@ namespace SimpleGui {
         Renderer& GetRenderer() const;
         TTF_TextEngine& GetTextEngine() const;
         TTF_Font& GetDefaultFont() const;
+        RootComponent& GetRootComponent() const;
+
         void SetDefaultFont(std::string_view path, float size);
         void SetDefaultFontSize(float size);
 

@@ -66,6 +66,10 @@ namespace SimpleGui {
 		return *m_defaultFont;
 	}
 
+	RootComponent& GuiManager::GetRootComponent() const {
+		return *m_rootCmp;
+	}
+
 	void GuiManager::SetDefaultFont(std::string_view path, float size) {
 		auto font = TTF_OpenFont(path.data(), size);
 		if (!font) {

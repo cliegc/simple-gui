@@ -10,3 +10,4 @@
 #include "component/texture_rect.hpp"
 #include "component/draggable_panel.hpp"
 #include "component/layout/box_layout.hpp"
+#include "component/layout/anchor_point_layout.hpp"

@@ -100,7 +100,6 @@ namespace SimpleGui {
 			return cmp_ptr;
 		}
 
-		
 		inline BaseComponent* GetParent() const { return m_parent; }
 
 		void AddChild(std::unique_ptr<BaseComponent> child);
@@ -110,6 +109,7 @@ namespace SimpleGui {
 		std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp);
 		
 		size_t GetChildrenCount() const;
+		bool HasChild(BaseComponent* cmp);
 		void ClearAllChildren();
 		void ClearAllChildrenDeferred();
 		void ForEachChild(std::function<void(BaseComponent*)> fn);
@@ -147,6 +147,7 @@ namespace SimpleGui {
 	protected:
 		void PreparationOfUpdateChildren();
 		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target);
+		void UpdateChildSizeConfigs(BaseComponent* cmp);
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
 		inline virtual Vec2 GetContentSize() const;
 	};

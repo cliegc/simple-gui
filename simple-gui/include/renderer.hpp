@@ -1,7 +1,9 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_image/SDL_image.h>
 #include "math.hpp"
+
 
 namespace SimpleGui {
     class Renderer final {
@@ -30,7 +32,7 @@ namespace SimpleGui {
         Vec2 GetRenderPositionFromMouse() const;
         Vec2 GetRenderOutputSize() const;
 
-        std::shared_ptr<SDL_Texture> CreateTexture(std::string_view path);
+        std::shared_ptr<SDL_Texture> CreateSharedTexture(std::string_view path);
 
         inline SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
 

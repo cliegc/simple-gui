@@ -1,4 +1,5 @@
 #include "renderer.hpp"
+#include "deleter.hpp"
 
 
 namespace SimpleGui {
@@ -129,10 +130,22 @@ namespace SimpleGui {
 		return pos;
 	}
 
+	Vec2 Renderer::GetRenderPositionFromMouse() const {
+		Vec2 mousePos, pos;
+		SDL_GetMouseState(&mousePos.x, &mousePos.y);
+		SDL_RenderCoordinatesFromWindow(m_renderer, mousePos.x, mousePos.y, &pos.x, &pos.y);
+		return pos;
+	}
+
 	Vec2 Renderer::GetRenderOutputSize() const {
 		int w, h;
 		SDL_GetRenderOutputSize(m_renderer, &w, &h);
 		return Vec2(w, h);
+	}
+
+	std::shared_ptr<SDL_Texture> Renderer::CreateSharedTexture(std::string_view path) {
+		SDL_Texture* tt = IMG_LoadTexture(m_renderer, path.data());
+		return std::move(std::shared_ptr<SDL_Texture>(tt, TextureDeleter()));
 	}
 
 	void Renderer::SetRenderColor(const Color& color) const {

@@ -53,9 +53,8 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	lbl2->SetFontSize(36);
 	lbl2->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GREEN);
 
-	SDL_Texture* tt = IMG_LoadTexture(renderer, "C:\\Users\\15310\\Desktop\\11.png");
-	std::shared_ptr<SDL_Texture> texture = std::shared_ptr<SDL_Texture>(tt, TextureDeleter());
-	auto textureRect = draggablePanel->AddChild<TextureRect>(texture);
+	auto textureRect = 
+		draggablePanel->AddChild<TextureRect>(SG_GuiManager.GetRenderer().CreateSharedTexture("C:\\Users\\15310\\Desktop\\11.png"));
 	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
 
@@ -69,6 +68,8 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 			draggablePanel->SetGlobalDragEnable(!draggablePanel->IsGlobalDragEnable());
 		}
 	);
+
+	SG_GuiManager.GetRootComponent().AddChild<Label>("add child from root component");
 }
 
 void TestBoxLayout() {
@@ -88,6 +89,23 @@ void TestBoxLayout() {
 	//btn1->SetSizeConfigH(ComponentSizeConfig::Expanding);
 }
 
+void TestAnchorPointLayout() {
+	auto layout = SG_GuiManager.AddComponent<AnchorPointLayout>();
+	layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+
+	auto btn = layout->AddChild<Button>("test anchor point layout");
+	btn->SetSize(100, 100);
+	btn->clicked.Connect("on_clicked_print", 
+		[btn]() {
+			SDL_Log("%s\n", btn->GetText().c_str());
+		});
+
+	//layout->SetAnchorPoint(btn, AnchorPointType::Percentage, Vec2(0.0f, 0.0f), 
+	//	AnchorPointLocation::Center, AnchorPointLocation::Center);
+
+	layout->SetAnchorPoint(btn, AnchorPointType::Fixed, Vec2(-50.f, -50.f),
+		AnchorPointLocation::BottomRight, AnchorPointLocation::BottomRight);
+}
 
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -109,7 +127,8 @@ int main(int argc, char** argv) {
 
 	//TestLabelAndButton();
 	//TestDraggablePanel(renderer);
-	TestBoxLayout();
+	//TestBoxLayout();
+	TestAnchorPointLayout();
 
 	while (running) {
 		while (SDL_PollEvent(&event)) {

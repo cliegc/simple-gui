@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
     <ClInclude Include="include\component\draggable_panel.hpp" />
+    <ClInclude Include="include\component\layout\anchor_point_layout.hpp" />
     <ClInclude Include="include\component\layout\box_layout.hpp" />
     <ClInclude Include="include\component\layout\layout.hpp" />
     <ClInclude Include="include\component\root_component.hpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
     <ClCompile Include="src\component\draggable_panel.cpp" />
+    <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />
     <ClCompile Include="src\component\root_component.cpp" />
     <ClCompile Include="src\component\texture_rect.cpp" />
