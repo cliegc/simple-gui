@@ -40,6 +40,7 @@ namespace SimpleGui {
 		ScrollbarSlider,
 		ScrollbarSliderHovered,
 		ScrollbarSliderPressed,
+		ScrollbarBorder,
 
 		FlagsTotal
 	};

@@ -45,8 +45,10 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	auto draggablePanel = SG_GuiManager.AddComponent<DraggablePanel>("test");
 	draggablePanel->SetSize(500, 500);
 	draggablePanel->SetPosition(300, 100);
-	//draggablePanel->SetHandleVisible(false);
+	draggablePanel->SetHandleVisible(false);
 	draggablePanel->SetGlobalDragEnable(true);
+	draggablePanel->SetPadding(20, 20, 20, 20);
+	draggablePanel->SetClampRangeFollowParentContent(true);
 
 	auto lbl2 = draggablePanel->AddChild<Label>("test label");
 	lbl2->SetPosition(-10, 20);
@@ -58,14 +60,27 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
 
-	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("test2");
+	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("set global drag");
+	draggablePanel2->SetClampRangeFollowParentContent(true);
+	//draggablePanel2->SetClampPosition(true);
 	//draggablePanel2->SetSize(200, 200);
 
-	auto btn = draggablePanel2->AddChild<Button>("test button");
+	auto btn = draggablePanel2->AddChild<Button>("set global drag");
 	btn->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	btn->clicked.Connect("on_clicked",
 		[draggablePanel]() {
 			draggablePanel->SetGlobalDragEnable(!draggablePanel->IsGlobalDragEnable());
+		}
+	);
+
+	auto draggablePanel3 = draggablePanel->AddChild<DraggablePanel>("set handle visible");
+	draggablePanel3->SetClampRangeFollowParentContent(true);
+
+	auto btn2 = draggablePanel3->AddChild<Button>("set handle visible");
+	btn2->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+	btn2->clicked.Connect("on_clicked",
+		[draggablePanel]() {
+			draggablePanel->SetHandleVisible(!draggablePanel->IsHandleVisible());
 		}
 	);
 
@@ -75,7 +90,7 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 void TestBoxLayout() {
 	auto layout = SG_GuiManager.AddComponent<BoxLayout>(Direction::Horizontal);
 	layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
-	layout->SetAlignment(Alignment::End);
+	layout->SetAlignment(Alignment::Center);
 	layout->SetWeights({ 2, 5 });
 	layout->SetDirection(Direction::Vertical);
 
@@ -85,8 +100,11 @@ void TestBoxLayout() {
 	//lbl1->SetSizeConfigH(ComponentSizeConfig::Expanding);
 
 	auto btn1 = layout->AddChild<Button>("Button 1");
+	//btn1->SetVisible(false);
 	//btn1->SetSizeConfigW(ComponentSizeConfig::Expanding);
 	//btn1->SetSizeConfigH(ComponentSizeConfig::Expanding);
+
+	auto lbl2 = layout->AddChild<Label>("Label 2");
 }
 
 void TestAnchorPointLayout() {
@@ -126,9 +144,9 @@ int main(int argc, char** argv) {
 	SG_GuiManager.SetStyleFollowSystem();
 
 	//TestLabelAndButton();
-	//TestDraggablePanel(renderer);
+	TestDraggablePanel(renderer);
 	//TestBoxLayout();
-	TestAnchorPointLayout();
+	//TestAnchorPointLayout();
 
 	while (running) {
 		while (SDL_PollEvent(&event)) {

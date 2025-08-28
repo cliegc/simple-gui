@@ -34,27 +34,26 @@ namespace SimpleGui {
 		}
 	}
 
-	void BaseComponent::CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) {
+	void BaseComponent::CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) const {
 		if (!parent) {
 			target->m_visibleGRect = target->GetGlobalRect();
 			return;
 		}
 
-		if (parent->m_visibleGRect.Area() < parent->m_size.w * parent->m_size.h) {
-			Rect globalRect = target->GetGlobalRect();
-			Rect parentVisibaleRect = parent->m_visibleGRect;
-			if (parentVisibaleRect.ContainRect(globalRect)) target->m_visibleGRect = globalRect;
-			else target->m_visibleGRect = parentVisibaleRect.GetIntersection(globalRect);
-			return;
-		}
-
 		Rect globalRect = target->GetGlobalRect();
-		Rect parentContentRect = m_parent->GetContentGlobalRect();
-		if (parentContentRect.ContainRect(globalRect)) target->m_visibleGRect = globalRect;
-		else target->m_visibleGRect = parentContentRect.GetIntersection(globalRect);
+		Rect parentVisibleGRect = parent->m_visibleGRect;
+		Rect parentContentGRect = parent->GetContentGlobalRect();
+		Rect parentVisibleContentGRect = parentContentGRect.GetIntersection(parentVisibleGRect);
+
+		target->m_visibleGRect = parentVisibleContentGRect.GetIntersection(globalRect);
 	}
 
-	void BaseComponent::UpdateChildSizeConfigs(BaseComponent* cmp) {
+	Rect BaseComponent::CalcVisibleGlobalRect(const Rect& parentVisibleGRect, const Rect& parentContentGRect, const Rect& targetGRect) const {
+		Rect parentVisibleContentGRect = parentContentGRect.GetIntersection(parentVisibleGRect);
+		return parentVisibleContentGRect.GetIntersection(targetGRect);
+	}
+
+	void BaseComponent::UpdateChildSizeConfigs(BaseComponent* cmp) const {
 		if (cmp->m_sizeConfigs.first == ComponentSizeConfig::Expanding) {
 			cmp->m_position.x = 0;
 			cmp->m_size.w = GetContentSize().w;
@@ -64,6 +63,17 @@ namespace SimpleGui {
 			cmp->m_position.y = 0;
 			cmp->m_size.h = GetContentSize().h;
 		}
+	}
+
+	Rect BaseComponent::CalcChildrenBoundaryGlobalRect(BaseComponent* cmp) const {
+		// 在Update中准备工作之后调用，不需要考虑m_childCaches
+		Rect rect;
+		for (auto& child : cmp->m_children) {
+			Rect globalRect = child->GetGlobalRect();
+			rect.position = rect.position.Min(globalRect.position);
+			rect.size = rect.size.Max(globalRect.BottomRight() - rect.position);
+		}
+		return rect;
 	}
 
 	inline Vec2 BaseComponent::GetLocalCoordinateOriginOffset() const {
@@ -121,7 +131,7 @@ namespace SimpleGui {
 		}
 	}
 
-	inline Rect BaseComponent::GetContentGlobalRect() const {
+	Rect BaseComponent::GetContentGlobalRect() const {
 		Vec2 pos = GetGlobalPosition() + GetLocalCoordinateOriginOffset();
 		return Rect(pos, GetContentSize());
 	}
@@ -168,6 +178,16 @@ namespace SimpleGui {
 		}
 
 		m_position.y = y;
+	}
+
+	Vec2 BaseComponent::MapPositionToGlobal(const Vec2& pos) const {
+		if (m_parent) return pos + m_parent->GetGlobalPosition() + m_parent->GetLocalCoordinateOriginOffset();
+		return pos;
+	}
+
+	Vec2 BaseComponent::MapGlobalPositionToLocal(const Vec2& pos) const {
+		if (m_parent) return pos - m_parent->GetGlobalPosition() - m_parent->GetLocalCoordinateOriginOffset();
+		return pos;
 	}
 
 	void BaseComponent::SetSize(const Vec2& size) {

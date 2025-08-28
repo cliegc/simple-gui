@@ -66,6 +66,9 @@
     <ClInclude Include="include\component\layout\anchor_point_layout.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\component\scrollbar.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -105,6 +108,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\scrollbar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

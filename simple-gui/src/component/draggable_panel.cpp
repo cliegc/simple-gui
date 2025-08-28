@@ -8,8 +8,10 @@ namespace SimpleGui {
 		m_handleVisible = true;
 		m_resizable = true;
 		m_globalDragEnable = false;
-		m_resizeData.dragGRect.size.w = 10;
-		m_resizeData.dragGRect.size.h = 10;
+		m_isClampRangeFollowParent = false;
+		m_resizeBlockWidth = 10;
+		m_resizeData.dragGRect.size.w = m_resizeBlockWidth;
+		m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
 		m_foldData.toggleGRect.size.w = 10;
 		m_foldData.toggleGRect.size.h = 10;
 		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
@@ -24,10 +26,7 @@ namespace SimpleGui {
 	bool DraggablePanel::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 mousePos;
-		SDL_GetMouseState(&mousePos.x, &mousePos.y);
-
-		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPosition(mousePos);
+		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
 
 		if (HandleToggleFold(event, renderPos)) return true;
 		if (HandleDragResize(event, renderPos)) return true;
@@ -45,22 +44,30 @@ namespace SimpleGui {
 	void DraggablePanel::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
 
-		ClampPosition();
+		if (m_isClampRangeFollowParent) ClampPosition();
 		BaseComponent::Update();
 
 		// update handle_rect
+		Rect globalRect = GetGlobalRect();
 		// 必须放在计算可见矩形之后，否则更新的handle_rect的位置是上一帧可见矩形的位置
 		m_handleThickness = m_titleLbl->GetSize().h;
 		m_dragData.dragGRect.position = m_visibleGRect.position;
 		m_dragData.dragGRect.size.w = m_visibleGRect.size.w;
-		m_dragData.dragGRect.size.h = m_visibleGRect.size.h < m_handleThickness ? m_visibleGRect.size.h : m_handleThickness;
+		m_dragData.dragGRect.size.h = m_handleThickness;
+		if (m_position.y < 0) {
+			m_dragData.dragGRect.size.h = m_handleThickness + m_position.y;
+			if (m_dragData.dragGRect.size.h < 0) m_dragData.dragGRect.size.h = 0;
+		}
 
 		// update size_grip_rect
-		Vec2 bottomRight = GetGlobalRect().BottomRight();
-		m_resizeData.dragGRect.position = bottomRight - m_resizeData.dragGRect.size;
+		Vec2 bottomRight = globalRect.BottomRight();
+		m_resizeData.dragGRect.position = bottomRight - Vec2(m_resizeBlockWidth, m_resizeBlockWidth);
+		Vec2 size = m_visibleGRect.BottomRight() - m_resizeData.dragGRect.position;
+		m_resizeData.dragGRect.size.w = size.w < 0 ? 0 : size.w;
+		m_resizeData.dragGRect.size.h = size.h < 0 ? 0 : size.h;
 
 		// update fold btn rect
-		Vec2 globalePos = GetGlobalPosition();
+		Vec2 globalePos = globalRect.position;
 		m_foldData.toggleGRect.position.x = globalePos.x + 5;
 		m_foldData.toggleGRect.position.y = globalePos.y + (m_handleThickness - m_foldData.toggleGRect.size.h) / 2;
 
@@ -68,7 +75,8 @@ namespace SimpleGui {
 		m_titleLbl->SetGlobalPositionX(m_foldData.toggleGRect.Right());
 		m_titleLbl->SetGlobalPositionY(globalePos.y);
 		m_titleLbl->Update();
-		CalcVisibleGlobalRect(this, m_titleLbl.get());
+		Rect visibleRect = CalcVisibleGlobalRect(m_dragData.dragGRect, m_dragData.dragGRect, m_titleLbl->GetGlobalRect());
+		SetComponentVisibleGlobalRect(m_titleLbl.get(), visibleRect);
 	}
 
 	void DraggablePanel::Render(const Renderer& renderer) {
@@ -77,7 +85,6 @@ namespace SimpleGui {
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackround));
 
 		BaseComponent::Render(renderer);
-		
 		
 		if (m_handleVisible) {
 			// draw handle
@@ -117,13 +124,15 @@ namespace SimpleGui {
 
 		renderer.SetClipRect(m_visibleGRect);
 		// draw size grip handle
-		if (m_resizable && !m_foldData.isFolded)
+		if (m_resizable && !m_foldData.isFolded) {
+			Rect rect(m_resizeData.dragGRect.position, Vec2(m_resizeBlockWidth, m_resizeBlockWidth));
 			renderer.FillTriangle(
-				m_resizeData.dragGRect.BottomLeft(),
-				m_resizeData.dragGRect.TopRight(),
-				m_resizeData.dragGRect.BottomRight(),
+				rect.BottomLeft(),
+				rect.TopRight(),
+				rect.BottomRight(),
 				GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip)
 			);
+		}
 		// draw border
 		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder));
 		renderer.ClearClipRect();
@@ -165,10 +174,11 @@ namespace SimpleGui {
 		float t = m_handleThickness;
 		if (!m_handleVisible) t = 0;
 
-		Vec2 min, max{w - m_size.w, h - t };
+		Vec2 min{ m_handleThickness - m_size.w , 0};
+		Vec2 max{ w - m_handleThickness, h - t };
 		if (m_parent) {
 			Vec2 contentSize = m_parent->GetContentGlobalRect().size;
-			max.x = contentSize.w - m_size.w;
+			max.x = contentSize.w - m_handleThickness;
 			max.y = contentSize.h - t;
 		}
 
@@ -180,7 +190,7 @@ namespace SimpleGui {
 
 	bool DraggablePanel::HandleDragMotion(const SDL_Event& event, const Vec2& mousePos, bool globalDragEnable) {
 		if ((m_handleVisible && !globalDragEnable && m_dragData.dragGRect.ContainPoint(mousePos)) ||
-			(globalDragEnable && GetGlobalRect().ContainPoint(mousePos))) {
+			(globalDragEnable && m_visibleGRect.ContainPoint(mousePos))) {
 			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 				m_dragData.startMousePos = mousePos;
 				m_dragData.startData = m_position;
@@ -228,7 +238,7 @@ namespace SimpleGui {
 
 	bool DraggablePanel::HandleToggleFold(const SDL_Event& event, const Vec2& mousePos) {
 		if (!m_handleVisible) return false;
-		if (m_foldData.toggleGRect.ContainPoint(mousePos)) {
+		if (m_dragData.dragGRect.ContainPoint(mousePos) && m_foldData.toggleGRect.ContainPoint(mousePos)) {
 			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 				if (!m_foldData.isFolded) {
 					m_foldData.unfoldSize = m_size;

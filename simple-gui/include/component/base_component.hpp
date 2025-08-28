@@ -35,7 +35,7 @@ namespace SimpleGui {
 		inline Rect GetRect() const { return Rect{ m_position, m_size}; }
 		inline Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }
 
-		inline Rect GetContentGlobalRect() const;
+		Rect GetContentGlobalRect() const;
 
 		// 基于global_position的坐标系统，无法在组件被添加到父组件之前有效设置position(局部)
 		// 采用基于position(局部)的坐标系统，通过计算获得global_position
@@ -51,6 +51,9 @@ namespace SimpleGui {
 		void SetGlobalPosition(float x, float y);
 		void SetGlobalPositionX(float x);
 		void SetGlobalPositionY(float y);
+
+		Vec2 MapPositionToGlobal(const Vec2& pos) const;
+		Vec2 MapGlobalPositionToLocal(const Vec2& pos) const;
 
 		inline Vec2 GetSize() const { return m_size; }
 		void SetSize(const Vec2& size);
@@ -105,8 +108,8 @@ namespace SimpleGui {
 		void AddChild(std::unique_ptr<BaseComponent> child);
 		void AddChildDeferred(std::unique_ptr<BaseComponent> child);
 		BaseComponent* GetChildAt(size_t idx) const;
-		std::unique_ptr<BaseComponent> RemoveChild(BaseComponent* cmp);
-		std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp);
+		virtual std::unique_ptr<BaseComponent> RemoveChild(BaseComponent* cmp);
+		virtual std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp);
 		
 		size_t GetChildrenCount() const;
 		bool HasChild(BaseComponent* cmp);
@@ -145,10 +148,21 @@ namespace SimpleGui {
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
 
 	protected:
-		void PreparationOfUpdateChildren();
-		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target);
-		void UpdateChildSizeConfigs(BaseComponent* cmp);
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
 		inline virtual Vec2 GetContentSize() const;
+
+		// 方便在该组件内获取/设置其他组件的受保护数据，获取内容矩形的大小
+		inline Vec2 GetComponentContentSize(BaseComponent* cmp) const { return cmp->GetContentSize(); }
+
+		// 方便在该组件内获取/设置其他组件的受保护数据，设置可见矩形大小，在cmp调用CalcVisibleGlobalRect更新可见矩形之后调用该函数才生效
+		inline void SetComponentVisibleGlobalRect(BaseComponent* cmp, const Rect& rect) { cmp->m_visibleGRect = rect; }
+
+		void PreparationOfUpdateChildren();
+		void UpdateChildSizeConfigs(BaseComponent* cmp) const;
+		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) const;
+		Rect CalcVisibleGlobalRect(const Rect& parentVisibleGRect, const Rect& parentContentGRect, const Rect& targetGRect) const;
+
+		// 在PreparationOfUpdateChildren之后调用
+		Rect CalcChildrenBoundaryGlobalRect(BaseComponent* cmp) const;
 	};
 }

@@ -23,6 +23,16 @@ namespace SimpleGui {
 		}
 	}
 
+	std::unique_ptr<BaseComponent> AnchorPointLayout::RemoveChild(BaseComponent* cmp) {
+		m_anchorPoints.erase(cmp);
+		return std::unique_ptr<BaseComponent>();
+	}
+
+	std::unique_ptr<BaseComponent> AnchorPointLayout::RemoveChildDeferred(BaseComponent* cmp) {
+		m_anchorPoints.erase(cmp);
+		return std::unique_ptr<BaseComponent>();
+	}
+
 	void AnchorPointLayout::SetAnchorPoint(BaseComponent* cmp, const AnchorPoint& point) {
 		if (!HasChild(cmp)) return;
 		m_anchorPoints.insert_or_assign(cmp, point);

@@ -38,10 +38,7 @@ namespace SimpleGui {
 	bool Button::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 mousePos;
-		SDL_GetMouseState(&mousePos.x, &mousePos.y);
-
-		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPosition(mousePos);
+		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
 
 		if (!m_visibleGRect.ContainPoint(renderPos)) {
 			m_mouseState = MouseState::Normal;

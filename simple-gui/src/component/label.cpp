@@ -8,7 +8,7 @@ namespace SimpleGui {
 	}
 
 	void Label::Update() {
-		if (!m_visible) return;
+		SG_CMP_UPDATE_CONDITIONS;
 
 		UpdateTextAlignments();
 

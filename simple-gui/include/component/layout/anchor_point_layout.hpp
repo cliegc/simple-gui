@@ -39,6 +39,9 @@ namespace SimpleGui {
 		
 		virtual void Update() override;
 
+		virtual std::unique_ptr<BaseComponent> RemoveChild(BaseComponent* cmp) override;
+		virtual std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp) override;
+
 	private:
 		// TODO 删除m_anchorPoints中不存在的子组件对应的键值对
 		std::unordered_map<BaseComponent*, AnchorPoint> m_anchorPoints;

@@ -147,6 +147,7 @@
     <ClInclude Include="include\component\layout\box_layout.hpp" />
     <ClInclude Include="include\component\layout\layout.hpp" />
     <ClInclude Include="include\component\root_component.hpp" />
+    <ClInclude Include="include\component\scrollbar.hpp" />
     <ClInclude Include="include\component\texture_rect.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />
     <ClCompile Include="src\component\root_component.cpp" />
+    <ClCompile Include="src\component\scrollbar.cpp" />
     <ClCompile Include="src\component\texture_rect.cpp" />
     <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\component\base_component.cpp" />

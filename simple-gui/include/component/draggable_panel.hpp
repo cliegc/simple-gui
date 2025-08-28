@@ -25,6 +25,9 @@ namespace SimpleGui {
 		inline bool IsGlobalDragEnable() const { return m_globalDragEnable; }
 		inline void SetGlobalDragEnable(bool enable) { m_globalDragEnable = enable; }
 
+		inline bool IsClampRanageFollowParentContent() const { return m_isClampRangeFollowParent; }
+		inline void SetClampRangeFollowParentContent(bool enable) { m_isClampRangeFollowParent = enable; }
+
 		virtual void SetFont(UniqueFontPtr font) override;
 		virtual void SetFont(std::string_view path, int size) override;
 		virtual void SetFontSize(int size) override;
@@ -51,9 +54,11 @@ namespace SimpleGui {
 		std::unique_ptr<Label> m_titleLbl;
 		UniqueCursorPtr m_resizeCursor;
 		float m_handleThickness;
+		float m_resizeBlockWidth;
 		bool m_handleVisible;
 		bool m_resizable;
 		bool m_globalDragEnable;
+		bool m_isClampRangeFollowParent;
 
 		DragData m_dragData{};
 		DragData m_resizeData{};
