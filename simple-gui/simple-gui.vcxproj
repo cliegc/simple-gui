@@ -149,6 +149,7 @@
     <ClInclude Include="include\component\root_component.hpp" />
     <ClInclude Include="include\component\scrollbar.hpp" />
     <ClInclude Include="include\component\texture_rect.hpp" />
+    <ClInclude Include="include\event.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
     <ClInclude Include="include\component\common.hpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\signal.hpp" />
     <ClInclude Include="include\simple_gui.hpp" />
+    <ClInclude Include="include\texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
@@ -175,6 +177,7 @@
     <ClCompile Include="src\gui_manager.cpp" />
     <ClCompile Include="src\math.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

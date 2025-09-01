@@ -36,6 +36,32 @@ namespace SimpleGui {
 		SDL_RenderLines(m_renderer, points, 4);
 	}
 
+	void Renderer::DrawCircle(const Vec2& center, float radius, const Color& color) const {
+		float x = radius;
+		float y = 0;
+		float err = 0;
+
+		SetRenderColor(color);
+
+		while (x >= y) {
+			SDL_RenderPoint(m_renderer, center.x + x, center.y + y);
+			SDL_RenderPoint(m_renderer, center.x + y, center.y + x);
+			SDL_RenderPoint(m_renderer, center.x - y, center.y + x);
+			SDL_RenderPoint(m_renderer, center.x - x, center.y + y);
+			SDL_RenderPoint(m_renderer, center.x - x, center.y - y);
+			SDL_RenderPoint(m_renderer, center.x - y, center.y - x);
+			SDL_RenderPoint(m_renderer, center.x + y, center.y - x);
+			SDL_RenderPoint(m_renderer, center.x + x, center.y - y);
+
+			y += 1;
+			err += 1 + 2 * y;
+			if (2 * (err - x) + 1 > 0) {
+				x -= 1;
+				err += 1 - 2 * x;
+			}
+		}
+	}
+
 	void Renderer::FillRect(const Rect& rect, const Color& color) const {
 		auto rt = rect.ToSDLFRect();
 		SetRenderColor(color);
@@ -102,11 +128,23 @@ namespace SimpleGui {
 		SDL_RenderGeometry(m_renderer, nullptr, vertices, 3, nullptr, 0);
 	}
 
+	void Renderer::FillCircle(const Vec2& center, float radius, const Color& color) const {
+		SetRenderColor(color);
+		for (float y = -radius; y <= radius; y++) {
+			float x = (int)sqrt(radius * radius - y * y);
+			SDL_RenderLine(m_renderer, center.x - x, center.y + y, center.x + x, center.y + y);
+		}
+	}
+
 	void Renderer::DrawTexture(SDL_Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const {
 		auto sRt = srcRect.ToSDLFRect();
 		auto dRt = dstRect.ToSDLFRect();
 		auto cPoint = center.ToSDLFPoint();
 		SDL_RenderTextureRotated(m_renderer, texture, &sRt, &dRt, angle, &cPoint, mode);
+	}
+
+	void Renderer::DrawTexture(const Texture& texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const {
+		DrawTexture(texture.GetSDLTexture(), srcRect, dstRect, angle, center, mode);
 	}
 
 	void Renderer::DrawText(TTF_Text* text, const Vec2& pos, const Color& color) const {
@@ -143,9 +181,13 @@ namespace SimpleGui {
 		return Vec2(w, h);
 	}
 
-	std::shared_ptr<SDL_Texture> Renderer::CreateSharedTexture(std::string_view path) {
+	std::shared_ptr<SDL_Texture> Renderer::CreateSharedSDLTexture(std::string_view path) {
 		SDL_Texture* tt = IMG_LoadTexture(m_renderer, path.data());
 		return std::move(std::shared_ptr<SDL_Texture>(tt, TextureDeleter()));
+	}
+
+	std::shared_ptr<Texture> Renderer::CreateSharedTexture(std::string_view path) {
+		return std::move(std::make_shared<Texture>(path));
 	}
 
 	void Renderer::SetRenderColor(const Color& color) const {

@@ -27,7 +27,7 @@ void TestLabelAndButton() {
 	auto style = SG_GuiManager.GetStyle(StyleManager::DarkStyle);
 	if (style.has_value()) style.value().get().colors[ThemeColorFlags::LabelForeground] = Color::AQUA;
 
-	
+
 	btn1->clicked.Connect("on_clicked",
 		[]() {
 			SDL_Log("switch style\n");
@@ -55,10 +55,11 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	lbl2->SetFontSize(36);
 	lbl2->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GREEN);
 
-	auto textureRect = 
+	auto textureRect =
 		draggablePanel->AddChild<TextureRect>(SG_GuiManager.GetRenderer().CreateSharedTexture("C:\\Users\\15310\\Desktop\\11.png"));
 	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
+	textureRect->SetTexture(SG_GuiManager.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 
 	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("set global drag");
 	draggablePanel2->SetClampRangeFollowParentContent(true);
@@ -113,7 +114,7 @@ void TestAnchorPointLayout() {
 
 	auto btn = layout->AddChild<Button>("test anchor point layout");
 	btn->SetSize(100, 100);
-	btn->clicked.Connect("on_clicked_print", 
+	btn->clicked.Connect("on_clicked_print",
 		[btn]() {
 			SDL_Log("%s\n", btn->GetText().c_str());
 		});
@@ -161,14 +162,12 @@ int main(int argc, char** argv) {
 
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
 		SDL_RenderClear(renderer);
-		
-		//SDL_SetRenderLogicalPresentation(renderer, 640, 360, SDL_LOGICAL_PRESENTATION_STRETCH);
-		//SDL_FRect rect = { 0, 0, 300, 300 };
-		//SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-		//SDL_RenderFillRect(renderer, &rect);
-		//SDL_SetRenderLogicalPresentation(renderer, 640, 360, SDL_LOGICAL_PRESENTATION_DISABLED);
+
 		SG_GuiManager.Render();
-		//SDL_SetRenderLogicalPresentation(renderer, 640, 360, SDL_LOGICAL_PRESENTATION_DISABLED);
+
+		// test render circle
+		//SG_GuiManager.GetRenderer().DrawCircle(Vec2(100, 100), 50, Color::RED);
+		//SG_GuiManager.GetRenderer().FillCircle(Vec2(100, 300), 50, Color::GREEN);
 
 		SDL_RenderPresent(renderer);
 
