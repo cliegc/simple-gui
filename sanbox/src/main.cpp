@@ -11,8 +11,9 @@ void TestLabelAndButton() {
 	lbl1->SetPosition(100, 100);
 	lbl1->SetSize(200, 200);
 	lbl1->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
+	lbl1->GetFont().SetStyle(FontStyle::Underline | FontStyle::Bold);
 
-	lbl1->SetFontSize(36);
+	lbl1->GetFont().SetSize(36);
 	lbl1->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);
 	lbl1->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0, 0, 0, 100));
 	//lbl1->ClearCustomThemeColors();
@@ -22,7 +23,7 @@ void TestLabelAndButton() {
 	auto btn1 = SG_GuiManager.AddComponent<Button>("click me");
 	btn1->SetPosition(100, 300);
 	btn1->SetSize(300, 300);
-	btn1->SetFontSize(36);
+	btn1->GetFont().SetSize(36);
 
 	auto style = SG_GuiManager.GetStyle(StyleManager::DarkStyle);
 	if (style.has_value()) style.value().get().colors[ThemeColorFlags::LabelForeground] = Color::AQUA;
@@ -51,14 +52,17 @@ void TestDraggablePanel(SDL_Renderer* renderer) {
 	draggablePanel->SetClampRangeFollowParentContent(true);
 
 	auto lbl2 = draggablePanel->AddChild<Label>("test label");
-	lbl2->SetPosition(-10, 20);
-	lbl2->SetFontSize(36);
+	lbl2->SetPosition(10, 20);
+	lbl2->GetFont().SetSize(36);
 	lbl2->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GREEN);
+	lbl2->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::MAGENTA);
+	lbl2->GetFont().SetStyle(FontStyle::StrikeThrough | FontStyle::Italic);
 
 	auto textureRect =
 		draggablePanel->AddChild<TextureRect>(SG_GuiManager.GetRenderer().CreateSharedTexture("C:\\Users\\15310\\Desktop\\11.png"));
 	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
+	textureRect->SetTexture(nullptr);
 	textureRect->SetTexture(SG_GuiManager.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 
 	auto draggablePanel2 = draggablePanel->AddChild<DraggablePanel>("set global drag");
@@ -124,6 +128,10 @@ void TestAnchorPointLayout() {
 
 	layout->SetAnchorPoint(btn, AnchorPointType::Fixed, Vec2(-50.f, -50.f),
 		AnchorPointLocation::BottomRight, AnchorPointLocation::BottomRight);
+
+	auto draggablePanel = layout->AddChild<DraggablePanel>("Draggable Panel");
+	draggablePanel->SetSize(100, 100);
+	layout->SetAnchorPoint(draggablePanel, AnchorPointType::Fixed, Vec2(200, 200));
 }
 
 int main(int argc, char** argv) {
@@ -145,9 +153,9 @@ int main(int argc, char** argv) {
 	SG_GuiManager.SetStyleFollowSystem();
 
 	//TestLabelAndButton();
-	TestDraggablePanel(renderer);
+	//TestDraggablePanel(renderer);
 	//TestBoxLayout();
-	//TestAnchorPointLayout();
+	TestAnchorPointLayout();
 
 	while (running) {
 		while (SDL_PollEvent(&event)) {

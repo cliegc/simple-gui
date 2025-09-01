@@ -23,16 +23,12 @@ namespace SimpleGui {
 		SetSize(m_lbl->GetSize());
 	}
 
-	void Button::SetFont(UniqueFontPtr font) {
+	void Button::SetFont(std::unique_ptr<Font> font) {
 		m_lbl->SetFont(std::move(font));
 	}
 
 	void Button::SetFont(std::string_view path, int size) {
 		m_lbl->SetFont(path, size);
-	}
-
-	void Button::SetFontSize(int size) {
-		m_lbl->SetFontSize(size);
 	}
 
 	bool Button::HandleEvent(const SDL_Event& event) {

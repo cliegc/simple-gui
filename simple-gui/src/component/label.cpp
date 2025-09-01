@@ -28,7 +28,7 @@ namespace SimpleGui {
 	}
 
 	void Label::Init(std::string_view text) {
-		auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont(), text.data(), text.size());
+		auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont().GetTTFFont(), text.data(), text.size());
 		m_ttfText = UniqueTextPtr(ttf_text);
 
 		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;

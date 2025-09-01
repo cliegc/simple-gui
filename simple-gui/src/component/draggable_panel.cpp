@@ -140,16 +140,12 @@ namespace SimpleGui {
 		// TODO 重写绘制disabled
 	}
 
-	void DraggablePanel::SetFont(UniqueFontPtr font) {
+	void DraggablePanel::SetFont(std::unique_ptr<Font> font) {
 		m_titleLbl->SetFont(std::move(font));
 	}
 
 	void DraggablePanel::SetFont(std::string_view path, int size) {
 		m_titleLbl->SetFont(path, size);
-	}
-
-	void DraggablePanel::SetFontSize(int size) {
-		m_titleLbl->SetFontSize(size);
 	}
 
 	inline Vec2 DraggablePanel::GetLocalCoordinateOriginOffset() const {

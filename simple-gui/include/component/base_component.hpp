@@ -7,6 +7,7 @@
 #include "math.hpp"
 #include "renderer.hpp"
 #include "style.hpp"
+#include "font.hpp"
 #include "common.hpp"
 #include "deleter.hpp"
 
@@ -117,10 +118,9 @@ namespace SimpleGui {
 		void ClearAllChildrenDeferred();
 		void ForEachChild(std::function<void(BaseComponent*)> fn);
 
-		inline virtual void SetFont(UniqueFontPtr font) { m_font = std::move(font); };
+		inline virtual void SetFont(std::unique_ptr<Font> font) { m_font = std::move(font); };
 		virtual void SetFont(std::string_view path, int size);
-		virtual void SetFontSize(int size);
-		virtual TTF_Font& GetFont() const;
+		virtual Font& GetFont() const;
 
 		Color GetThemeColor(ThemeColorFlags flag);
 		void CustomThemeColor(ThemeColorFlags flag, const Color& color);
@@ -140,7 +140,7 @@ namespace SimpleGui {
 		bool m_disabled = false;
 		bool m_needRemove;
 
-		UniqueFontPtr m_font;
+		std::unique_ptr<Font> m_font;
 		std::unordered_map<ThemeColorFlags, Color> m_themeColorCaches;
 
 		BaseComponent* m_parent;

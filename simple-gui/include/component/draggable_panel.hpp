@@ -28,9 +28,8 @@ namespace SimpleGui {
 		inline bool IsClampRanageFollowParentContent() const { return m_isClampRangeFollowParent; }
 		inline void SetClampRangeFollowParentContent(bool enable) { m_isClampRangeFollowParent = enable; }
 
-		virtual void SetFont(UniqueFontPtr font) override;
+		virtual void SetFont(std::unique_ptr<Font> font) override;
 		virtual void SetFont(std::string_view path, int size) override;
-		virtual void SetFontSize(int size) override;
 
 	protected:
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const override;

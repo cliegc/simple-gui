@@ -17,12 +17,11 @@ namespace SimpleGui {
 		}
 		m_textEngine = UniqueTextEnginePtr(engine);
 
-		auto font = TTF_OpenFont(fontPath.data(), 14);
-		if (!font) {
+		m_defaultFont = std::make_unique<Font>(fontPath, 14);
+		if (!m_defaultFont || m_defaultFont->IsNull()) {
 			SDL_Log("%s\n", SDL_GetError());
 			exit(-1);
 		}
-		m_defaultFont = UniqueFontPtr(font);
 
 		m_styleManager = std::make_unique<StyleManager>();
 	}
@@ -37,8 +36,6 @@ namespace SimpleGui {
 		if (!s_guiManager) {
 			s_guiManager = std::unique_ptr<GuiManager>(new GuiManager(window, renderer, fontPath));
 			s_guiManager->m_rootCmp = std::unique_ptr<RootComponent>(new RootComponent());
-			//s_guiManager->m_rootCmp = std::make_unique<RootComponent>();
-			//s_guiManager->SetRootComponentSizeToFillWindow();
 		}
 	}
 
@@ -62,7 +59,7 @@ namespace SimpleGui {
 		return *m_textEngine;
 	}
 
-	TTF_Font& GuiManager::GetDefaultFont() const {
+	Font& GuiManager::GetDefaultFont() const {
 		return *m_defaultFont;
 	}
 
@@ -71,16 +68,7 @@ namespace SimpleGui {
 	}
 
 	void GuiManager::SetDefaultFont(std::string_view path, float size) {
-		auto font = TTF_OpenFont(path.data(), size);
-		if (!font) {
-			SDL_Log("%s\n", SDL_GetError());
-			return;
-		}
-		m_defaultFont.reset(font);
-	}
-
-	void GuiManager::SetDefaultFontSize(float size) {
-		TTF_SetFontSize(m_defaultFont.get(), size);
+		m_defaultFont.reset(new Font(path, size));
 	}
 
 	Style& GuiManager::GetCurrentStyle() {

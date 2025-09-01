@@ -144,7 +144,8 @@ namespace SimpleGui {
 	}
 
 	void Renderer::DrawTexture(const Texture& texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2 center, SDL_FlipMode mode) const {
-		DrawTexture(texture.GetSDLTexture(), srcRect, dstRect, angle, center, mode);
+		if (texture.IsNull()) return;
+		DrawTexture(&texture.GetSDLTexture(), srcRect, dstRect, angle, center, mode);
 	}
 
 	void Renderer::DrawText(TTF_Text* text, const Vec2& pos, const Color& color) const {

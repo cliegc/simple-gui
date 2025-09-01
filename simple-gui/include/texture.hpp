@@ -10,7 +10,7 @@ namespace SimpleGui {
 		Texture(std::string_view path);
 		~Texture();
 
-		inline SDL_Texture* GetSDLTexture() const { return m_texture; }
+		inline SDL_Texture& GetSDLTexture() const { return *m_texture; }
 		
 		inline int GetWidth() const { return m_texture->w; }
 		inline int GetHeight() const { return m_texture->h; }

@@ -11,11 +11,11 @@ namespace SimpleGui {
 		m_flipMode = SDL_FLIP_NONE;
 		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
-		if (!m_texture->IsNull()) {
+		if (m_texture && !m_texture->IsNull()) {
 			m_size.w = m_texture->GetWidth();
 			m_size.h = m_texture->GetHeight();
 			m_textureGRect = GetContentGlobalRect();
-			SDL_SetTextureScaleMode(m_texture->GetSDLTexture(), m_scaleMode);
+			SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), m_scaleMode);
 		}
 
 		m_tipLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
@@ -27,7 +27,7 @@ namespace SimpleGui {
 	void TextureRect::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
 
-		if (!m_texture->IsNull()) {
+		if (m_texture && !m_texture->IsNull()) {
 			UpdateTextureStretchMode();
 		}
 
@@ -47,7 +47,7 @@ namespace SimpleGui {
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround));
 		
 		renderer.SetClipRect(m_visibleGRect);
-		if (!m_texture->IsNull()) {
+		if (m_texture && !m_texture->IsNull()) {
 			Rect rect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
 			renderer.DrawTexture(*m_texture, rect, m_textureGRect, 0, rect.Center(), m_flipMode);
 		}
@@ -78,8 +78,8 @@ namespace SimpleGui {
 	}
 
 	void TextureRect::SetScaleMode(SDL_ScaleMode mode) {
-		if (!m_texture) return;
-		SDL_SetTextureScaleMode(m_texture->GetSDLTexture(), mode);
+		if (!m_texture || m_texture->IsNull()) return;
+		SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), mode);
 		m_scaleMode = mode;
 	}
 
@@ -106,7 +106,7 @@ namespace SimpleGui {
 	}
 
 	void TextureRect::SetupTipLabel() {
-		if (m_texture->IsNull()) {
+		if (m_texture && m_texture->IsNull()) {
 			m_tipLbl->SetText(std::format("can't open the file: {}", m_texture->GetPath()));
 			m_tipLbl->SetVisible(true);
 		}
@@ -178,14 +178,14 @@ namespace SimpleGui {
 			for (int i = 0; i < rect.w;) {
 				for (int j = 0; j < rect.h;) {
 					SDL_FRect tileRect = { i, j, m_texture->GetWidth(), m_texture->GetHeight() };
-					SDL_RenderTextureRotated(renderer, m_texture->GetSDLTexture(), NULL, &tileRect, 0, NULL, m_flipMode);
+					SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &tileRect, 0, NULL, m_flipMode);
 					j += m_texture->GetHeight();
 				}
 				i += m_texture->GetWidth();
 			}
 		}
 		else {
-			SDL_RenderTextureRotated(renderer, m_texture->GetSDLTexture(), NULL, &rect, 0, NULL, m_flipMode);
+			SDL_RenderTextureRotated(renderer,&m_texture->GetSDLTexture(), NULL, &rect, 0, NULL, m_flipMode);
 		}
 	}
 }

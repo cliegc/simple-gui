@@ -9,11 +9,8 @@ namespace SimpleGui {
 		m_needRemove = false;
 		m_padding = { 0 };
 
-		auto font = TTF_CopyFont(&SG_GuiManager.GetDefaultFont());
-		if (!font) {
-			SDL_Log("%s\n", SDL_GetError());
-		}
-		m_font = UniqueFontPtr(font);
+		Font& font = SG_GuiManager.GetDefaultFont();
+		m_font = std::make_unique<Font>(font.GetPath(), font.GetSize());
 	}
 
 	void BaseComponent::PreparationOfUpdateChildren() {
@@ -345,24 +342,13 @@ namespace SimpleGui {
 		}
 	}
 
-	TTF_Font& BaseComponent::GetFont() const {
-		if (m_font) return *m_font;
+	Font& BaseComponent::GetFont() const {
+		if (m_font && !m_font->IsNull()) return *m_font;
 		return SG_GuiManager.GetDefaultFont();
 	}
 
 	void BaseComponent::SetFont(std::string_view path, int size) {
-		auto font = TTF_OpenFont(path.data(), size);
-		if (!font) {
-			SDL_Log("%s\n", SDL_GetError());
-			return;
-		}
-		m_font.reset(font);
-	}
-
-	void BaseComponent::SetFontSize(int size) {
-		if (!TTF_SetFontSize(m_font.get(), size)) {
-			SDL_Log("%s\n", SDL_GetError());
-		}
+		m_font.reset(new Font(path, size));
 	}
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {

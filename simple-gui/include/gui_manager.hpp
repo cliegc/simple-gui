@@ -5,8 +5,8 @@
 #include "deleter.hpp"
 #include "renderer.hpp"
 #include "style.hpp"
+#include "font.hpp"
 #include "component/root_component.hpp"
-//#include "component/base_component.hpp"
 
 
 #define SG_GuiManager SimpleGui::GuiManager::GetInstance()
@@ -35,11 +35,10 @@ namespace SimpleGui {
         SDL_Window& GetWindow() const;
         Renderer& GetRenderer() const;
         TTF_TextEngine& GetTextEngine() const;
-        TTF_Font& GetDefaultFont() const;
+        Font& GetDefaultFont() const;
         RootComponent& GetRootComponent() const;
 
         void SetDefaultFont(std::string_view path, float size);
-        void SetDefaultFontSize(float size);
 
         Style& GetCurrentStyle();
         std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
@@ -57,9 +56,8 @@ namespace SimpleGui {
 
         SDL_Window* m_window;
         UniqueTextEnginePtr m_textEngine;
-        UniqueFontPtr m_defaultFont;
+        std::unique_ptr<Font> m_defaultFont;
         std::unique_ptr<Renderer> m_renderer;
-        //std::unique_ptr<BaseComponent> m_rootCmp;
         std::unique_ptr<RootComponent> m_rootCmp;
         std::unique_ptr<StyleManager> m_styleManager;
 
