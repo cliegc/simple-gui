@@ -1,10 +1,37 @@
 #include "renderer.hpp"
+#include <SDL3/SDL_dialog.h>
 #include "deleter.hpp"
 
 
 namespace SimpleGui {
-	Renderer::Renderer(SDL_Renderer* renderer) : m_renderer(renderer) {
-		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	Renderer::Renderer(SDL_Window* window) {
+		m_renderer = SDL_CreateRenderer(window, NULL);
+		if (!m_renderer) {
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "error", SDL_GetError(), nullptr);
+			SDL_Log("%s\n", SDL_GetError());
+			SDL_DestroyWindow(window);
+			TTF_Quit();
+			SDL_Quit();
+			exit(-1);
+		}
+		SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+	}
+
+	Renderer::~Renderer() {
+		SDL_DestroyRenderer(m_renderer);
+	}
+
+	void Renderer::SetClearColor(const Color& color) {
+		m_clearColor = color;
+	}
+
+	void Renderer::Clear() {
+		SDL_SetRenderDrawColor(m_renderer, m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
+		SDL_RenderClear(m_renderer);
+	}
+
+	void Renderer::Present() {
+		SDL_RenderPresent(m_renderer);
 	}
 
 	void Renderer::SetClipRect(const Rect& rect) const {

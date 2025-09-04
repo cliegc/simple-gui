@@ -9,8 +9,8 @@ namespace SimpleGui {
 		m_needRemove = false;
 		m_padding = { 0 };
 
-		Font& font = SG_GuiManager.GetDefaultFont();
-		m_font = std::make_unique<Font>(font.GetPath(), font.GetSize());
+		//Font& font = SG_GuiManager.GetDefaultFont();
+		//m_font = std::make_unique<Font>(font.GetPath(), font.GetSize());
 	}
 
 	void BaseComponent::PreparationOfUpdateChildren() {
@@ -344,7 +344,7 @@ namespace SimpleGui {
 
 	Font& BaseComponent::GetFont() const {
 		if (m_font && !m_font->IsNull()) return *m_font;
-		return SG_GuiManager.GetDefaultFont();
+		//return SG_GuiManager.GetDefaultFont();
 	}
 
 	void BaseComponent::SetFont(std::string_view path, int size) {
@@ -353,7 +353,7 @@ namespace SimpleGui {
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
 		if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
-		else return SG_GuiManager.GetCurrentStyle().colors[flag];
+		//else return SG_GuiManager.GetCurrentStyle().colors[flag];
 	}
 
 	void BaseComponent::CustomThemeColor(ThemeColorFlags flag, const Color& color) {

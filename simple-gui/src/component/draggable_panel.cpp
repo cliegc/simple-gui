@@ -14,7 +14,7 @@ namespace SimpleGui {
 		m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
 		m_foldData.toggleGRect.size.w = 10;
 		m_foldData.toggleGRect.size.h = 10;
-		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
+		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 		m_handleThickness = m_titleLbl->GetSize().h;
 		m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
 		m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
@@ -26,7 +26,8 @@ namespace SimpleGui {
 	bool DraggablePanel::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
+		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
+		Vec2 renderPos;
 
 		if (HandleToggleFold(event, renderPos)) return true;
 		if (HandleDragResize(event, renderPos)) return true;
@@ -164,8 +165,8 @@ namespace SimpleGui {
 	}
 
 	void DraggablePanel::ClampPosition() {
-		int w, h;
-		SDL_GetWindowSizeInPixels(&SG_GuiManager.GetWindow(), &w, &h);
+		int w = 0, h = 0;
+		//SDL_GetWindowSizeInPixels(&SG_GuiManager.GetWindow(), &w, &h);
 		
 		float t = m_handleThickness;
 		if (!m_handleVisible) t = 0;

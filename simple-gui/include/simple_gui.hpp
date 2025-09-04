@@ -1,6 +1,7 @@
 #pragma once
 #include "gui_manager.hpp"
-#include "math.h"
+#include "math.hpp"
+#include "window.hpp"
 #include "renderer.hpp"
 #include "deleter.hpp"
 #include "component/common.hpp"

@@ -9,13 +9,17 @@
 namespace SimpleGui {
     class Renderer final {
     public:
-        Renderer(SDL_Renderer* renderer);
-        ~Renderer() = default;
+        Renderer(SDL_Window* window);
+        ~Renderer();
 
         Renderer(const Renderer&) = delete;
         Renderer& operator=(const Renderer&) = delete;
         Renderer(Renderer&&) = delete;
         Renderer& operator=(Renderer&&) = delete;
+
+        void SetClearColor(const Color& color);
+        void Clear();
+        void Present();
 
         void SetClipRect(const Rect& rect) const;
         void ClearClipRect() const;
@@ -45,7 +49,8 @@ namespace SimpleGui {
 
     private:
         SDL_Renderer* m_renderer;
-
+        Color m_clearColor;
+       
         void SetRenderColor(const Color& color) const;
     };
 }

@@ -12,7 +12,8 @@ namespace SimpleGui {
 	bool ScrollBar::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
+		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
+		Vec2 renderPos;
 		if (!m_dragSliderData.canDragging && m_slider.visibleGRect.ContainPoint(renderPos)) {
 			m_mouseState = MouseState::Hovering;
 

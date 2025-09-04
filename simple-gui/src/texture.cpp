@@ -5,7 +5,7 @@
 
 namespace SimpleGui {
 	Texture::Texture(std::string_view path) {
-		m_texture = IMG_LoadTexture(&SG_GuiManager.GetRenderer().GetSDLRenderer(), path.data());
+		//m_texture = IMG_LoadTexture(&SG_GuiManager.GetRenderer().GetSDLRenderer(), path.data());
 		m_path = path;
 	}
 

@@ -95,4 +95,7 @@ namespace SimpleGui {
 		Vec2 m_direction;
 	};
 
+	class EventManager final {
+
+	};
 }

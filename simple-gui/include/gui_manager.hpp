@@ -2,66 +2,63 @@
 #include <SDL3/SDL.h>
 #include <string_view>
 #include <memory>
+#include "window.hpp"
+#include "event.hpp"
 #include "deleter.hpp"
-#include "renderer.hpp"
-#include "style.hpp"
 #include "font.hpp"
-#include "component/root_component.hpp"
 
 
 #define SG_GuiManager SimpleGui::GuiManager::GetInstance()
 
 
 namespace SimpleGui {
+    class CommandArgs final {
+    public:
+        ~CommandArgs() = default;
+
+        inline size_t count() const { return m_args.size(); }
+        inline const std::string& operator[](size_t index) const { return m_args[index]; }
+        
+    private:
+        friend class GuiManager;
+
+        std::vector<std::string> m_args;
+
+        CommandArgs() = default;
+        void Setup(int argc, char** argv);
+    };
+
+
     class GuiManager final {
     public:
-        ~GuiManager();
+        ~GuiManager() = default;
 
         GuiManager(const GuiManager&) = delete;
         GuiManager& operator=(const GuiManager&) = delete;
         GuiManager(GuiManager&&) = delete;
         GuiManager& operator=(GuiManager&&) = delete;
 
-        static void Init(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath);
+        static void Init(int argc, char** argv, std::string_view fontPath);
         static void Quit();
 
         static GuiManager& GetInstance();
 
-        template<typename T, typename... Args>
-        T* AddComponent(Args&&... args) {
-            return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
-        }
+        Window& CreateWindow(std::string_view title, int w, int h);
+        void Run();
 
-        SDL_Window& GetWindow() const;
-        Renderer& GetRenderer() const;
-        TTF_TextEngine& GetTextEngine() const;
-        Font& GetDefaultFont() const;
-        RootComponent& GetRootComponent() const;
-
-        void SetDefaultFont(std::string_view path, float size);
-
-        Style& GetCurrentStyle();
-        std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
-        void SwitchStyle(const std::string& name);
-        bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
-        bool UnregisterStyle(const std::string& name);
-        void SetStyleFollowSystem();
-
-        void HandleEvent(const SDL_Event&);
-        void Update();
-        void Render();
+        inline const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
 
     private:
         static std::unique_ptr<GuiManager> s_guiManager;
 
-        SDL_Window* m_window;
-        UniqueTextEnginePtr m_textEngine;
-        std::unique_ptr<Font> m_defaultFont;
-        std::unique_ptr<Renderer> m_renderer;
-        std::unique_ptr<RootComponent> m_rootCmp;
-        std::unique_ptr<StyleManager> m_styleManager;
+        CommandArgs m_cmdArgs;
+        std::unordered_map<WindowID, std::unique_ptr<Window>> m_windows;
+        std::unique_ptr<EventManager> m_eventManager;
+        std::string m_fontPath;
 
-        GuiManager(SDL_Window* window, SDL_Renderer* renderer, std::string_view fontPath);
-        void SetRootComponentSizeToFillWindow();
+        GuiManager() = default;
+        void HandleEvent();
+        void Update();
+        void Render();
     };
 }

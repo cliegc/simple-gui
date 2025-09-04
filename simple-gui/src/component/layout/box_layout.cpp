@@ -7,8 +7,8 @@ namespace SimpleGui {
 	BoxLayout::BoxLayout(Direction direction) : Layout() {
 		m_direction = direction;
 		m_alignment = Alignment::Begin;
-		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
-		m_spacing = SG_GuiManager.GetCurrentStyle().itemSpacing;
+		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
+		//m_spacing = SG_GuiManager.GetCurrentStyle().itemSpacing;
 	}
 
 	int BoxLayout::GetSpacing() const {

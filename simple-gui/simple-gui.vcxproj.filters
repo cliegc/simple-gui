@@ -78,6 +78,9 @@
     <ClInclude Include="include\font.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\window.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -126,6 +129,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\font.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -91,7 +91,7 @@ namespace SimpleGui {
 		StyleManager& operator=(StyleManager&&) = delete;
 
 	private:
-		friend class GuiManager;
+		friend class Window;
 
 		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
 		bool UnregisterStyle(const std::string& name);

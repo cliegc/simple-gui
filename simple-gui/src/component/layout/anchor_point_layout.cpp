@@ -4,7 +4,7 @@
 
 namespace SimpleGui {
 	AnchorPointLayout::AnchorPointLayout() : Layout() {
-		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
+		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 	}
 
 	void AnchorPointLayout::Update() {

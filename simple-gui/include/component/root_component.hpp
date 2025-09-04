@@ -4,7 +4,7 @@
 
 namespace SimpleGui {
 	class RootComponent final : public BaseComponent {
-		friend class GuiManager;
+		friend class Window;
 
 	public:
 		~RootComponent() = default;

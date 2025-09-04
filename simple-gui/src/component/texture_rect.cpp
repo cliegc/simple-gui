@@ -9,7 +9,7 @@ namespace SimpleGui {
 		m_tipLbl = std::make_unique<Label>("");
 		m_scaleMode = SDL_SCALEMODE_LINEAR;
 		m_flipMode = SDL_FLIP_NONE;
-		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
+		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
 		if (m_texture && !m_texture->IsNull()) {
 			m_size.w = m_texture->GetWidth();
