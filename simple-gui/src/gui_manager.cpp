@@ -49,6 +49,7 @@ namespace SimpleGui {
 		auto win = std::make_unique<Window>(title, w, h);
 		auto id = win->GetID();
 		win->SetFont(m_defaultResource.font->GetPath(), m_defaultResource.font->GetSize());
+		win->SwitchStyle(StyleManager::DarkStyle);
 		m_windows.emplace(id, std::move(win));
 		return *m_windows[id];
 	}

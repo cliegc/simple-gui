@@ -34,7 +34,9 @@ namespace SimpleGui {
 	}
 
 	void RootComponent::EnteredComponentTree() {
+		BaseComponent::EnteredComponentTree();
 		m_padding = m_window->GetCurrentStyle().componentPadding;
 		SetSizeToFillWindow();
+		SDL_Log("RootComponent: EnteredComponentTree\n");
 	}
 }
