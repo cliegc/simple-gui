@@ -1,5 +1,6 @@
 #pragma once
 #include "base_component.hpp"
+#include "deleter.hpp"
 
 
 namespace SimpleGui {

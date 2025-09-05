@@ -4,8 +4,9 @@
 #include <unordered_map>
 #include <memory>
 #include <functional>
+#include "renderer.hpp"
+#include "style.hpp"
 #include "math.hpp"
-#include "window.hpp"
 #include "common.hpp"
 
 
@@ -20,6 +21,7 @@ namespace SimpleGui {
 #define SG_CMP_RENDER_CONDITIONS if (!m_visible) return;\
 								 if (m_visibleGRect.size.IsZeroApprox()) return
 
+	class Window;
 
 	class BaseComponent {
 	public:
