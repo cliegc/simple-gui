@@ -91,6 +91,7 @@ namespace SimpleGui {
 		StyleManager& operator=(StyleManager&&) = delete;
 
 	private:
+		friend class GuiManager;
 		friend class Window;
 
 		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
@@ -100,8 +101,8 @@ namespace SimpleGui {
 		void SwitchStyle(const std::string& name);
 		void SetStyleFollowSystem();
 
-		std::unique_ptr<Style> CreateLightStyle() const;
-		std::unique_ptr<Style> CreateDarkStyle() const;
+		static std::unique_ptr<Style> CreateLightStyle();
+		static std::unique_ptr<Style> CreateDarkStyle();
 
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Style>> m_styles;

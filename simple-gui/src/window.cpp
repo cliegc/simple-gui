@@ -16,14 +16,13 @@ namespace SimpleGui {
 
 		m_renderer = std::make_unique<Renderer>(m_window);
 		m_styleManager = std::make_unique<StyleManager>();
-		m_rootCmp = std::unique_ptr<RootComponent>(new RootComponent());
+		m_rootCmp = std::unique_ptr<RootComponent>(new RootComponent(this));
 	}
 
 	Window::~Window() {
 		m_rootCmp.reset();
 		m_styleManager.reset();
 		m_font.reset();
-		TTF_DestroyRendererTextEngine(m_textEngine);
 		m_renderer.reset();
 		SDL_DestroyWindow(m_window);
 	}

@@ -61,7 +61,7 @@ namespace SimpleGui {
 		return *m_currStyle;
 	}
 
-	std::unique_ptr<Style> StyleManager::CreateLightStyle() const {
+	std::unique_ptr<Style> StyleManager::CreateLightStyle() {
 		auto style = std::make_unique<Style>();
 		style->colors[ThemeColorFlags::Background] = Color::WHITE;
 		style->colors[ThemeColorFlags::Foreground] = Color::BLACK;
@@ -90,7 +90,7 @@ namespace SimpleGui {
 		return std::move(style);
 	}
 
-	std::unique_ptr<Style> StyleManager::CreateDarkStyle() const {
+	std::unique_ptr<Style> StyleManager::CreateDarkStyle() {
 		auto style = std::make_unique<Style>();
 		style->colors[ThemeColorFlags::Background] = Color(0x0d1117ff);
 		style->colors[ThemeColorFlags::Foreground] = Color::WHITE;

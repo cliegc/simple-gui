@@ -30,7 +30,8 @@ namespace SimpleGui {
 
 		s_guiManager = std::unique_ptr<GuiManager>(new GuiManager());
 		s_guiManager->m_cmdArgs.Setup(argc, argv);
-		s_guiManager->m_fontPath = fontPath;
+		s_guiManager->m_defaultResource.font = std::make_unique<Font>(fontPath, 16.f);
+		s_guiManager->m_defaultResource.style = StyleManager::CreateDarkStyle();
 	}
 
 	void GuiManager::Quit() {
@@ -47,7 +48,7 @@ namespace SimpleGui {
 	Window& GuiManager::CreateWindow(std::string_view title, int w, int h) {
 		auto win = std::make_unique<Window>(title, w, h);
 		auto id = win->GetID();
-		win->SetFont(m_fontPath, 16.f);
+		win->SetFont(m_defaultResource.font->GetPath(), m_defaultResource.font->GetSize());
 		m_windows.emplace(id, std::move(win));
 		return *m_windows[id];
 	}

@@ -3,13 +3,12 @@
 
 
 namespace SimpleGui {
-	RootComponent::RootComponent() : BaseComponent() {
-		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
-		SetSizeToFillWindow();
+	RootComponent::RootComponent(Window* window) : BaseComponent() {
+		m_window = window;
 	}
 
 	void RootComponent::SetSizeToFillWindow() {
-		//SetSize(SG_GuiManager.GetRenderer().GetRenderOutputSize());
+		SetSize(m_window->GetRenderer().GetRenderOutputSize());
 	}
 
 	bool RootComponent::HandleEvent(const SDL_Event& event) {
@@ -34,4 +33,8 @@ namespace SimpleGui {
 		BaseComponent::Render(renderer);
 	}
 
+	void RootComponent::EnteredComponentTree() {
+		m_padding = m_window->GetCurrentStyle().componentPadding;
+		SetSizeToFillWindow();
+	}
 }

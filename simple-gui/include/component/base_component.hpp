@@ -5,11 +5,8 @@
 #include <memory>
 #include <functional>
 #include "math.hpp"
-#include "renderer.hpp"
-#include "style.hpp"
-#include "font.hpp"
+#include "window.hpp"
 #include "common.hpp"
-#include "deleter.hpp"
 
 
 namespace SimpleGui {
@@ -120,7 +117,7 @@ namespace SimpleGui {
 
 		inline virtual void SetFont(std::unique_ptr<Font> font) { m_font = std::move(font); };
 		virtual void SetFont(std::string_view path, int size);
-		virtual Font& GetFont() const;
+		virtual Font& GetFont();
 
 		Color GetThemeColor(ThemeColorFlags flag);
 		void CustomThemeColor(ThemeColorFlags flag, const Color& color);
@@ -138,16 +135,20 @@ namespace SimpleGui {
 
 		bool m_visible = true;
 		bool m_disabled = false;
-		bool m_needRemove;
+		bool m_needRemove = false;
 
 		std::unique_ptr<Font> m_font;
 		std::unordered_map<ThemeColorFlags, Color> m_themeColorCaches;
 
-		BaseComponent* m_parent;
+		Window* m_window = nullptr;
+		BaseComponent* m_parent = nullptr;
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
 
 	protected:
+		virtual void EnteredComponentTree() {};
+		virtual void ExitedComponentTree() {};
+
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
 		inline virtual Vec2 GetContentSize() const;
 

@@ -5,18 +5,14 @@
 
 namespace SimpleGui {
 	BaseComponent::BaseComponent() {
-		m_parent = nullptr;
-		m_needRemove = false;
 		m_padding = { 0 };
-
-		//Font& font = SG_GuiManager.GetDefaultFont();
-		//m_font = std::make_unique<Font>(font.GetPath(), font.GetSize());
 	}
 
 	void BaseComponent::PreparationOfUpdateChildren() {
 		// add caches of children to m_children, and clear caches
 		for (auto& child : m_childCaches) {
 			m_children.push_back(std::move(child));
+			child->EnteredComponentTree();
 		}
 		m_childCaches.clear();
 
@@ -25,6 +21,7 @@ namespace SimpleGui {
 			if (!(*it) || (*it)->m_needRemove) {
 				it = m_children.erase(it);
 			}
+			if ((*it) && (*it)->m_needRemove) (*it)->ExitedComponentTree();
 			else {
 				++it;
 			}
@@ -233,8 +230,11 @@ namespace SimpleGui {
 		}
 
 		child->m_parent = this;
+		child->m_window = m_window;
 		child->m_needRemove = false;
+		auto temp = child.get();
 		m_children.push_back(std::move(child));
+		temp->EnteredComponentTree();
 	}
 
 	void BaseComponent::AddChildDeferred(std::unique_ptr<BaseComponent> child) {
@@ -245,6 +245,7 @@ namespace SimpleGui {
 		}
 
 		child->m_parent = this;
+		child->m_window = m_window;
 		child->m_needRemove = false;
 		m_childCaches.push_back(std::move(child));
 	}
@@ -272,6 +273,8 @@ namespace SimpleGui {
 			std::unique_ptr<BaseComponent> child = std::move(*it);
 			m_children.erase(it);
 			child->m_parent = nullptr;
+			child->m_window = nullptr;
+			child->ExitedComponentTree();
 			return child;
 		}
 
@@ -287,7 +290,9 @@ namespace SimpleGui {
 		if (it != m_children.end()) {
 			std::unique_ptr<BaseComponent> child = std::move(*it);
 			child->m_parent = nullptr;
+			child->m_window = nullptr;
 			//child->m_needRemove = true;			// 其实不需要使用need_remove标记，移动后，原位置上为nullptr
+			child->ExitedComponentTree();
 			return child;
 		}
 
@@ -318,6 +323,10 @@ namespace SimpleGui {
 	void BaseComponent::ClearAllChildren() {
 		m_children.clear();
 		m_childCaches.clear();
+
+		for (auto& child : m_children) {
+			child->ExitedComponentTree();
+		}
 	}
 
 	void BaseComponent::ClearAllChildrenDeferred() {
@@ -342,9 +351,12 @@ namespace SimpleGui {
 		}
 	}
 
-	Font& BaseComponent::GetFont() const {
-		if (m_font && !m_font->IsNull()) return *m_font;
-		//return SG_GuiManager.GetDefaultFont();
+	Font& BaseComponent::GetFont() {
+		if (!m_font || m_font->IsNull()) {
+			Font& font = m_window ? m_window->GetFont() : SG_GuiManager.GetDefaultFont();
+			m_font.reset(new Font(font.GetPath(), font.GetSize()));
+		}
+		return *m_font;
 	}
 
 	void BaseComponent::SetFont(std::string_view path, int size) {
@@ -353,7 +365,8 @@ namespace SimpleGui {
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
 		if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
-		//else return SG_GuiManager.GetCurrentStyle().colors[flag];
+		else if (m_window) return m_window->GetCurrentStyle().colors[flag];
+		else return SG_GuiManager.GetDefaultStyle().colors[flag];
 	}
 
 	void BaseComponent::CustomThemeColor(ThemeColorFlags flag, const Color& color) {
@@ -368,5 +381,4 @@ namespace SimpleGui {
 	void BaseComponent::ClearCustomThemeColors() {
 		m_themeColorCaches.clear();
 	}
-
 }

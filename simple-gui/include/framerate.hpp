@@ -12,7 +12,10 @@ namespace SimpleGui {
 		friend class GuiManager;
 
 		Uint32 m_lastTicks;
+		float m_framerate;
 
 		float Update();
+		float GetFramerate() const;
+		void SetFramerate(float rate);
 	};
 }

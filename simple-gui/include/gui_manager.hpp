@@ -28,6 +28,19 @@ namespace SimpleGui {
         void Setup(int argc, char** argv);
     };
 
+    class DefaultResource final {
+    public:
+        ~DefaultResource() = default;
+
+    private:
+        friend class GuiManager;
+
+        std::unique_ptr<Font> font;
+        std::unique_ptr<Style> style;
+
+        DefaultResource() = default;
+    };
+
 
     class GuiManager final {
     public:
@@ -47,14 +60,16 @@ namespace SimpleGui {
         void Run();
 
         inline const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
+        inline Font& GetDefaultFont() const { return *m_defaultResource.font; }
+        inline Style& GetDefaultStyle() const { return *m_defaultResource.style; }
 
     private:
         static std::unique_ptr<GuiManager> s_guiManager;
 
         CommandArgs m_cmdArgs;
+        DefaultResource m_defaultResource;
         std::unordered_map<WindowID, std::unique_ptr<Window>> m_windows;
         std::unique_ptr<EventManager> m_eventManager;
-        std::string m_fontPath;
 
         GuiManager() = default;
         void HandleEvent();

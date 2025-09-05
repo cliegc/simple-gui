@@ -14,10 +14,23 @@ namespace SimpleGui {
 			SDL_Quit();
 			exit(-1);
 		}
+
+		m_textEngine = TTF_CreateRendererTextEngine(m_renderer);
+		if (!m_textEngine) {
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "error", SDL_GetError(), nullptr);
+			SDL_Log("%s\n", SDL_GetError());
+			SDL_DestroyRenderer(m_renderer);
+			SDL_DestroyWindow(window);
+			TTF_Quit();
+			SDL_Quit();
+			exit(-1);
+		}
+
 		SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 	}
 
 	Renderer::~Renderer() {
+		TTF_DestroyRendererTextEngine(m_textEngine);
 		SDL_DestroyRenderer(m_renderer);
 	}
 
@@ -188,6 +201,10 @@ namespace SimpleGui {
 		SDL_RenderTexture(m_renderer, textTexture, NULL, &rect);
 		SDL_DestroyTexture(textTexture);
 		SDL_DestroySurface(textSurface);
+	}
+
+	TTF_Text* Renderer::CreateText(std::string_view text, const Font& font) const {
+		return TTF_CreateText(m_textEngine, &font.GetTTFFont(), text.data(), text.size());
 	}
 
 	Vec2 Renderer::GetRenderPosition(const Vec2& mousePos) const {

@@ -72,8 +72,10 @@ namespace SimpleGui {
 			return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
 		}
 
-		SDL_Window& GetSDLWindow() { return *m_window; }
-		SDL_Renderer& GetSDLRenderer() { return m_renderer->GetSDLRenderer(); }
+		inline SDL_Window& GetSDLWindow() const { return *m_window; }
+		inline SDL_Renderer& GetSDLRenderer() const { return m_renderer->GetSDLRenderer(); }
+		inline TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
+		inline Renderer& GetRenderer() const { return *m_renderer; }
 
 	//public:
 	//	Signal<> closed;
@@ -83,14 +85,12 @@ namespace SimpleGui {
 
 		bool m_visible;
 		SDL_Window* m_window;
-		TTF_TextEngine* m_textEngine;
 		std::unique_ptr<Renderer> m_renderer;
 		std::unique_ptr<StyleManager> m_styleManager;
 		std::unique_ptr<Font> m_font;
 		std::unique_ptr<RootComponent> m_rootCmp;
 
 	private:
-		//void 
 		void HandleEvent(Event* event);
 		void Update();
 		void Render();
