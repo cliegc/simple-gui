@@ -150,6 +150,7 @@
     <ClInclude Include="include\component\scrollbar.hpp" />
     <ClInclude Include="include\component\texture_rect.hpp" />
     <ClInclude Include="include\event.hpp" />
+    <ClInclude Include="include\extended_functions.hpp" />
     <ClInclude Include="include\font.hpp" />
     <ClInclude Include="include\framerate.hpp" />
     <ClInclude Include="include\style.hpp" />

@@ -78,6 +78,8 @@ namespace SimpleGui {
 			return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
 		}
 
+		inline RootComponent& GetRootComponent() const { return *m_rootCmp; }
+
 		inline SDL_Window& GetSDLWindow() const { return *m_window; }
 		inline SDL_Renderer& GetSDLRenderer() const { return m_renderer->GetSDLRenderer(); }
 		inline TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
@@ -99,10 +101,6 @@ namespace SimpleGui {
 		std::unique_ptr<Font> m_font;
 		std::unique_ptr<RootComponent> m_rootCmp;
 		FrameRateController m_fpsController;
-
-		// test FrameRateController
-		Vec2 circlePos{0.f, 100.f};
-		int direction = 1;
 
 	private:
 		void HandleEvent(Event* event);

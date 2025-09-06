@@ -4,7 +4,8 @@
 
 namespace SimpleGui {
 	Label::Label(std::string_view text) : BaseComponent() {
-		Init(text);
+		//Init(text);
+		m_text = text;
 	}
 
 	void Label::Update() {
@@ -27,16 +28,29 @@ namespace SimpleGui {
 		BaseComponent::Render(renderer);
 	}
 
+	void Label::EnteredComponentTree() {
+		//Init()
+		auto ttf_text = TTF_CreateText(&m_window->GetTTFTextEngine(), &GetFont().GetTTFFont(), m_text.c_str(), m_text.size());
+		m_ttfText = UniqueTextPtr(ttf_text);
+
+		m_padding = m_window->GetCurrentStyle().componentPadding;
+
+		AdjustSize(m_ttfText.get());
+
+		m_textAlignments.first = TextAlignment::Left;
+		m_textAlignments.second = TextAlignment::Top;
+	}
+
 	void Label::Init(std::string_view text) {
 		//auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont().GetTTFFont(), text.data(), text.size());
 		//m_ttfText = UniqueTextPtr(ttf_text);
 
 		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
-		AdjustSize(m_ttfText.get());
+		//AdjustSize(m_ttfText.get());
 
-		m_textAlignments.first = TextAlignment::Left;
-		m_textAlignments.second = TextAlignment::Top;
+		//m_textAlignments.first = TextAlignment::Left;
+		//m_textAlignments.second = TextAlignment::Top;
 	}
 
 	void Label::AdjustSize(TTF_Text* ttfText) {

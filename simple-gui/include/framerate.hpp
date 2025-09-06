@@ -4,6 +4,7 @@
 
 
 namespace SimpleGui {
+	// TODO 考虑开启垂直同步的情况
 	class FrameRateController final {
 	public:
 		FrameRateController(uint32_t fps = 60);
@@ -23,6 +24,8 @@ namespace SimpleGui {
 		uint32_t m_targetFrameRate;
 		double m_realFrameRate;
 		bool m_isUnlimited;
+
+		//double m_delta;
 
 		bool Update();
 		Clock::time_point CalcNextWakeTime(const Clock::time_point& initWakeTime) const;

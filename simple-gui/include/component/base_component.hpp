@@ -8,6 +8,7 @@
 #include "style.hpp"
 #include "math.hpp"
 #include "common.hpp"
+#include "extended_functions.hpp"
 
 
 namespace SimpleGui {
@@ -104,6 +105,7 @@ namespace SimpleGui {
 		}
 
 		inline BaseComponent* GetParent() const { return m_parent; }
+		inline Window* GetWindow() const { return m_window; }
 
 		void AddChild(std::unique_ptr<BaseComponent> child);
 		void AddChildDeferred(std::unique_ptr<BaseComponent> child);
@@ -126,6 +128,11 @@ namespace SimpleGui {
 		void ClearCustomThemeColor(ThemeColorFlags flag);
 		void ClearCustomThemeColors();
 
+		// TODO ExtendedFunctionsManager, Deferred
+		void AddExtendedFunctions(std::unique_ptr<ExtendedFunctions> functions);
+		void RemoveExtendedFunctions(ExtendedFunctions* functions);
+		void ClearAllExtendedFunctions();
+
 	protected:
 		Vec2 m_position;			// 局部坐标
 		Vec2 m_size;
@@ -146,6 +153,7 @@ namespace SimpleGui {
 		BaseComponent* m_parent = nullptr;
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
+		std::vector<std::unique_ptr<ExtendedFunctions>> m_extFunctions;
 
 	protected:
 		virtual void EnteredComponentTree() {};

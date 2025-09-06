@@ -85,10 +85,21 @@ namespace SimpleGui {
 	bool BaseComponent::HandleEvent(const SDL_Event& event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
+		// update extended functions
+		for (auto& func : m_extFunctions) {
+			func->HandleEvent(nullptr);
+		}
+
 		// handle events of m_children
 		for (auto it = m_children.rbegin(); it != m_children.rend(); ++it) {
 			if (!(*it) || (*it)->m_needRemove) continue;
-			if ((*it)->HandleEvent(event)) return true;
+			if ((*it)->HandleEvent(event)) {
+				// handle extended functions
+				for (auto& func : (*it)->m_extFunctions) {
+					func->HandleEvent(nullptr);
+				}
+				return true;
+			}
 		}
 
 		// handle events of chaches [X]
@@ -104,10 +115,20 @@ namespace SimpleGui {
 		// calc visible size
 		CalcVisibleGlobalRect(m_parent, this);
 
+		// update extended functions
+		for (auto& func : m_extFunctions) {
+			func->Update();
+		}
+
 		// update child, and size configs of chid
 		for (auto& child : m_children) {
 			UpdateChildSizeConfigs(child.get());
 			child->Update();
+
+			// update child extended functions
+			for (auto& func : child->m_extFunctions) {
+				func->Update();
+			}
 		}
 	}
 
@@ -118,10 +139,19 @@ namespace SimpleGui {
 			renderer.FillRect(m_visibleRect, GetThemeColor(ThemeColorFlags::Disabled));
 		}*/
 		
+		// render extended functions
+		for (auto& func : m_extFunctions) {
+			func->Render(renderer);
+		}
 
 		// render m_children
 		for (auto& child : m_children) {
 			child->Render(renderer);
+
+			// render child extended functions
+			for (auto& func : child->m_extFunctions) {
+				func->Render(renderer);
+			}
 		}
 	}
 
@@ -223,9 +253,12 @@ namespace SimpleGui {
 	}
 	
 	void BaseComponent::AddChild(std::unique_ptr<BaseComponent> child) {
-		if (!child || child->GetParent() == this) return;
+		if (!child || child->GetParent() == this) {
+			SDL_Log("AddChild: this child is null or parent of child already is this.\n");
+			return;
+		}
 		if (child->GetParent()) {
-			SDL_Log("AddChild: this child already has a parent node.");
+			SDL_Log("AddChild: this child already has a parent node.\n");
 			return;
 		}
 
@@ -235,6 +268,7 @@ namespace SimpleGui {
 		auto temp = child.get();
 		m_children.push_back(std::move(child));
 		temp->EnteredComponentTree();
+		SDL_Log("AddChild: child entered component tree.\n");
 	}
 
 	void BaseComponent::AddChildDeferred(std::unique_ptr<BaseComponent> child) {
@@ -380,5 +414,17 @@ namespace SimpleGui {
 
 	void BaseComponent::ClearCustomThemeColors() {
 		m_themeColorCaches.clear();
+	}
+
+	void BaseComponent::AddExtendedFunctions(std::unique_ptr<ExtendedFunctions> functions) {
+		functions->m_target = this;
+		m_extFunctions.push_back(std::move(functions));
+	}
+
+	void BaseComponent::RemoveExtendedFunctions(ExtendedFunctions* functions) {
+		
+	}
+
+	void BaseComponent::ClearAllExtendedFunctions() {
 	}
 }
