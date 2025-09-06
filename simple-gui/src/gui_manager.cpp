@@ -71,9 +71,14 @@ namespace SimpleGui {
 			
 			// update and render
 			for (auto& result : m_windows) {
-				result.second->Update();
-				result.second->Render();
+				result.second->UpdateAndRender();
 			}
+
+			auto nextWakeTime = std::chrono::high_resolution_clock::time_point::max();
+			for (auto& result : m_windows) {
+				nextWakeTime = result.second->m_fpsController.CalcNextWakeTime(nextWakeTime);
+			}
+			FrameRateController::Sleep(nextWakeTime);
 		}
 	}
 

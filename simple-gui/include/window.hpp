@@ -8,6 +8,7 @@
 #include "renderer.hpp"
 #include "style.hpp"
 #include "font.hpp"
+#include "framerate.hpp"
 #include "component/root_component.hpp"
 
 
@@ -57,6 +58,11 @@ namespace SimpleGui {
 		bool IsEnabledVsync() const;
 		bool EnableVsync(bool enable);
 
+		inline inline void SetUnlimitedFrameRate(bool value) { m_fpsController.SetUnlimitedFrameRate(value); }
+		inline inline double GetRealFrameRate() const { return m_fpsController.GetRealFrameRate(); }
+		inline inline uint32_t GetTargetFrameRate() const { return m_fpsController.GetTargetFrameRate(); }
+		inline void SetTargetFrameRate(uint32_t fps) { m_fpsController.SetTargetFrameRate(fps); };
+
 		Font& GetFont() const;
 		void SetFont(std::string_view path, float ptsize);
 
@@ -92,10 +98,14 @@ namespace SimpleGui {
 		std::unique_ptr<StyleManager> m_styleManager;
 		std::unique_ptr<Font> m_font;
 		std::unique_ptr<RootComponent> m_rootCmp;
+		FrameRateController m_fpsController;
+
+		// test FrameRateController
+		Vec2 circlePos{0.f, 100.f};
+		int direction = 1;
 
 	private:
 		void HandleEvent(Event* event);
-		void Update();
-		void Render();
+		void UpdateAndRender();
 	};
 }

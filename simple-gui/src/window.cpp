@@ -150,13 +150,27 @@ namespace SimpleGui {
 	void Window::HandleEvent(Event* event) {
 	}
 
-	void Window::Update() {
-		m_rootCmp->Update();
-	}
+	void Window::UpdateAndRender() {
+		if (m_fpsController.Update()) {
+			m_rootCmp->Update();
+			m_renderer->Clear();
+			m_rootCmp->Render(*m_renderer);
 
-	void Window::Render() {
-		m_renderer->Clear();
-		m_rootCmp->Render(*m_renderer);
-		m_renderer->Present();
+			// test FrameRateController
+			circlePos.x += 1 * direction;
+			if (circlePos.x <= 0) {
+				circlePos.x = 0;
+				direction = 1;
+			}
+			else if (circlePos.x >= GetSize().w) {
+				circlePos.x = GetSize().w;
+				direction = -1;
+			}
+			m_renderer->FillCircle(circlePos, 25, Color::RED);
+
+			m_renderer->Present();
+
+			SDL_Log("window<%d> fps: %.2f\n", GetID(), m_fpsController.GetRealFrameRate());
+		}
 	}
 }
