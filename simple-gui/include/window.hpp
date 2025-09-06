@@ -46,10 +46,10 @@ namespace SimpleGui {
 		bool IsFullScreen() const;
 		void SetFullScreen(bool full);
 
-		bool IsMaximize() const;
+		bool IsMaximized() const;
 		void ToggleMaximize() const;
 
-		bool IsMinimize() const;
+		bool IsMinimized() const;
 		void ToggleMinimize() const;
 
 		WindowID GetID() const;
@@ -77,8 +77,11 @@ namespace SimpleGui {
 		inline TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
 		inline Renderer& GetRenderer() const { return *m_renderer; }
 
-	//public:
-	//	Signal<> closed;
+	public:
+		Signal<> closed;
+		Signal<> resized;
+		Signal<> maximized;
+		Signal<> minimized;
 
 	private:
 		friend class GuiManager;

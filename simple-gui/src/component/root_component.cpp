@@ -5,6 +5,8 @@
 namespace SimpleGui {
 	RootComponent::RootComponent(Window* window) : BaseComponent() {
 		m_window = window;
+		m_padding = m_window->GetCurrentStyle().componentPadding;
+		SetSizeToFillWindow();
 	}
 
 	void RootComponent::SetSizeToFillWindow() {
@@ -28,15 +30,7 @@ namespace SimpleGui {
 
 	void RootComponent::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
-
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background));
 		BaseComponent::Render(renderer);
-	}
-
-	void RootComponent::EnteredComponentTree() {
-		BaseComponent::EnteredComponentTree();
-		m_padding = m_window->GetCurrentStyle().componentPadding;
-		SetSizeToFillWindow();
-		SDL_Log("RootComponent: EnteredComponentTree\n");
 	}
 }

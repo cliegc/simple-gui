@@ -84,7 +84,7 @@ namespace SimpleGui {
 		SDL_SetWindowFullscreen(m_window, full);
 	}
 
-	bool Window::IsMaximize() const {
+	bool Window::IsMaximized() const {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) != 0;
 	}
 
@@ -92,7 +92,7 @@ namespace SimpleGui {
 		SDL_MaximizeWindow(m_window);
 	}
 
-	bool Window::IsMinimize() const {
+	bool Window::IsMinimized() const {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED) != 0;
 	}
 

@@ -13,7 +13,7 @@ namespace SimpleGui {
 		StrikeThrough = TTF_STYLE_STRIKETHROUGH,
 	};
 
-	FontStyle operator|(FontStyle s1, FontStyle s2);
+	constexpr FontStyle operator|(FontStyle s1, FontStyle s2);
 
 	class Font final {
 	public:

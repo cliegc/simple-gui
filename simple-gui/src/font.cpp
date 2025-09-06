@@ -15,7 +15,7 @@ namespace SimpleGui {
 		}
 	}
 
-	FontStyle operator|(FontStyle s1, FontStyle s2) {
+	constexpr FontStyle operator|(FontStyle s1, FontStyle s2) {
 		return static_cast<FontStyle>(static_cast<TTF_FontStyleFlags>(s1) | static_cast<TTF_FontStyleFlags>(s2));
 	}
 }

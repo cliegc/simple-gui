@@ -13,9 +13,6 @@ namespace SimpleGui {
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
-	protected:
-		virtual void EnteredComponentTree() override;
-
 	private:
 		RootComponent(Window* window);
 

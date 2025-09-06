@@ -2,6 +2,6 @@
 
 
 namespace SimpleGui {
-	FramerateController::FramerateController() {
+	FrameRateController::FrameRateController() {
 	}
 }

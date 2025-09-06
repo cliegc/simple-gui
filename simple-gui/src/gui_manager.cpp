@@ -56,11 +56,17 @@ namespace SimpleGui {
 
 	void GuiManager::Run() {
 		bool running = true;
+		SDL_Event event{};
 
 		while (running) {
 			// control framerate
 
 			// handle event
+			while (SDL_PollEvent(&event)) {
+				if (event.type == SDL_EVENT_QUIT) {
+					running = false;
+				}
+			}
 			HandleEvent();
 			
 			// update and render

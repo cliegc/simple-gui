@@ -1,21 +1,24 @@
 #pragma once
 #include <SDL3/SDL_timer.h>
+#include <chrono>
 
 
 namespace SimpleGui {
-	class FramerateController final {
+	class FrameRateController final {
 	public:
-		FramerateController();
-		~FramerateController() = default;
+		FrameRateController();
+		~FrameRateController() = default;
 
 	private:
-		friend class GuiManager;
+		friend class Window;
 
+		//std::chrono::steady_clock::time_point 
 		Uint32 m_lastTicks;
-		float m_framerate;
+		Uint32 m_targetDuration;
+		double m_framerate;
 
-		float Update();
-		float GetFramerate() const;
-		void SetFramerate(float rate);
+		double Update();
+		double GetFrameRate() const;
+		void SetFrameRate(uint32_t fps);
 	};
 }

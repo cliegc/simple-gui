@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "");
 	 Window& win = SG_GuiManager.CreateWindow("demo", 1280, 720);
 	 SDL_Log("win title: %s\n", win.GetTitle().c_str());
+	 SG_GuiManager.Run();
 	 GuiManager::Quit();
 	
 	return 0;
