@@ -1,11 +1,11 @@
 #include "texture.hpp"
 #include <SDL3_image/SDL_image.h>
-#include "gui_manager.hpp"
+#include "renderer.hpp"
 
 
 namespace SimpleGui {
-	Texture::Texture(std::string_view path) {
-		//m_texture = IMG_LoadTexture(&SG_GuiManager.GetRenderer().GetSDLRenderer(), path.data());
+	Texture::Texture(const Renderer& renderer, std::string_view path) {
+		m_texture = IMG_LoadTexture(&renderer.GetSDLRenderer(), path.data());
 		m_path = path;
 	}
 

@@ -25,13 +25,10 @@ protected:
 
 class TestFrameRateControllerFunctions : public ExtendedFunctions {
 protected:
-	// test FrameRateController
 	Vec2 circlePos{ 0.f, 100.f };
 	int direction = 1;
 
 	virtual void Update() override {
-		// test FrameRateController
-		//circlePos.x += 100 * direction * m_fpsController.m_delta;
 		circlePos.x += 100 * direction * SG_GuiManager.GetDelta();
 		if (circlePos.x <= 0) {
 			circlePos.x = 0;
@@ -48,19 +45,37 @@ protected:
 	}
 };
 
+class DrawBackgroundFunctions : public ExtendedFunctions {
+public:
+	DrawBackgroundFunctions(std::shared_ptr<Texture> texture) {
+		m_texture = texture;
+	}
+
+	~DrawBackgroundFunctions() = default;
+
+protected:
+	virtual void Render(const Renderer& renderer) override {
+		Rect srcRect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
+		renderer.DrawTexture(*m_texture.get(), srcRect, m_target->GetGlobalRect(), 0, srcRect.Center(), SDL_FLIP_NONE);
+		renderer.FillRect(m_target->GetGlobalRect(), Color(0, 0, 0, 200));
+	}
+
+private:
+	std::shared_ptr<Texture> m_texture;
+};
 
 int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 
 	 win.SetPosition(100, 200);
+	 win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	 win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	 win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
 	 auto lbl2 = win.AddComponent<Label>("");
 	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	 lbl2->SetPositionY(100);
-
 
 	 //win.EnableVsync(true);
 	 SG_GuiManager.SetTargetFrameRate(60);

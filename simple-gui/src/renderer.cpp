@@ -232,7 +232,15 @@ namespace SimpleGui {
 	}
 
 	std::shared_ptr<Texture> Renderer::CreateSharedTexture(std::string_view path) {
-		return std::move(std::make_shared<Texture>(path));
+		return std::move(std::shared_ptr<Texture>(new Texture(*this, path)));
+	}
+
+	SDL_Texture* Renderer::CreateSDLTexture(std::string_view path) {
+		return IMG_LoadTexture(m_renderer, path.data());
+	}
+
+	Texture* Renderer::CreateTexture(std::string_view path) {
+		return new Texture(*this, path);
 	}
 
 	void Renderer::SetRenderColor(const Color& color) const {

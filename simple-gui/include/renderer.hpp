@@ -51,6 +51,8 @@ namespace SimpleGui {
 
         std::shared_ptr<SDL_Texture> CreateSharedSDLTexture(std::string_view path);
         std::shared_ptr<Texture> CreateSharedTexture(std::string_view path);
+        SDL_Texture* CreateSDLTexture(std::string_view path);
+        Texture* CreateTexture(std::string_view path);
 
         inline SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
         inline TTF_TextEngine& GetTTFTextEngine() const { return *m_textEngine; }
