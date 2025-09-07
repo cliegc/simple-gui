@@ -14,6 +14,12 @@ namespace SimpleGui {
 	}
 
 
+	GuiManager::~GuiManager() {
+		m_fpsController.reset();
+		m_eventManager.reset();
+		m_window.reset();
+	}
+
 	void GuiManager::Init(int argc, char** argv, std::string_view fontPath) {
 		if (s_guiManager) return;
 
@@ -32,6 +38,10 @@ namespace SimpleGui {
 		s_guiManager->m_cmdArgs.Setup(argc, argv);
 		s_guiManager->m_defaultResource.font = std::make_unique<Font>(fontPath, 16.f);
 		s_guiManager->m_defaultResource.style = StyleManager::CreateDarkStyle();
+		s_guiManager->m_window = std::make_unique<Window>("simple gui", 640, 480);
+		s_guiManager->m_window->SetFont(s_guiManager->m_defaultResource.font->GetPath(), s_guiManager->m_defaultResource.font->GetSize());
+		s_guiManager->m_window->SwitchStyle(StyleManager::DarkStyle);
+		s_guiManager->m_fpsController = std::make_unique<FrameRateController>(s_guiManager->m_window.get());
 	}
 
 	void GuiManager::Quit() {
@@ -45,13 +55,10 @@ namespace SimpleGui {
 		return *s_guiManager;
 	}
 
-	Window& GuiManager::CreateWindow(std::string_view title, int w, int h) {
-		auto win = std::make_unique<Window>(title, w, h);
-		auto id = win->GetID();
-		win->SetFont(m_defaultResource.font->GetPath(), m_defaultResource.font->GetSize());
-		win->SwitchStyle(StyleManager::DarkStyle);
-		m_windows.emplace(id, std::move(win));
-		return *m_windows[id];
+	Window& GuiManager::GetWindow(std::string_view title, int w, int h) {
+		m_window->SetTitle(title);
+		m_window->SetSize(w, h);
+		return *m_window;
 	}
 
 	void GuiManager::Run() {
@@ -60,6 +67,7 @@ namespace SimpleGui {
 
 		while (running) {
 			// control framerate
+			m_fpsController->Update();
 
 			// handle event
 			while (SDL_PollEvent(&event)) {
@@ -67,28 +75,10 @@ namespace SimpleGui {
 					running = false;
 				}
 			}
-			HandleEvent();
 			
 			// update and render
-			for (auto& result : m_windows) {
-				result.second->UpdateAndRender();
-			}
-
-			auto nextWakeTime = std::chrono::high_resolution_clock::time_point::max();
-			for (auto& result : m_windows) {
-				nextWakeTime = result.second->m_fpsController.CalcNextWakeTime(nextWakeTime);
-			}
-			FrameRateController::Sleep(nextWakeTime);
+			m_window->UpdateAndRender();
 		}
-	}
-
-	void GuiManager::HandleEvent() {
-	}
-
-	void GuiManager::Update() {
-	}
-
-	void GuiManager::Render() {
 	}
 }
 

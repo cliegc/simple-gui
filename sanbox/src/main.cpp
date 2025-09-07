@@ -10,8 +10,16 @@ using namespace SimpleGui;
 class DisplayFPSForLabel : public ExtendedFunctions {
 protected:
 	virtual void Update() override {
-		Label* lbl = (Label*)m_target;
-		lbl->SetText(std::format("FPS: {:.2f}", lbl->GetWindow()->GetRealFrameRate()));
+		auto lbl = (Label*)m_target;
+		lbl->SetText(std::format("FPS: {:.2f}", SG_GuiManager.GetRealFrameRate()));
+	}
+};
+
+class DisplayDeltaForLabel : public ExtendedFunctions {
+protected:
+	virtual void Update() override {
+		auto lbl = (Label*)m_target;
+		lbl->SetText(std::format("delta: {:.4f}", SG_GuiManager.GetDelta()));
 	}
 };
 
@@ -24,7 +32,7 @@ protected:
 	virtual void Update() override {
 		// test FrameRateController
 		//circlePos.x += 100 * direction * m_fpsController.m_delta;
-		circlePos.x += 10 * direction;
+		circlePos.x += 100 * direction * SG_GuiManager.GetDelta();
 		if (circlePos.x <= 0) {
 			circlePos.x = 0;
 			direction = 1;
@@ -43,26 +51,20 @@ protected:
 
 int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
-	 Window& win = SG_GuiManager.CreateWindow("win1-60fps", 640, 480);
-	 Window& win2 = SG_GuiManager.CreateWindow("win2-30fps", 640, 480);
-	 //win2.SetTargetFrameRate(30);
-
-	 //win2.EnableVsync(true);
+	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 
 	 win.SetPosition(100, 200);
-	 win2.SetPosition(800, 200);
-
 	 win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
-	 win2.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
-	 auto lbl1 = win.AddComponent<Label>("FPS: 60");
-	 lbl1->AddExtendedFunctions<DisplayFPSForLabel>();
-	 lbl1->RemoveExtendedFunctions<DisplayFPSForLabel>();
+	 win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
+	 auto lbl2 = win.AddComponent<Label>("");
+	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
+	 lbl2->SetPositionY(100);
 
-	 win2.AddComponent<Label>("FPS: 30")->AddExtendedFunctions<DisplayFPSForLabel>();
 
 	 //win.EnableVsync(true);
-	 SDL_Log("win title: %s\n", win.GetTitle().c_str());
+	 SG_GuiManager.SetTargetFrameRate(60);
+	 //SG_GuiManager.SetUnlimitedFrameRate(true);
 	 SG_GuiManager.Run();
 	 GuiManager::Quit();
 	

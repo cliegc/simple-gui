@@ -4,6 +4,7 @@
 #include <memory>
 #include "window.hpp"
 #include "event.hpp"
+#include "framerate.hpp"
 #include "deleter.hpp"
 #include "font.hpp"
 
@@ -44,7 +45,7 @@ namespace SimpleGui {
 
     class GuiManager final {
     public:
-        ~GuiManager() = default;
+        ~GuiManager();
 
         GuiManager(const GuiManager&) = delete;
         GuiManager& operator=(const GuiManager&) = delete;
@@ -56,24 +57,28 @@ namespace SimpleGui {
 
         static GuiManager& GetInstance();
 
-        Window& CreateWindow(std::string_view title, int w, int h);
+        Window& GetWindow(std::string_view title, int w, int h);
         void Run();
 
         inline const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
         inline Font& GetDefaultFont() const { return *m_defaultResource.font; }
         inline Style& GetDefaultStyle() const { return *m_defaultResource.style; }
 
+        inline void SetUnlimitedFrameRate(bool value) { m_fpsController->SetUnlimitedFrameRate(value); }
+        inline double GetDelta() const { return m_fpsController->GetDelta(); }
+        inline double GetRealFrameRate() const { return m_fpsController->GetRealFrameRate(); }
+        inline uint32_t GetTargetFrameRate() const { return m_fpsController->GetTargetFrameRate(); }
+        inline void SetTargetFrameRate(uint32_t fps) { m_fpsController->SetTargetFrameRate(fps); };
+
     private:
         static std::unique_ptr<GuiManager> s_guiManager;
 
         CommandArgs m_cmdArgs;
         DefaultResource m_defaultResource;
-        std::unordered_map<WindowID, std::unique_ptr<Window>> m_windows;
+        std::unique_ptr<Window> m_window;
         std::unique_ptr<EventManager> m_eventManager;
+        std::unique_ptr<FrameRateController> m_fpsController;
 
         GuiManager() = default;
-        void HandleEvent();
-        void Update();
-        void Render();
     };
 }

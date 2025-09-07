@@ -151,11 +151,9 @@ namespace SimpleGui {
 	}
 
 	void Window::UpdateAndRender() {
-		if (m_fpsController.Update()) {
-			m_rootCmp->Update();
-			m_renderer->Clear();
-			m_rootCmp->Render(*m_renderer);
-			m_renderer->Present();
-		}
+		m_rootCmp->Update();
+		m_renderer->Clear();
+		m_rootCmp->Render(*m_renderer);
+		m_renderer->Present();
 	}
 }

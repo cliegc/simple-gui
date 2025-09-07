@@ -1,64 +1,44 @@
 #include "framerate.hpp"
-#include <thread>
+#include "window.hpp"
 
 
 namespace SimpleGui {
-	FrameRateController::FrameRateController(uint32_t fps) {
-		m_currentFrameTime = Clock::now();
+	FrameRateController::FrameRateController(Window* window, uint32_t fps) {
 		m_lastFrameTime = Clock::now();
-		m_targetFrameTime = std::chrono::microseconds(static_cast<int64_t>(1000000.0 / static_cast<double>(fps)));
-		m_frameTimeSum = std::chrono::microseconds(0);
-		m_frameCount = 0;
+		m_targetFrameTime = std::chrono::nanoseconds(static_cast<int64_t>(1000000000.0 / static_cast<double>(fps)));
+		m_sumDeltaTime = std::chrono::nanoseconds(0);
 		m_targetFrameRate = fps;
-		m_realFrameRate = static_cast<double>(fps);
+		m_frameCount = 0;
+		m_realFrameRate = fps;
+		m_delta = 0;
 		m_isUnlimited = false;
+		m_window = window;
 	}
 
-	bool FrameRateController::Update() {
-		m_currentFrameTime = Clock::now();
-		auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(
-			m_currentFrameTime - m_lastFrameTime);
-
-		if (deltaTime >= m_targetFrameTime) {
-			m_frameTimeSum += deltaTime;
-			m_lastFrameTime = m_currentFrameTime;
-			m_frameCount++;
-
-			//m_delta = static_cast<double>(m_frameTimeSum.count() / m_frameCount) / 1000000.0;
-
-			if (m_frameTimeSum >= std::chrono::seconds(1)) {
-				m_realFrameRate = 1000000.0 / (static_cast<double>(m_frameTimeSum.count()) / m_frameCount);
-				m_frameTimeSum = std::chrono::microseconds(0);
-				m_frameCount = 0;
+	void FrameRateController::Update() {
+		auto deltaTime = Clock::now() - m_lastFrameTime;
+		
+		if (!m_isUnlimited && !m_window->IsEnabledVsync()) {
+			if (deltaTime < m_targetFrameTime) {
+				SDL_DelayNS((m_targetFrameTime - deltaTime).count());
 			}
-
-			return true;
 		}
 
-		return false;
-	}
-
-	FrameRateController::Clock::time_point FrameRateController::CalcNextWakeTime(const Clock::time_point& initWakeTime) const {
-		Clock::time_point nextWakeTime = initWakeTime;
-		auto timeUntilNextFrame = m_targetFrameTime -
-			std::chrono::duration_cast<std::chrono::microseconds>(
-				m_currentFrameTime - m_lastFrameTime);
-		auto wakeTimeForWindow = m_currentFrameTime + timeUntilNextFrame;
-		if (wakeTimeForWindow < nextWakeTime) {
-			nextWakeTime = wakeTimeForWindow;
+		auto endFrameTime = Clock::now();
+		m_frameCount++;
+		m_sumDeltaTime += endFrameTime - m_lastFrameTime;
+		if (m_sumDeltaTime >= std::chrono::milliseconds(100)) {
+			m_realFrameRate = static_cast<double>(m_frameCount) / (static_cast<double>(m_sumDeltaTime.count()) / 1000000000.0);
+			m_frameCount = 0;
+			m_sumDeltaTime = std::chrono::nanoseconds(0);
 		}
-		return nextWakeTime;
-	}
-
-	void FrameRateController::Sleep(const Clock::time_point& time) {
-		if (time < std::chrono::high_resolution_clock::time_point::max()) {
-			std::this_thread::sleep_until(time);
-		}
+		m_delta = static_cast<double>((endFrameTime - m_lastFrameTime).count()) / 1000000000.0;
+		m_lastFrameTime = endFrameTime;
 	}
 
 	void FrameRateController::SetTargetFrameRate(uint32_t fps) {
-		m_targetFrameTime = std::chrono::microseconds(static_cast<int64_t>(1000000.0 / static_cast<double>(fps)));
+		m_targetFrameTime = std::chrono::nanoseconds(static_cast<int64_t>(1000000000.0 / static_cast<double>(fps)));
 		m_targetFrameRate = fps;
-		m_realFrameRate = static_cast<double>(fps);
+		m_realFrameRate = fps;
 	}
 }
