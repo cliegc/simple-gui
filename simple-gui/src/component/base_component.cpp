@@ -6,6 +6,7 @@
 namespace SimpleGui {
 	BaseComponent::BaseComponent() {
 		m_padding = { 0 };
+		m_extFunctionsManager = std::make_unique<ExtendedFunctionsManager>(this);
 	}
 
 	void BaseComponent::PreparationOfUpdateChildren() {
@@ -86,20 +87,12 @@ namespace SimpleGui {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		// update extended functions
-		for (auto& func : m_extFunctions) {
-			func->HandleEvent(nullptr);
-		}
+		m_extFunctionsManager->HandleEvent(nullptr);
 
 		// handle events of m_children
 		for (auto it = m_children.rbegin(); it != m_children.rend(); ++it) {
 			if (!(*it) || (*it)->m_needRemove) continue;
-			if ((*it)->HandleEvent(event)) {
-				// handle extended functions
-				for (auto& func : (*it)->m_extFunctions) {
-					func->HandleEvent(nullptr);
-				}
-				return true;
-			}
+			if ((*it)->HandleEvent(event)) return true;
 		}
 
 		// handle events of chaches [X]
@@ -116,19 +109,12 @@ namespace SimpleGui {
 		CalcVisibleGlobalRect(m_parent, this);
 
 		// update extended functions
-		for (auto& func : m_extFunctions) {
-			func->Update();
-		}
+		m_extFunctionsManager->Update();
 
 		// update child, and size configs of chid
 		for (auto& child : m_children) {
 			UpdateChildSizeConfigs(child.get());
 			child->Update();
-
-			// update child extended functions
-			for (auto& func : child->m_extFunctions) {
-				func->Update();
-			}
 		}
 	}
 
@@ -140,18 +126,11 @@ namespace SimpleGui {
 		}*/
 		
 		// render extended functions
-		for (auto& func : m_extFunctions) {
-			func->Render(renderer);
-		}
+		m_extFunctionsManager->Render(renderer);
 
 		// render m_children
 		for (auto& child : m_children) {
 			child->Render(renderer);
-
-			// render child extended functions
-			for (auto& func : child->m_extFunctions) {
-				func->Render(renderer);
-			}
 		}
 	}
 
@@ -414,17 +393,5 @@ namespace SimpleGui {
 
 	void BaseComponent::ClearCustomThemeColors() {
 		m_themeColorCaches.clear();
-	}
-
-	void BaseComponent::AddExtendedFunctions(std::unique_ptr<ExtendedFunctions> functions) {
-		functions->m_target = this;
-		m_extFunctions.push_back(std::move(functions));
-	}
-
-	void BaseComponent::RemoveExtendedFunctions(ExtendedFunctions* functions) {
-		
-	}
-
-	void BaseComponent::ClearAllExtendedFunctions() {
 	}
 }

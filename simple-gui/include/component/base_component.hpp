@@ -128,10 +128,28 @@ namespace SimpleGui {
 		void ClearCustomThemeColor(ThemeColorFlags flag);
 		void ClearCustomThemeColors();
 
-		// TODO ExtendedFunctionsManager, Deferred
-		void AddExtendedFunctions(std::unique_ptr<ExtendedFunctions> functions);
-		void RemoveExtendedFunctions(ExtendedFunctions* functions);
-		void ClearAllExtendedFunctions();
+		template<typename T, typename ...Args>
+		T* AddExtendedFunctions(Args&& ...args) {
+			return m_extFunctionsManager->AddExtendedFunctions<T>(std::forward<Args>(args)...);
+		}
+
+		template<typename T, typename ...Args>
+		T* AddExtendedFunctionsDeferred(Args&& ...args) {
+			return m_extFunctionsManager->AddExtendedFunctionsDeferred<T>(std::forward<Args>(args)...);
+		}
+
+		template<typename T>
+		std::unique_ptr<ExtendedFunctions> RemoveExtendedFunctions() {
+			return m_extFunctionsManager->RemoveExtendedFunctions<T>();
+		}
+
+		template<typename T>
+		std::unique_ptr<ExtendedFunctions> RemoveExtendedFunctionsDeferred() {
+			return m_extFunctionsManager->RemoveExtendedFunctionsDeferred<T>();
+		}
+
+		inline void ClearAllExtendedFunctions() { m_extFunctionsManager->Clear(); }
+		inline void ClearAllExtendedFunctionsDeferred() { m_extFunctionsManager->ClearDeferred(); }
 
 	protected:
 		Vec2 m_position;			// 局部坐标
@@ -153,7 +171,8 @@ namespace SimpleGui {
 		BaseComponent* m_parent = nullptr;
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
-		std::vector<std::unique_ptr<ExtendedFunctions>> m_extFunctions;
+		//std::vector<std::unique_ptr<ExtendedFunctions>> m_extFunctions;
+		std::unique_ptr<ExtendedFunctionsManager> m_extFunctionsManager;
 
 	protected:
 		virtual void EnteredComponentTree() {};

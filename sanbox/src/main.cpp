@@ -7,7 +7,7 @@
 
 using namespace SimpleGui;
 
-class LabelDisplayFPS : public ExtendedFunctions {
+class DisplayFPSForLabel : public ExtendedFunctions {
 protected:
 	virtual void Update() override {
 		Label* lbl = (Label*)m_target;
@@ -52,14 +52,14 @@ int main(int argc, char** argv) {
 	 win.SetPosition(100, 200);
 	 win2.SetPosition(800, 200);
 
-	 win.GetRootComponent().AddExtendedFunctions(std::move(std::make_unique<TestFrameRateControllerFunctions>()));
-	 win2.GetRootComponent().AddExtendedFunctions(std::move(std::make_unique<TestFrameRateControllerFunctions>()));
+	 win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
+	 win2.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	 auto lbl1 = win.AddComponent<Label>("FPS: 60");
-	 lbl1->AddExtendedFunctions(std::move(std::make_unique<LabelDisplayFPS>()));
-	 //lbl1->AddExtendedFunctions<T>(Args&&...args);
+	 lbl1->AddExtendedFunctions<DisplayFPSForLabel>();
+	 lbl1->RemoveExtendedFunctions<DisplayFPSForLabel>();
 
-	 win2.AddComponent<Label>("FPS: 30")->AddExtendedFunctions(std::move(std::make_unique<LabelDisplayFPS>()));
+	 win2.AddComponent<Label>("FPS: 30")->AddExtendedFunctions<DisplayFPSForLabel>();
 
 	 //win.EnableVsync(true);
 	 SDL_Log("win title: %s\n", win.GetTitle().c_str());

@@ -58,9 +58,9 @@ namespace SimpleGui {
 		bool IsEnabledVsync() const;
 		bool EnableVsync(bool enable);
 
-		inline inline void SetUnlimitedFrameRate(bool value) { m_fpsController.SetUnlimitedFrameRate(value); }
-		inline inline double GetRealFrameRate() const { return m_fpsController.GetRealFrameRate(); }
-		inline inline uint32_t GetTargetFrameRate() const { return m_fpsController.GetTargetFrameRate(); }
+		inline void SetUnlimitedFrameRate(bool value) { m_fpsController.SetUnlimitedFrameRate(value); }
+		inline double GetRealFrameRate() const { return m_fpsController.GetRealFrameRate(); }
+		inline uint32_t GetTargetFrameRate() const { return m_fpsController.GetTargetFrameRate(); }
 		inline void SetTargetFrameRate(uint32_t fps) { m_fpsController.SetTargetFrameRate(fps); };
 
 		Font& GetFont() const;

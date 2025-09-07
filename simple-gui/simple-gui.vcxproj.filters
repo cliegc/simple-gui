@@ -143,5 +143,8 @@
     <ClCompile Include="src\framerate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\extended_functions.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
