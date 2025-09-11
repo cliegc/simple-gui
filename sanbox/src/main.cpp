@@ -76,14 +76,9 @@ int main(int argc, char** argv) {
 	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	 lbl2->SetPositionY(100);
 
-	 auto btn = win.AddComponent<Button>("click me");
-	 btn->SetPositionY(150);
-	 btn->SetSize(80, 30);
-	 btn->clicked.Connect("on_clicked",
-		 []() {
-			 Vec2 pos = SG_GuiManager.GetMousePosition();
-			 SDL_Log("click pos: %f, %f\n", pos.x, pos.y);
-		 });
+	 auto draggablePanel = win.AddComponent<DraggablePanel>("ttt");
+	 draggablePanel->SetSize(100, 100);
+	 draggablePanel->SetGlobalDragEnable(true);
 
 	 //win.EnableVsync(true);
 	 SG_GuiManager.SetTargetFrameRate(60);

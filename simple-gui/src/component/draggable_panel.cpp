@@ -27,17 +27,17 @@ namespace SimpleGui {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
-		Vec2 renderPos;
+		Vec2 renderPos = SG_GuiManager.GetMousePosition();
 
-		//if (HandleToggleFold(event, renderPos)) return true;
-		//if (HandleDragResize(event, renderPos)) return true;
-		//if (HandleDragMotion(event, renderPos)) return true;
+		if (HandleToggleFold(event, renderPos)) return true;
+		if (HandleDragResize(event, renderPos)) return true;
+		if (HandleDragMotion(event, renderPos)) return true;
 
-		//if (BaseComponent::HandleEvent(event)) return true;
+		if (BaseComponent::HandleEvent(event)) return true;
 
 		//// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
-		//if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
-		//if (GetGlobalRect().ContainPoint(renderPos)) return true;
+		if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
+		if (GetGlobalRect().ContainPoint(renderPos)) return true;
 
 		return false;
 	}
@@ -185,22 +185,42 @@ namespace SimpleGui {
 		m_position.Clamp(min, max);
 	}
 
-	bool DraggablePanel::HandleDragMotion(const SDL_Event& event, const Vec2& mousePos, bool globalDragEnable) {
+	bool DraggablePanel::HandleDragMotion(Event* event, const Vec2& mousePos, bool globalDragEnable) {
 		if ((m_handleVisible && !globalDragEnable && m_dragData.dragGRect.ContainPoint(mousePos)) ||
 			(globalDragEnable && m_visibleGRect.ContainPoint(mousePos))) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+			/*if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 				m_dragData.startMousePos = mousePos;
 				m_dragData.startData = m_position;
 				m_dragData.dragging = true;
 				return true;
+			}*/
+			if (event->IsMouseButtonEvent()) {
+				auto ev = static_cast<MouseButtonEvent*>(event);
+				if (ev->IsPressed() && ev->GetButtonIndex() == MouseButton::Left) {
+					m_dragData.startMousePos = mousePos;
+					m_dragData.startData = m_position;
+					m_dragData.dragging = true;
+					return true;
+				}
 			}
 		}
 
 		if (m_dragData.dragging) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
-				m_dragData.dragging = false;
+			//if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
+			//	m_dragData.dragging = false;
+			//}
+			//else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+			//	m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
+			//}
+			//return true;
+
+			if (event->IsMouseButtonEvent()) {
+				auto ev = static_cast<MouseButtonEvent*>(event);
+				if (ev->IsReleased() && ev->GetButtonIndex() == MouseButton::Left) {
+					m_dragData.dragging = false;
+				}
 			}
-			else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+			else if (event->IsMouseMotionEvent()) {
 				m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
 			}
 			return true;
@@ -208,23 +228,44 @@ namespace SimpleGui {
 		return false;
 	}
 
-	bool DraggablePanel::HandleDragResize(const SDL_Event& event, const Vec2& mousePos) {
+	bool DraggablePanel::HandleDragResize(Event* event, const Vec2& mousePos) {
 		if (m_resizable && m_resizeData.dragGRect.ContainPoint(mousePos)) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-				m_resizeData.startMousePos = mousePos;
-				m_resizeData.startData = m_size;
-				m_resizeData.dragging = true;
-				SDL_SetCursor(m_resizeCursor.get());
-				return true;
+			//if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+			//	m_resizeData.startMousePos = mousePos;
+			//	m_resizeData.startData = m_size;
+			//	m_resizeData.dragging = true;
+			//	SDL_SetCursor(m_resizeCursor.get());
+			//	return true;
+			//}
+			if (event->IsMouseButtonEvent()) {
+				auto ev = static_cast<MouseButtonEvent*>(event);
+				if (ev->IsPressed() && ev->GetButtonIndex() == MouseButton::Left) {
+					m_resizeData.startMousePos = mousePos;
+					m_resizeData.startData = m_size;
+					m_resizeData.dragging = true;
+					SDL_SetCursor(m_resizeCursor.get());
+					return true;
+				}
 			}
 		}
 
 		if (m_resizeData.dragging) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
-				m_resizeData.dragging = false;
-				SDL_SetCursor(SDL_GetDefaultCursor());
+			//if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
+			//	m_resizeData.dragging = false;
+			//	SDL_SetCursor(SDL_GetDefaultCursor());
+			//}
+			//else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+			//	Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
+			//	SetSize(size);
+			//}
+			if (event->IsMouseButtonEvent()) {
+				auto ev = static_cast<MouseButtonEvent*>(event);
+				if (ev->IsReleased() && ev->GetButtonIndex() == MouseButton::Left) {
+					m_resizeData.dragging = false;
+					SDL_SetCursor(SDL_GetDefaultCursor());
+				}
 			}
-			else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+			else if (event->IsMouseMotionEvent()) {
 				Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
 				SetSize(size);
 			}
@@ -233,22 +274,38 @@ namespace SimpleGui {
 		return false;
 	}
 
-	bool DraggablePanel::HandleToggleFold(const SDL_Event& event, const Vec2& mousePos) {
+	bool DraggablePanel::HandleToggleFold(Event* event, const Vec2& mousePos) {
 		if (!m_handleVisible) return false;
 		if (m_dragData.dragGRect.ContainPoint(mousePos) && m_foldData.toggleGRect.ContainPoint(mousePos)) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-				if (!m_foldData.isFolded) {
-					m_foldData.unfoldSize = m_size;
-					m_foldData.isFolded = true;
-					m_size.h = m_handleThickness;
-					return true;
-				}
-				else {
-					m_foldData.isFolded = false;
-					m_size.h = m_foldData.unfoldSize.h;
-					return true;
+			if (event->IsMouseButtonEvent()) {
+				auto ev = static_cast<MouseButtonEvent*>(event);
+				if (ev->IsPressed() && ev->GetButtonIndex() == MouseButton::Left) {
+					if (!m_foldData.isFolded) {
+						m_foldData.unfoldSize = m_size;
+						m_foldData.isFolded = true;
+						m_size.h = m_handleThickness;
+						return true;
+					}
+					else {
+						m_foldData.isFolded = false;
+						m_size.h = m_foldData.unfoldSize.h;
+						return true;
+					}
 				}
 			}
+			//if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+			//	if (!m_foldData.isFolded) {
+			//		m_foldData.unfoldSize = m_size;
+			//		m_foldData.isFolded = true;
+			//		m_size.h = m_handleThickness;
+			//		return true;
+			//	}
+			//	else {
+			//		m_foldData.isFolded = false;
+			//		m_size.h = m_foldData.unfoldSize.h;
+			//		return true;
+			//	}
+			//}
 		}
 		return false;
 	}

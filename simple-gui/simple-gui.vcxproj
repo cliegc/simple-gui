@@ -163,6 +163,7 @@
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\signal.hpp" />
     <ClInclude Include="include\simple_gui.hpp" />
+    <ClInclude Include="include\text.hpp" />
     <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\window.hpp" />
   </ItemGroup>
@@ -185,6 +186,7 @@
     <ClCompile Include="src\gui_manager.cpp" />
     <ClCompile Include="src\math.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
