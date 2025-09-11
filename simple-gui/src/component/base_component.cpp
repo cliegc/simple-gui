@@ -83,7 +83,7 @@ namespace SimpleGui {
 	}
 
 
-	bool BaseComponent::HandleEvent(const SDL_Event& event) {
+	bool BaseComponent::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		// update extended functions

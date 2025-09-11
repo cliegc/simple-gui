@@ -16,6 +16,13 @@ namespace SimpleGui {
 
 	using WindowID = SDL_WindowID;
 
+	enum class WindowState {
+		Normal,
+		Minimized,
+		Maximized,
+		FullScreen,
+	};
+
 	class Window final {
 	public:
 		Window(std::string_view title, int w, int h);
@@ -47,10 +54,13 @@ namespace SimpleGui {
 		void SetFullScreen(bool full);
 
 		bool IsMaximized() const;
-		void ToggleMaximize() const;
+		void ToggleMaximize();
 
 		bool IsMinimized() const;
-		void ToggleMinimize() const;
+		void ToggleMinimize();
+
+		WindowState GetState() const;
+		void SetState(WindowState state);
 
 		WindowID GetID() const;
 
@@ -87,6 +97,7 @@ namespace SimpleGui {
 
 	private:
 		friend class GuiManager;
+		friend class EventManager;
 
 		bool m_visible;
 		SDL_Window* m_window;

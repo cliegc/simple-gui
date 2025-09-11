@@ -9,7 +9,7 @@ namespace SimpleGui {
 	public:
 		~RootComponent() = default;
 
-		virtual bool HandleEvent(const SDL_Event& event) override;
+		virtual bool HandleEvent(Event* event) override;
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 

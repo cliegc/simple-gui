@@ -17,7 +17,7 @@ namespace SimpleGui {
 		virtual void SetFont(std::unique_ptr<Font> font) override;
 		virtual void SetFont(std::string_view path, int size) override;
 
-		virtual bool HandleEvent(const SDL_Event&) override;
+		virtual bool HandleEvent(Event*) override;
 		virtual void Update() override;
 		virtual void Render(const Renderer&) override;
 

@@ -41,6 +41,7 @@ namespace SimpleGui {
 		void Render(const Renderer& renderer);
 
 		void Clear();
+		// 未实现
 		void ClearDeferred();
 
 		template<typename T>
@@ -60,6 +61,7 @@ namespace SimpleGui {
 			return ptr;
 		}
 
+		// 未实现
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctionsDeferred(Args&& ...args) {
 
@@ -79,6 +81,7 @@ namespace SimpleGui {
 			return nullptr;
 		}
 
+		// 未实现
 		template<typename T>
 		std::unique_ptr<ExtendedFunctions> RemoveExtendedFunctionsDeferred() {
 

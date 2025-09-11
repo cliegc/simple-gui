@@ -62,6 +62,10 @@ namespace SimpleGui {
         void Clamp(const Vec2& min, const Vec2& max);
         bool IsEqualApprox(const Vec2& other) const;
         bool IsZeroApprox() const;
+
+        Vec2 Normalize() const;
+        void Normalized();
+        bool IsNormalized() const;
     };
 
     struct Rect final {

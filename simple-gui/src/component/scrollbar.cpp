@@ -9,60 +9,60 @@ namespace SimpleGui {
 		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 	}
 
-	bool ScrollBar::HandleEvent(const SDL_Event& event) {
+	bool ScrollBar::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
-		Vec2 renderPos;
-		if (!m_dragSliderData.canDragging && m_slider.visibleGRect.ContainPoint(renderPos)) {
-			m_mouseState = MouseState::Hovering;
+		//Vec2 renderPos;
+		//if (!m_dragSliderData.canDragging && m_slider.visibleGRect.ContainPoint(renderPos)) {
+		//	m_mouseState = MouseState::Hovering;
 
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-				m_mouseState = MouseState::Pressed;
-				m_dragSliderData.startPos = m_slider.globalRect.position;
-				m_dragSliderData.startMousePos = renderPos;
-				//m_dragSliderData.dragging = true;
-				m_dragSliderData.canDragging = true;
-			}
-			return true;
-		}
+		//	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+		//		m_mouseState = MouseState::Pressed;
+		//		m_dragSliderData.startPos = m_slider.globalRect.position;
+		//		m_dragSliderData.startMousePos = renderPos;
+		//		//m_dragSliderData.dragging = true;
+		//		m_dragSliderData.canDragging = true;
+		//	}
+		//	return true;
+		//}
 
-		m_dragSliderData.dragging = false;
+		//m_dragSliderData.dragging = false;
 
-		if (m_dragSliderData.canDragging) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
-				m_mouseState = MouseState::Normal;
-				m_dragSliderData.dragging = false;
-				m_dragSliderData.canDragging = false;
-				return true;
-			}
-			else if (event.type == SDL_EVENT_MOUSE_MOTION) {
-				m_dragSliderData.dragging = true;
-				Vec2 pos = renderPos - m_dragSliderData.startMousePos + m_dragSliderData.startPos;
-				if (m_direction == Direction::Horizontal) {
-					m_slider.globalRect.position.x = pos.x;
-				}
-				else {
-					m_slider.globalRect.position.y = pos.y;
-				}
-				return true;
-			}
-		}
+		//if (m_dragSliderData.canDragging) {
+		//	if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
+		//		m_mouseState = MouseState::Normal;
+		//		m_dragSliderData.dragging = false;
+		//		m_dragSliderData.canDragging = false;
+		//		return true;
+		//	}
+		//	else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+		//		m_dragSliderData.dragging = true;
+		//		Vec2 pos = renderPos - m_dragSliderData.startMousePos + m_dragSliderData.startPos;
+		//		if (m_direction == Direction::Horizontal) {
+		//			m_slider.globalRect.position.x = pos.x;
+		//		}
+		//		else {
+		//			m_slider.globalRect.position.y = pos.y;
+		//		}
+		//		return true;
+		//	}
+		//}
 
 
-		if (m_visibleGRect.ContainPoint(renderPos)) {
-			if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-				// µã»÷²Û£¬»¬¿éÒÆ¶¯µ½µã»÷Î»ÖÃ
+		//if (m_visibleGRect.ContainPoint(renderPos)) {
+		//	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+		//		// µã»÷²Û£¬»¬¿éÒÆ¶¯µ½µã»÷Î»ÖÃ
 
-				return true;
-			}
+		//		return true;
+		//	}
 
-			if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-				// ¹öÂÖ¹ö¶¯»¬¿é
+		//	if (event.type == SDL_EVENT_MOUSE_WHEEL) {
+		//		// ¹öÂÖ¹ö¶¯»¬¿é
 
-				return true;
-			}
-		}
+		//		return true;
+		//	}
+		//}
 
 		return BaseComponent::HandleEvent(event);
 	}

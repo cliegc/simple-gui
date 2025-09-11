@@ -13,10 +13,14 @@ namespace SimpleGui {
 		SetSize(m_window->GetRenderer().GetRenderOutputSize());
 	}
 
-	bool RootComponent::HandleEvent(const SDL_Event& event) {
+	bool RootComponent::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+		//if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+		//	SetSizeToFillWindow();
+		//}
+
+		if (event->IsWindowResizedEvent()) {
 			SetSizeToFillWindow();
 		}
 

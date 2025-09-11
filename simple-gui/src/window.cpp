@@ -1,6 +1,7 @@
 #include "window.hpp"
-#include "SDL3/SDL_dialog.h"
-#include "SDL3_image/SDL_image.h"
+#include <SDL3/SDL_dialog.h>
+#include <SDL3_image/SDL_image.h>
+#include "event.hpp"
 
 
 namespace SimpleGui {
@@ -88,7 +89,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) != 0;
 	}
 
-	void Window::ToggleMaximize() const {
+	void Window::ToggleMaximize() {
 		SDL_MaximizeWindow(m_window);
 	}
 
@@ -96,8 +97,32 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED) != 0;
 	}
 
-	void Window::ToggleMinimize() const {
+	void Window::ToggleMinimize() {
 		SDL_MinimizeWindow(m_window);
+	}
+
+	WindowState Window::GetState() const {
+		if ((SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED) != 0) return WindowState::Minimized;
+		else if ((SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) != 0) return WindowState::Maximized;
+		else if ((SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN) != 0) return WindowState::FullScreen;
+		else return WindowState::Normal;
+	}
+
+	void Window::SetState(WindowState state) {
+		switch (state) {
+		case SimpleGui::WindowState::Normal:
+			SDL_RestoreWindow(m_window);
+			break;
+		case SimpleGui::WindowState::Minimized:
+			ToggleMinimize();
+			break;
+		case SimpleGui::WindowState::Maximized:
+			ToggleMaximize();
+			break;
+		case SimpleGui::WindowState::FullScreen:
+			SetFullScreen(true);
+			break;
+		}
 	}
 
 	WindowID Window::GetID() const {
@@ -148,6 +173,7 @@ namespace SimpleGui {
 	}
 
 	void Window::HandleEvent(Event* event) {
+		m_rootCmp->HandleEvent(event);
 	}
 
 	void Window::UpdateAndRender() {

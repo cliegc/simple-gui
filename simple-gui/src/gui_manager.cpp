@@ -41,6 +41,7 @@ namespace SimpleGui {
 		s_guiManager->m_window = std::make_unique<Window>("simple gui", 640, 480);
 		s_guiManager->m_window->SetFont(s_guiManager->m_defaultResource.font->GetPath(), s_guiManager->m_defaultResource.font->GetSize());
 		s_guiManager->m_window->SwitchStyle(StyleManager::DarkStyle);
+		s_guiManager->m_eventManager = std::make_unique<EventManager>(s_guiManager->m_window.get());
 		s_guiManager->m_fpsController = std::make_unique<FrameRateController>(s_guiManager->m_window.get());
 	}
 
@@ -61,24 +62,36 @@ namespace SimpleGui {
 		return *m_window;
 	}
 
+	Vec2 GuiManager::GetMousePosition() const {
+		return m_window->GetRenderer().GetRenderPositionFromMouse();
+	}
+
 	void GuiManager::Run() {
 		bool running = true;
-		SDL_Event event{};
+		Event* event = nullptr;
 
 		while (running) {
 			// control framerate
 			m_fpsController->Update();
 
 			// handle event
-			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_EVENT_QUIT) {
+			while (event = m_eventManager->PollEvent()) {
+				if (event->IsApplicationQuitEvent()) {
 					running = false;
 				}
+
+				else if (event->GetWindowID() == m_window->GetID()) {
+					m_window->HandleEvent(event);
+				}
+
+				m_eventManager->FreeEvent(event);
 			}
 			
 			// update and render
 			m_window->UpdateAndRender();
 		}
 	}
+
+
 }
 

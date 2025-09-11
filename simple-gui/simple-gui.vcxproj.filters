@@ -146,5 +146,8 @@
     <ClCompile Include="src\extended_functions.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\event.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

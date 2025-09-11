@@ -70,6 +70,8 @@ namespace SimpleGui {
         inline uint32_t GetTargetFrameRate() const { return m_fpsController->GetTargetFrameRate(); }
         inline void SetTargetFrameRate(uint32_t fps) { m_fpsController->SetTargetFrameRate(fps); };
 
+        Vec2 GetMousePosition() const;
+
     private:
         static std::unique_ptr<GuiManager> s_guiManager;
 

@@ -23,13 +23,14 @@ namespace SimpleGui {
 								 if (m_visibleGRect.size.IsZeroApprox()) return
 
 	class Window;
+	class Event;
 
 	class BaseComponent {
 	public:
 		BaseComponent();
 		virtual ~BaseComponent() = default;
 
-		virtual bool HandleEvent(const SDL_Event& event);
+		virtual bool HandleEvent(Event* event);
 		virtual void Update();
 		virtual void Render(const Renderer& renderer);
 

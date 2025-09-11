@@ -68,14 +68,22 @@ int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 
-	 win.SetPosition(100, 200);
-	 win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
-	 win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
+	 //win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	 //win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	 win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
 	 auto lbl2 = win.AddComponent<Label>("");
 	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	 lbl2->SetPositionY(100);
+
+	 auto btn = win.AddComponent<Button>("click me");
+	 btn->SetPositionY(150);
+	 btn->SetSize(80, 30);
+	 btn->clicked.Connect("on_clicked",
+		 []() {
+			 Vec2 pos = SG_GuiManager.GetMousePosition();
+			 SDL_Log("click pos: %f, %f\n", pos.x, pos.y);
+		 });
 
 	 //win.EnableVsync(true);
 	 SG_GuiManager.SetTargetFrameRate(60);

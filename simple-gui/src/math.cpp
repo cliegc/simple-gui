@@ -160,6 +160,33 @@ namespace SimpleGui {
         return SimpleGui::IsZeroApprox(x) &&
             SimpleGui::IsZeroApprox(y);
     }
+
+    Vec2 Vec2::Normalize() const {
+        float len = Length();
+        if (SimpleGui::IsZeroApprox(len)) {
+            return Vec2(1, 0);
+        }
+        return Vec2(
+            x / len,
+            y / len
+        );
+    }
+
+    void Vec2::Normalized() {
+        float len = Length();
+        if (SimpleGui::IsZeroApprox(len)) {
+            x = 1;
+            y = 0;
+            return;
+        }
+        x /= len;
+        y /= len;
+    }
+
+    bool Vec2::IsNormalized() const {
+        return SimpleGui::IsEqualApprox(LengthSquared(), 1.f);
+    }
+
 #pragma endregion
 
 #pragma region Rect

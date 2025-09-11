@@ -23,21 +23,21 @@ namespace SimpleGui {
 			m_titleLbl->GetSize().h + m_dragData.dragGRect.size.h);
 	}
 
-	bool DraggablePanel::HandleEvent(const SDL_Event& event) {
+	bool DraggablePanel::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
 		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
 		Vec2 renderPos;
 
-		if (HandleToggleFold(event, renderPos)) return true;
-		if (HandleDragResize(event, renderPos)) return true;
-		if (HandleDragMotion(event, renderPos)) return true;
+		//if (HandleToggleFold(event, renderPos)) return true;
+		//if (HandleDragResize(event, renderPos)) return true;
+		//if (HandleDragMotion(event, renderPos)) return true;
 
-		if (BaseComponent::HandleEvent(event)) return true;
+		//if (BaseComponent::HandleEvent(event)) return true;
 
-		// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
-		if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
-		if (GetGlobalRect().ContainPoint(renderPos)) return true;
+		//// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
+		//if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
+		//if (GetGlobalRect().ContainPoint(renderPos)) return true;
 
 		return false;
 	}
