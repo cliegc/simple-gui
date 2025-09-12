@@ -49,9 +49,9 @@ namespace SimpleGui {
         friend Vec2 operator+(const Vec2&, const Vec2&);
         friend Vec2 operator-(const Vec2&, const Vec2&);
 
-        float Dot(const Vec2&) const;
-        float Cross(const Vec2&) const;
-        float LengthSquared() const;
+        constexpr float Dot(const Vec2&) const;
+        constexpr float Cross(const Vec2&) const;
+        constexpr float LengthSquared() const;
         float Length() const;
         SDL_FPoint ToSDLFPoint() const;
         SDL_Point ToSDLPoint() const;

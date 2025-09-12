@@ -43,7 +43,8 @@ namespace SimpleGui {
 		return static_cast<EventType>(static_cast<int>(type1) & static_cast<int>(type2));
 	}
 
-#define SG_EVENT_GET_TYPE(type) inline constexpr virtual EventType GetType() const override { return (type); }
+#define SG_EVENT_GET_TYPE(type) public: inline constexpr virtual EventType GetType() const override { return (type); } \
+								inline static constexpr EventType GetStaticType() { return type; }
 #define SG_EVENT_DETERMINE_TYPE_FUNC(type, type_name) inline constexpr bool Is##type_name() const { return (GetType() & type) == type; }
 
 	class Event {
@@ -59,26 +60,35 @@ namespace SimpleGui {
 
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::ApplicationQuitEvent, ApplicationQuitEvent)
 
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowEvent, WindowEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowShowEvent, WindowShowEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowMovedEvent, WindowMovedEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowResizedEvent, WindowResizedEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowStateChangedEvent, WindowStateChangedEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowMouseEvent, WindowMouseEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowFocusEvent, WindowFocusEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowCloseRequestedEvent, WindowCloseRequestedEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowDestroyEvent, WindowDestroyEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowEvent, WindowEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowShowEvent, WindowShowEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowMovedEvent, WindowMovedEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowResizedEvent, WindowResizedEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowStateChangedEvent, WindowStateChangedEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowMouseEvent, WindowMouseEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowFocusEvent, WindowFocusEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowCloseRequestedEvent, WindowCloseRequestedEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::WindowDestroyEvent, WindowDestroyEvent)
 
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseEvent, MouseEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseButtonEvent, MouseButtonEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseMotionEvent, MouseMotionEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseWheelEvent, MouseWheelEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseEvent, MouseEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseButtonEvent, MouseButtonEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseMotionEvent, MouseMotionEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::MouseWheelEvent, MouseWheelEvent)
 
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardEvent, KeyBoardEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardButtonEvent, KeyBoardButtonEvent)
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextInputEvent, KeyBoardTextInputEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardEvent, KeyBoardEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardButtonEvent, KeyBoardButtonEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextInputEvent, KeyBoardTextInputEvent)
 
-			SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropEvent, DropEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropEvent, DropEvent)
+
+		template<typename T>
+		T* Convert() {
+			static_assert(std::is_base_of<Event, T>::value, "T 必须继承自Event");
+			if (GetType() == T::GetStaticType()) {
+				return static_cast<T*>(this);
+			}
+			return nullptr;
+		}
 
 	protected:
 		WindowID m_winID;
@@ -93,23 +103,21 @@ namespace SimpleGui {
 
 	class ApplicationQuitEvent final : public Event {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::ApplicationQuitEvent)
 	};
 
 #pragma region Window Event
 	class WindowEvent : public Event {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent)
 	};
 
 	class WindowShowEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowShowEvent)
+	public:
 
-			inline bool IsShown() const { return !m_hidden; }
+		inline bool IsShown() const { return !m_hidden; }
 		inline bool IsHidden() const { return m_hidden; }
 
 	private:
@@ -118,10 +126,10 @@ namespace SimpleGui {
 
 	class WindowMovedEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowMovedEvent)
+	public:
 
-			inline Vec2 GetPosition() const { return m_position; }
+		inline Vec2 GetPosition() const { return m_position; }
 
 	private:
 		Vec2 m_position;
@@ -129,10 +137,10 @@ namespace SimpleGui {
 
 	class WindowResizedEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowResizedEvent)
+	public:
 
-			inline Vec2 GetSize() const { return m_size; }
+		inline Vec2 GetSize() const { return m_size; }
 
 	private:
 		Vec2 m_size;
@@ -140,10 +148,10 @@ namespace SimpleGui {
 
 	class WindowStateChangedEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowStateChangedEvent)
+	public:
 
-			inline WindowState GetState() const { return m_state; }
+		inline WindowState GetState() const { return m_state; }
 		inline bool IsLeaveFullScreen() const { return m_isLeaveFullScreen; }
 
 	private:
@@ -153,10 +161,10 @@ namespace SimpleGui {
 
 	class WindowMouseEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowMouseEvent)
+	public:
 
-			inline bool IsEnter() const { return m_isEnter; }
+		inline bool IsEnter() const { return m_isEnter; }
 		inline bool IsLeave() const { return !m_isEnter; }
 
 	private:
@@ -165,10 +173,10 @@ namespace SimpleGui {
 
 	class WindowFocusEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowFocusEvent)
+	public:
 
-			inline bool IsGained() const { return m_isGained; }
+		inline bool IsGained() const { return m_isGained; }
 		inline bool IsLost() const { return !m_isGained; }
 
 	private:
@@ -177,13 +185,12 @@ namespace SimpleGui {
 
 	class WindowCloseRequestedEvent final : public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowCloseRequestedEvent)
+	public:
 	};
 
 	class WindowDestroyEvent final :public WindowEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowDestroyEvent)
 	};
 #pragma endregion
@@ -192,8 +199,8 @@ namespace SimpleGui {
 	////////////////////////////////////////////MouseEvent////////////////////////////////////////////////
 	class MouseEvent : public Event {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::MouseEvent)
+	public:
 
 		inline Vec2 GetPosition() const { return m_position; }
 		inline Vec2 GetGlobalPosition() const { return m_globalPosition; }
@@ -225,27 +232,32 @@ namespace SimpleGui {
 
 	class MouseButtonEvent final : public MouseEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseButtonEvent)
+	public:
 
-			inline MouseButton GetButtonIndex() const { return m_buttonIndex; }
+		inline MouseButton GetButtonIndex() const { return m_buttonIndex; }
 		inline bool IsPressed() const { return m_pressed; }
+		inline bool IsPressed(MouseButton btn) const { return m_pressed && btn == m_buttonIndex; }
 		inline bool IsReleased() const { return !m_pressed; }
+		inline bool IsReleased(MouseButton btn) const { return !m_pressed && btn == m_buttonIndex; }
 		inline bool IsDoubleClick() const { return m_doubleClick; }
+		inline bool IsDoubleClick(MouseButton btn) const { return m_doubleClick && btn == m_buttonIndex; }
+		inline uint8_t GetClickCount() const { return m_clicks; }
 
 	private:
 		MouseButton m_buttonIndex = MouseButton::None;
+		uint8_t m_clicks;
 		bool m_pressed = false;
 		bool m_doubleClick = false;
 	};
 
 	class MouseMotionEvent final : public MouseEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseMotionEvent)
+	public:
 
-			// 返回的向量没有归一化
-			inline Vec2 GetDirection() const { return m_direction; }
+		// 返回的向量没有归一化
+		inline Vec2 GetDirection() const { return m_direction; }
 
 	private:
 		Vec2 m_direction;
@@ -253,10 +265,10 @@ namespace SimpleGui {
 
 	class MouseWheelEvent final : public MouseEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseWheelEvent)
+	public:
 
-			inline Vec2 GetDirection() const { return m_direction; }
+		inline Vec2 GetDirection() const { return m_direction; }
 
 	private:
 		Vec2 m_direction;
@@ -267,7 +279,6 @@ namespace SimpleGui {
 	////////////////////////////////////////////KeyBoardEvent////////////////////////////////////////////////
 	class KeyBoardEvent : public Event {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent)
 
 	protected:
@@ -286,10 +297,10 @@ namespace SimpleGui {
 
 	class KeyBoardButtonEvent final : public KeyBoardEvent {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardButtonEvent)
+	public:
 
-			inline bool IsPressed() const { return m_pressed; }
+		inline bool IsPressed() const { return m_pressed; }
 		inline bool IsReleased() const { return !m_pressed; }
 		inline bool IsRepeat() const { return m_repeat; }
 
@@ -302,10 +313,10 @@ namespace SimpleGui {
 #pragma region Drop Event
 	class DropEvent final : public Event {
 		friend class EventManager;
-	public:
 		SG_EVENT_GET_TYPE(EventType::DropEvent)
+	public:
 
-			inline std::string GetContent() const { return m_content; }
+		inline std::string GetContent() const { return m_content; }
 		inline bool IsDropFile() const { return m_itemType == DropItemType::File; }
 		inline bool IsDropText() const { return m_itemType == DropItemType::Text; }
 		inline Vec2 GetPosition() const { return m_position; }

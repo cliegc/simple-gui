@@ -102,21 +102,20 @@ namespace SimpleGui {
         return Vec2(v1.x - v2.x, v1.y - v2.y);
     }
 
-    float Vec2::Dot(const Vec2& other) const {
+    constexpr float Vec2::Dot(const Vec2& other) const {
         return x * other.x + y * other.y;
     }
 
-    float Vec2::Cross(const Vec2& other) const {
+    constexpr float Vec2::Cross(const Vec2& other) const {
         return x * other.y - y * other.x;
     }
 
-    float Vec2::LengthSquared() const {
+    constexpr float Vec2::LengthSquared() const {
         return x * x + y * y;
     }
 
     float Vec2::Length() const {
         return std::sqrt(LengthSquared());
-        ;
     }
 
     SDL_FPoint Vec2::ToSDLFPoint() const {

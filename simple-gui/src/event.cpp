@@ -94,6 +94,7 @@ namespace SimpleGui {
 			ev->Setup(event, *m_window, Vec2(event.button.x, event.button.y));
 			ev->m_pressed = event.button.down;
 			ev->m_doubleClick = event.button.clicks == 2 ? true : false;
+			ev->m_clicks = event.button.clicks;
 			if (event.button.button == SDL_BUTTON_LEFT) ev->m_buttonIndex = MouseButton::Left;
 			if (event.button.button == SDL_BUTTON_MIDDLE) ev->m_buttonIndex = MouseButton::Middle;
 			if (event.button.button == SDL_BUTTON_RIGHT) ev->m_buttonIndex = MouseButton::Right;

@@ -80,8 +80,8 @@ int main(int argc, char** argv) {
 	 draggablePanel->SetSize(100, 100);
 	 draggablePanel->SetGlobalDragEnable(true);
 
-	 //win.EnableVsync(true);
-	 SG_GuiManager.SetTargetFrameRate(60);
+	 win.EnableVsync(true);
+	 //SG_GuiManager.SetTargetFrameRate(165);
 	 //SG_GuiManager.SetUnlimitedFrameRate(true);
 	 SG_GuiManager.Run();
 	 GuiManager::Quit();
