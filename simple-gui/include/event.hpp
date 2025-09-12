@@ -6,8 +6,6 @@
 
 
 namespace SimpleGui {
-	//class Window;
-
 	enum class EventType {
 		Unknown = 0,
 
@@ -196,7 +194,6 @@ namespace SimpleGui {
 #pragma endregion
 
 #pragma region Mouse Event
-	////////////////////////////////////////////MouseEvent////////////////////////////////////////////////
 	class MouseEvent : public Event {
 		friend class EventManager;
 		SG_EVENT_GET_TYPE(EventType::MouseEvent)
@@ -276,7 +273,6 @@ namespace SimpleGui {
 #pragma endregion
 
 #pragma region KeyBoard Event
-	////////////////////////////////////////////KeyBoardEvent////////////////////////////////////////////////
 	class KeyBoardEvent : public Event {
 		friend class EventManager;
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent)
