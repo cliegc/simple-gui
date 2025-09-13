@@ -32,6 +32,7 @@ namespace SimpleGui {
 		virtual void SetFont(std::string_view path, int size) override;
 
 	protected:
+		virtual void EnteredComponentTree() override;
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const override;
 		inline virtual Vec2 GetContentSize() const override;
 

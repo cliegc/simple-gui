@@ -172,12 +172,16 @@ namespace SimpleGui {
 		BaseComponent* m_parent = nullptr;
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
-		//std::vector<std::unique_ptr<ExtendedFunctions>> m_extFunctions;
 		std::unique_ptr<ExtendedFunctionsManager> m_extFunctionsManager;
 
 	protected:
 		virtual void EnteredComponentTree() {};
 		virtual void ExitedComponentTree() {};
+
+		inline void SetComponentOwner(BaseComponent* cmp, Window* window, BaseComponent* parent) const {
+			cmp->m_window = window;
+			cmp->m_parent = parent;
+		}
 
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
 		inline virtual Vec2 GetContentSize() const;
@@ -186,7 +190,10 @@ namespace SimpleGui {
 		inline Vec2 GetComponentContentSize(BaseComponent* cmp) const { return cmp->GetContentSize(); }
 
 		// 方便在该组件内获取/设置其他组件的受保护数据，设置可见矩形大小，在cmp调用CalcVisibleGlobalRect更新可见矩形之后调用该函数才生效
-		inline void SetComponentVisibleGlobalRect(BaseComponent* cmp, const Rect& rect) { cmp->m_visibleGRect = rect; }
+		inline void SetComponentVisibleGlobalRect(BaseComponent* cmp, const Rect& rect) const { cmp->m_visibleGRect = rect; }
+
+		inline void EnteredComponentTree(BaseComponent* cmp) const { cmp->EnteredComponentTree(); }
+		inline void ExitedComponentTree(BaseComponent* cmp) const { cmp->ExitedComponentTree(); }
 
 		void PreparationOfUpdateChildren();
 		void UpdateChildSizeConfigs(BaseComponent* cmp) const;

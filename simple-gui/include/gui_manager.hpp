@@ -57,6 +57,7 @@ namespace SimpleGui {
 
         static GuiManager& GetInstance();
 
+        inline Window& GetWindow() const { return *m_window; }
         Window& GetWindow(std::string_view title, int w, int h);
         void Run();
 

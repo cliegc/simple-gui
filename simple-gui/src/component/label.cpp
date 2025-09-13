@@ -8,6 +8,19 @@ namespace SimpleGui {
 		m_text = text;
 	}
 
+	void Label::EnteredComponentTree() {
+		//Init()
+		auto ttf_text = TTF_CreateText(&m_window->GetTTFTextEngine(), &GetFont().GetTTFFont(), m_text.c_str(), m_text.size());
+		m_ttfText = UniqueTextPtr(ttf_text);
+
+		m_padding = m_window->GetCurrentStyle().componentPadding;
+
+		AdjustSize(m_ttfText.get());
+
+		m_textAlignments.first = TextAlignment::Left;
+		m_textAlignments.second = TextAlignment::Top;
+	}
+
 	void Label::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
 
@@ -24,33 +37,19 @@ namespace SimpleGui {
 		renderer.DrawText(m_ttfText.get(), m_textRect.position, GetThemeColor(ThemeColorFlags::LabelForeground));
 		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::LabelBorder));
 		renderer.ClearClipRect();
-
 		BaseComponent::Render(renderer);
 	}
 
-	void Label::EnteredComponentTree() {
-		//Init()
-		auto ttf_text = TTF_CreateText(&m_window->GetTTFTextEngine(), &GetFont().GetTTFFont(), m_text.c_str(), m_text.size());
+	void Label::Init(std::string_view text) {
+		/*auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont().GetTTFFont(), text.data(), text.size());
 		m_ttfText = UniqueTextPtr(ttf_text);
 
-		m_padding = m_window->GetCurrentStyle().componentPadding;
+		m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
 		AdjustSize(m_ttfText.get());
 
 		m_textAlignments.first = TextAlignment::Left;
-		m_textAlignments.second = TextAlignment::Top;
-	}
-
-	void Label::Init(std::string_view text) {
-		//auto ttf_text = TTF_CreateText(&SG_GuiManager.GetTextEngine(), &GetFont().GetTTFFont(), text.data(), text.size());
-		//m_ttfText = UniqueTextPtr(ttf_text);
-
-		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
-
-		//AdjustSize(m_ttfText.get());
-
-		//m_textAlignments.first = TextAlignment::Left;
-		//m_textAlignments.second = TextAlignment::Top;
+		m_textAlignments.second = TextAlignment::Top;*/
 	}
 
 	void Label::AdjustSize(TTF_Text* ttfText) {
@@ -101,10 +100,11 @@ namespace SimpleGui {
 	}
 
 	std::string Label::GetText() const {
-		return m_ttfText->text;
+		return m_text;
 	}
 
 	void Label::SetText(std::string_view text) {
+		m_text = text;
 		TTF_SetTextString(m_ttfText.get(), text.data(), text.size());
 		AdjustSize(m_ttfText.get());
 	}

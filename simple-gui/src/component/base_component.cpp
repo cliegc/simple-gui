@@ -156,8 +156,9 @@ namespace SimpleGui {
 	void BaseComponent::SetGlobalPosition(float x, float y) {
 		if (m_parent) {
 			Vec2 parentGlobalPos = m_parent->GetGlobalPosition();
-			m_position.x = x - parentGlobalPos.x;
-			m_position.y = y - parentGlobalPos.y;
+			Vec2 parentOriginOfs = m_parent->GetLocalCoordinateOriginOffset();
+			m_position.x = x - parentGlobalPos.x - parentOriginOfs.x;
+			m_position.y = y - parentGlobalPos.y - parentOriginOfs.y;
 			return;
 		}
 
@@ -167,7 +168,7 @@ namespace SimpleGui {
 
 	void BaseComponent::SetGlobalPositionX(float x) {
 		if (m_parent) {
-			m_position.x = x - m_parent->GetGlobalPosition().x;
+			m_position.x = x - m_parent->GetGlobalPosition().x - m_parent->GetLocalCoordinateOriginOffset().x;
 			return;
 		}
 
@@ -176,7 +177,7 @@ namespace SimpleGui {
 
 	void BaseComponent::SetGlobalPositionY(float y) {
 		if (m_parent) {
-			m_position.y = y - m_parent->GetGlobalPosition().y;
+			m_position.y = y - m_parent->GetGlobalPosition().y - m_parent->GetLocalCoordinateOriginOffset().y;
 			return;
 		}
 
@@ -241,8 +242,9 @@ namespace SimpleGui {
 			return;
 		}
 
-		child->m_parent = this;
-		child->m_window = m_window;
+		//child->m_parent = this;
+		//child->m_window = m_window;
+		SetComponentOwner(child.get(), m_window, this);
 		child->m_needRemove = false;
 		auto temp = child.get();
 		m_children.push_back(std::move(child));

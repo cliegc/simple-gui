@@ -6,12 +6,13 @@
 namespace SimpleGui {
 	Button::Button(std::string_view text) : BaseComponent() {
 		m_lbl = std::make_unique<Label>(text);
-		//SetSize(m_lbl->GetSize());
-		//SetMinSize(m_lbl->GetMinSize());
+	}
 
-		m_lbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
-		m_lbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color::TRANSPARENT);
-		m_lbl->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::TRANSPARENT);
+	void Button::EnteredComponentTree() {
+		SetComponentOwner(m_lbl.get(), m_window, this);
+		BaseComponent::EnteredComponentTree(m_lbl.get());
+		SetSize(m_lbl->GetSize());
+		SetMinSize(m_lbl->GetMinSize());
 	}
 
 	std::string Button::GetText() const {
@@ -34,19 +35,16 @@ namespace SimpleGui {
 	bool Button::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
-		//Vec2 renderPos;
 		if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) {
 			m_mouseState = MouseState::Normal;
 		}
 		else {
-			if (event->IsMouseButtonEvent()) {
-				auto ev = static_cast<MouseButtonEvent*>(event);
-				if (ev->IsPressed() && ev->GetButtonIndex() == MouseButton::Left) {
+			if (auto ev = event->Convert<MouseButtonEvent>()) {
+				if (ev->IsPressed(MouseButton::Left)) {
 					m_mouseState = MouseState::Pressed;
 					return true;
 				}
-				else if (ev->IsReleased() && ev->GetButtonIndex() == MouseButton::Left) {
+				else if (ev->IsReleased(MouseButton::Left)) {
 					m_mouseState = MouseState::Hovering;
 					clicked();
 					return true;
@@ -57,23 +55,7 @@ namespace SimpleGui {
 				m_mouseState = MouseState::Hovering;
 				return true;
 			}
-
-			//if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
-			//	m_mouseState = MouseState::Pressed;
-			//	return true;
-			//}
-			//if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && event.button.button == SDL_BUTTON_LEFT) {
-			//	m_mouseState = MouseState::Hovering;
-			//	clicked();
-			//	return true;
-			//}
-
-		//	if (m_mouseState != MouseState::Pressed) {
-		//		m_mouseState = MouseState::Hovering;
-		//		return true;
-		//	}
 		}
-		
 
 		return BaseComponent::HandleEvent(event);
 	}
@@ -89,10 +71,7 @@ namespace SimpleGui {
 	}
 
 	void Button::Render(const Renderer& renderer) {
-		SDL_Log("before button render\n");
 		SG_CMP_RENDER_CONDITIONS;
-
-		SDL_Log("button render\n");
 
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background));
 
@@ -115,5 +94,4 @@ namespace SimpleGui {
 
 		BaseComponent::Render(renderer);
 	}
-
 }

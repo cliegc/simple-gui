@@ -14,11 +14,16 @@ namespace SimpleGui {
 		m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
 		m_foldData.toggleGRect.size.w = 10;
 		m_foldData.toggleGRect.size.h = 10;
-		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
-		m_handleThickness = m_titleLbl->GetSize().h;
 		m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
 		m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
 		m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color::TRANSPARENT);
+	}
+
+	void DraggablePanel::EnteredComponentTree() {
+		m_padding = m_window->GetCurrentStyle().componentPadding;
+		SetComponentOwner(m_titleLbl.get(), m_window, this);
+		BaseComponent::EnteredComponentTree(m_titleLbl.get());
+		m_handleThickness = m_titleLbl->GetSize().h;
 		SetMinSize(m_titleLbl->GetSize().w + m_foldData.toggleGRect.size.w + 5,
 			m_titleLbl->GetSize().h + m_dragData.dragGRect.size.h);
 	}
@@ -26,7 +31,6 @@ namespace SimpleGui {
 	bool DraggablePanel::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		//Vec2 renderPos = SG_GuiManager.GetRenderer().GetRenderPositionFromMouse();
 		Vec2 renderPos = SG_GuiManager.GetMousePosition();
 
 		if (HandleToggleFold(event, renderPos)) return true;

@@ -24,6 +24,9 @@ namespace SimpleGui {
 	public:
 		Signal<> clicked;
 
+	protected:
+		virtual void EnteredComponentTree() override;
+
 	private:
 		MouseState m_mouseState = MouseState::Normal;
 		std::unique_ptr<Label> m_lbl;
