@@ -108,6 +108,7 @@ namespace SimpleGui {
 		inline BaseComponent* GetParent() const { return m_parent; }
 		inline Window* GetWindow() const { return m_window; }
 
+		//void PresetChildrenCount(size_t count);
 		void AddChild(std::unique_ptr<BaseComponent> child);
 		void AddChildDeferred(std::unique_ptr<BaseComponent> child);
 		BaseComponent* GetChildAt(size_t idx) const;
@@ -186,6 +187,9 @@ namespace SimpleGui {
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
 		inline virtual Vec2 GetContentSize() const;
 
+		// 方便在该组件内获取获取其他组件的所有子组件
+		inline const std::vector<std::unique_ptr<BaseComponent>>& GetComponentChildren(BaseComponent* cmp) const { return cmp->m_children; }
+
 		// 方便在该组件内获取/设置其他组件的受保护数据，获取内容矩形的大小
 		inline Vec2 GetComponentContentSize(BaseComponent* cmp) const { return cmp->GetContentSize(); }
 
@@ -200,6 +204,7 @@ namespace SimpleGui {
 		void CalcVisibleGlobalRect(BaseComponent* parent, BaseComponent* target) const;
 		Rect CalcVisibleGlobalRect(const Rect& parentVisibleGRect, const Rect& parentContentGRect, const Rect& targetGRect) const;
 
+		// 计算包含所有子组件的最小矩形
 		// 在PreparationOfUpdateChildren之后调用
 		Rect CalcChildrenBoundaryGlobalRect(BaseComponent* cmp) const;
 	};

@@ -62,12 +62,15 @@ namespace SimpleGui {
 
 	Rect BaseComponent::CalcChildrenBoundaryGlobalRect(BaseComponent* cmp) const {
 		// 在Update中准备工作之后调用，不需要考虑m_childCaches
-		Rect rect;
+		if (cmp->GetChildrenCount() == 0) return Rect();
+		Rect rect = cmp->GetChildAt(0)->GetGlobalRect();
+		Vec2 bottomRight = rect.BottomRight();
 		for (auto& child : cmp->m_children) {
 			Rect globalRect = child->GetGlobalRect();
 			rect.position = rect.position.Min(globalRect.position);
-			rect.size = rect.size.Max(globalRect.BottomRight() - rect.position);
+			bottomRight = bottomRight.Max(globalRect.BottomRight());
 		}
+		rect.size = bottomRight - rect.position;
 		return rect;
 	}
 
@@ -232,6 +235,10 @@ namespace SimpleGui {
 		m_size.h = m_size.h < m_minSize.h ? m_minSize.h : m_size.h;
 	}
 	
+	//void BaseComponent::PresetChildrenCount(size_t count) {
+	//	m_children.reserve(count);
+	//}
+
 	void BaseComponent::AddChild(std::unique_ptr<BaseComponent> child) {
 		if (!child || child->GetParent() == this) {
 			SDL_Log("AddChild: this child is null or parent of child already is this.\n");

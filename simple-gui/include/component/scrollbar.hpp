@@ -9,7 +9,15 @@ namespace SimpleGui {
 		~ScrollBar() = default;
 
 		inline BaseComponent* GetTarget() const { return m_target; }
-		inline void SetTarget(BaseComponent* target) { m_target = target; }
+		inline void SetTarget(BaseComponent* target) { 
+			m_target = target;
+			Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(m_target);
+			Rect targetContectGRect = m_target->GetContentGlobalRect();
+			SDL_Log("SetTarget: boundaryGRect.size.w=%f\n", boundaryGRect.size.w);
+			SDL_Log("SetTarget: targetContectGRect.size.w=%f\n", targetContectGRect.size.w);
+		}
+
+		void SetScroll(float scale);
 
 		virtual bool HandleEvent(Event* event) override;
 		virtual void Update() override;
@@ -26,19 +34,20 @@ namespace SimpleGui {
 		struct Slider final {
 			Rect globalRect;
 			Rect visibleGRect;
+			//float 
 		};
 
 	private:
 		Direction m_direction;
 		MouseState m_mouseState;
 		Slider m_slider;
-
 		DragSliderData m_dragSliderData;
-
-		BaseComponent* m_target = nullptr;;
+		BaseComponent* m_target = nullptr;
+		Vec2 m_alignmentOffset;
 
 	private:
 		void UpdateHorizontalSlider();
 		void UpdateVerticalSlider();
+		void UpdateTargetChildrenPosition(BaseComponent* cmp, float distance) const;
 	};
 }

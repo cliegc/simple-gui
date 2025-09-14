@@ -64,6 +64,33 @@ private:
 	std::shared_ptr<Texture> m_texture;
 };
 
+
+static void TestScrollBar() {
+	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test scrollbar");
+	draggablePanel->SetSize(200, 200);
+	draggablePanel->AddChild<Label>("this is a lebel")->SetPositionX(-50);
+	draggablePanel->AddChild<Button>("this is a button")->SetPosition(180, 100);
+
+	for (int i = 0; i < 50; ++i) {
+		auto btn = draggablePanel->AddChild<Button>(std::format("button {}", i));
+		btn->clicked.Connect("on_clicked",
+			[i]() {
+				SDL_Log("click button: %d\n", i);
+			});
+		btn->SetPosition(
+			SDL_randf() * 800 - 300,
+			SDL_randf() * 180
+		);
+	}
+
+	auto scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Horizontal);
+	scrollbar->SetSize(200, 15);
+	scrollbar->SetPosition(200, 350);
+	scrollbar->SetTarget(draggablePanel);
+	scrollbar->SetScroll(0.5f);
+}
+
+
 int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
@@ -76,13 +103,7 @@ int main(int argc, char** argv) {
 	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	 lbl2->SetPositionY(100);
 
-	 auto draggablePanel = win.AddComponent<DraggablePanel>("tttsadadad");
-	 draggablePanel->SetSize(100, 100);
-	 draggablePanel->SetClampRangeFollowParentContent(true);
-	 //draggablePanel->SetGlobalDragEnable(true);
-
-	 auto btn = win.AddComponent<Button>("click me");
-	 btn->SetPosition(200, 100);
+	 TestScrollBar();
 
 	 win.EnableVsync(true);
 	 //SG_GuiManager.SetTargetFrameRate(165);
