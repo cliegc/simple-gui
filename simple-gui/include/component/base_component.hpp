@@ -184,7 +184,10 @@ namespace SimpleGui {
 			cmp->m_parent = parent;
 		}
 
+		// 局部坐标的原点位置就是内容矩形的左上角位置
+		// 若派生组件的局部坐标原点位置不是组件的左上角，则需要重写该函数
 		inline virtual Vec2 GetLocalCoordinateOriginOffset() const;
+		// 若派生组件的内容矩形大小不为组件大小减去padding大小，则需要重写该函数 （局部坐标的原点位置就是内容矩形的左上角位置）
 		inline virtual Vec2 GetContentSize() const;
 
 		// 方便在该组件内获取获取其他组件的所有子组件

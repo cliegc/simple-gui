@@ -273,14 +273,22 @@ namespace SimpleGui {
 #pragma endregion
 
 #pragma region KeyBoard Event
+	using ScanCode = SDL_Scancode;
+	using KeyCode = SDL_Keycode;
+	using KeyMod = SDL_Keymod;
+
 	class KeyBoardEvent : public Event {
 		friend class EventManager;
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent)
 
+		inline ScanCode GetScanCode() const { return m_scanCode; }
+		inline KeyCode GetKeyCode() const { return m_key; }
+		inline KeyMod GetKeyMod() const { return m_mod; }
+
 	protected:
-		SDL_Scancode m_scanCode;
-		SDL_Keycode m_key;
-		SDL_Keymod m_mod;
+		ScanCode m_scanCode;
+		KeyCode m_key;
+		KeyMod m_mod;
 
 		inline void Setup(const SDL_Event& event) {
 			m_winID = event.key.windowID;

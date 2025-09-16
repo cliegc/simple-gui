@@ -79,21 +79,34 @@ static void TestScrollBar() {
 			});
 		btn->SetPosition(
 			SDL_randf() * 800 - 300,
-			SDL_randf() * 180
+			SDL_randf() * 800 - 300
 		);
 	}
 
-	auto scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Horizontal);
-	scrollbar->SetSize(200, 15);
-	scrollbar->SetPosition(200, 350);
-	scrollbar->SetTarget(draggablePanel);
-	scrollbar->SetScroll(0.5f);
+	auto v_scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Vertical);
+	v_scrollbar->SetPosition(200, 350);
+	v_scrollbar->SetMouseWheelDelta(10.f);
+	v_scrollbar->SetTarget(draggablePanel);
+
+	auto h_scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Horizontal);
+	h_scrollbar->SetPosition(200, 320);
+	h_scrollbar->SetMouseWheelDelta(10.f);
+	h_scrollbar->SetTarget(draggablePanel);
 }
 
+
+static void TestScrollPanel() {
+	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test scroll panel");
+	draggablePanel->SetSize(300, 300);
+
+	auto scrollPanel = draggablePanel->AddChild<ScrollPanel>();
+	scrollPanel->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+}
 
 int main(int argc, char** argv) {
 	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
+	 //win.SwitchStyle(StyleManager::LightStyle);
 
 	 //win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	 //win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();

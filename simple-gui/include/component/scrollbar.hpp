@@ -4,6 +4,7 @@
 
 namespace SimpleGui {
 	class ScrollBar final : public BaseComponent {
+		friend class ScrollPanel;
 	public:
 		ScrollBar(Direction direction);
 		~ScrollBar() = default;
@@ -12,6 +13,9 @@ namespace SimpleGui {
 		inline void SetTarget(BaseComponent* target) { m_target = target; }
 
 		void SetScroll(float scale);
+
+		inline float GetMouseWheelDelta() const { return m_mouseWheelDelta; }
+		inline void SetMouseWheelDelta(float delta) { m_mouseWheelDelta = delta; }
 
 		virtual bool HandleEvent(Event* event) override;
 		virtual void Update() override;
@@ -38,10 +42,12 @@ namespace SimpleGui {
 		DragSliderData m_dragSliderData;
 		BaseComponent* m_target = nullptr;
 		Vec2 m_alignmentOffset;
+		float m_mouseWheelDelta;
 
 	private:
 		void UpdateHorizontalSlider();
 		void UpdateVerticalSlider();
 		void UpdateTargetChildrenPosition(BaseComponent* cmp, float distance) const;
+		void UpdateSliderPositionByWheel(float delta, int direction);
 	};
 }

@@ -148,6 +148,7 @@
     <ClInclude Include="include\component\layout\layout.hpp" />
     <ClInclude Include="include\component\root_component.hpp" />
     <ClInclude Include="include\component\scrollbar.hpp" />
+    <ClInclude Include="include\component\scroll_panel.hpp" />
     <ClInclude Include="include\component\texture_rect.hpp" />
     <ClInclude Include="include\event.hpp" />
     <ClInclude Include="include\extended_functions.hpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="src\component\line_edit.cpp" />
     <ClCompile Include="src\component\root_component.cpp" />
     <ClCompile Include="src\component\scrollbar.cpp" />
+    <ClCompile Include="src\component\scroll_panel.cpp" />
     <ClCompile Include="src\component\texture_rect.cpp" />
     <ClCompile Include="src\event.cpp" />
     <ClCompile Include="src\extended_functions.cpp" />

@@ -87,6 +87,12 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::TextureRectBackround] = Color(0xffffff64);
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x7f8c8dff);
 
+		style->colors[ThemeColorFlags::ScrollbarSlot] = Color::WHITE;
+		style->colors[ThemeColorFlags::ScrollbarSlider] = Color(255, 0, 0);
+		style->colors[ThemeColorFlags::ScrollbarBorder] = Color(0x7f8c8dff);
+		style->colors[ThemeColorFlags::ScrollbarSliderHovered] = Color(255, 0, 0, 200);
+		style->colors[ThemeColorFlags::ScrollbarSliderPressed] = Color(255, 0, 0, 150);
+
 		return std::move(style);
 	}
 
