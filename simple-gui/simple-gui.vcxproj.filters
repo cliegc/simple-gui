@@ -87,6 +87,9 @@
     <ClInclude Include="include\extended_functions.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\component\line_edit.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -147,6 +150,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\event.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\line_edit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

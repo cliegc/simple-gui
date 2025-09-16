@@ -153,6 +153,7 @@
     <ClInclude Include="include\extended_functions.hpp" />
     <ClInclude Include="include\font.hpp" />
     <ClInclude Include="include\framerate.hpp" />
+    <ClInclude Include="include\component\line_edit.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
     <ClInclude Include="include\component\common.hpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="src\component\draggable_panel.cpp" />
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />
+    <ClCompile Include="src\component\line_edit.cpp" />
     <ClCompile Include="src\component\root_component.cpp" />
     <ClCompile Include="src\component\scrollbar.cpp" />
     <ClCompile Include="src\component\texture_rect.cpp" />

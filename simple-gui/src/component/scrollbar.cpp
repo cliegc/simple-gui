@@ -113,6 +113,8 @@ namespace SimpleGui {
 	}
 
 	void ScrollBar::UpdateHorizontalSlider() {
+		// CalcChildrenBoundaryGlobalRect无需一直计算，可缓存优化
+		// 在BaseComponent中添加m_childrenBoundaryGRect成员变量，在添加子组件和子组件大小改变时重新计算
 		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(m_target);
 		Rect targetContectGRect = m_target->GetContentGlobalRect();
 		if (targetContectGRect.ContainRect(boundaryGRect)) {
@@ -130,7 +132,8 @@ namespace SimpleGui {
 		Rect contentGRect = GetContentGlobalRect();
 
 		// update slider global rect
-		m_slider.globalRect.size.w = scale * contentGRect.size.w;
+		auto sliderLength = scale * contentGRect.size.w;
+		m_slider.globalRect.size.w = sliderLength < m_slider.minLength ? m_slider.minLength : sliderLength;
 		m_slider.globalRect.size.h = contentGRect.size.h;
 		m_slider.globalRect.position.x = SDL_clamp(m_slider.globalRect.position.x,
 			contentGRect.position.x, contentGRect.Right() - m_slider.globalRect.size.w);
@@ -166,9 +169,8 @@ namespace SimpleGui {
 		scale = SDL_clamp(scale, 0.f, 1.f);
 		Rect contentGRect = GetContentGlobalRect();
 		if (m_direction == Direction::Horizontal) {
-			// bug
+			// bug, 未更新前m_slider.globalRect.size为0
 			float offset = scale * (contentGRect.size.w - m_slider.globalRect.size.w);
-			SDL_Log("SetScroll: offset=%f\n", offset);
 			m_slider.globalRect.position.x = contentGRect.Left() + offset;
 		}
 		else {
