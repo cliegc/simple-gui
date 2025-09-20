@@ -19,55 +19,81 @@ namespace SimpleGui {
 	}
 
 	inline Vec2 ScrollPanel::GetContentSize() const {
+		float ofsX = m_vScrollBar->m_visible ? m_vScrollBar->m_size.w : 0.f;
+		float ofsY = m_hScrollBar->m_visible ? m_hScrollBar->m_size.h : 0.f;
 		return Vec2(
-			m_size.w - m_padding.left - m_padding.right - m_vScrollBar->GetSize().w,
-			m_size.h - m_padding.top - m_padding.bottom - m_hScrollBar->GetSize().h
+			m_size.w - m_padding.left - m_padding.right - ofsX,
+			m_size.h - m_padding.top - m_padding.bottom - ofsY
 		);
 	}
 
 	bool ScrollPanel::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		if (BaseComponent::HandleEvent(event)) return true;
-		if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) return false;
+		if (m_hScrollBar->HandleEvent(event)) return true;
+		if (m_vScrollBar->HandleEvent(event)) return true;
+
+		//if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) return false;
 
 		// mouse wheel to h scroll
 		// shift-mouse_wheel to v scroll 
 		if (auto ev = event->Convert<KeyBoardButtonEvent>()) {
-			m_shiftPressed = (ev->IsPressed() && ev->GetKeyCode() == SDLK_LSHIFT) ? true : false;
+			m_shiftPressed = (ev->IsPressed() && ev->GetKeyMod() == SDL_KMOD_LSHIFT) ? true : false;
 		}
 
 		if (auto ev = event->Convert<MouseWheelEvent>()) {
-			 if (m_shiftPressed) {
-				 m_vScrollBar->UpdateSliderPositionByWheel(m_vScrollBar->m_mouseWheelDelta, -ev->GetDirection().y);
-			 }
-			 else {
-				 m_hScrollBar->UpdateSliderPositionByWheel(m_hScrollBar->m_mouseWheelDelta, -ev->GetDirection().y);
-			 }
+			if (!m_shiftPressed) {
+				m_vScrollBar->UpdateSliderPositionByWheel(m_vScrollBar->m_mouseWheelDelta, -ev->GetDirection().y);
+			}
+			else {
+				m_hScrollBar->UpdateSliderPositionByWheel(m_hScrollBar->m_mouseWheelDelta, -ev->GetDirection().y);
+			}
 		}
+
+		if (BaseComponent::HandleEvent(event)) return true;
 
 		return false;
 	}
 
 	void ScrollPanel::Update() {
 		SG_CMP_UPDATE_CONDITIONS;
-	
+
 		BaseComponent::Update();
 
-		// update scroll bar, position, visible rect
-		m_hScrollBar->Update();
-		m_vScrollBar->Update();
+		Rect globalRect = GetGlobalRect();
+		Rect contentGRect = GetContentGlobalRect();
+		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(this);
+		boundaryGRect = ScrollBar::AdjustTargetChildrenBoundaryGlobalRect(boundaryGRect, contentGRect);
+		
+		// update hScrollBar
+		m_hScrollBar->SetGlobalPosition(globalRect.Left(), globalRect.Bottom() - m_hScrollBar->m_size.h);
+		m_hScrollBar->SetWidth(m_size.w - m_vScrollBar->m_size.w);
+		m_hScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_hScrollBar->GetGlobalRect());
+		m_hScrollBar->UpdateHorizontalSlider(boundaryGRect, contentGRect);
+		
+		// update vScrollBar
+		m_vScrollBar->SetGlobalPosition(globalRect.Right() - m_vScrollBar->m_size.w, globalRect.Top());
+		m_vScrollBar->SetHeight(m_size.h - m_hScrollBar->m_size.h);
+		m_vScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_vScrollBar->GetGlobalRect());
+		m_vScrollBar->UpdateVerticalSlider(boundaryGRect, contentGRect);
+
+		m_hScrollBar->m_visible = IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w) ? false : true;
+		m_vScrollBar->m_visible = IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h) ? false : true;
 	}
 
 	void ScrollPanel::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollPanelBackground));
+		BaseComponent::Render(renderer);
 		m_hScrollBar->Render(renderer);
 		m_vScrollBar->Render(renderer);
-		BaseComponent::Render(renderer);
 		renderer.SetClipRect(m_visibleGRect);
 		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder));
 		renderer.ClearClipRect();
+
+		//debug
+		//renderer.DrawRect(GetContentGlobalRect(), Color::MAGENTA);
+		//renderer.DrawRect(CalcChildrenBoundaryGlobalRect(this), Color::GREEN);
 	}
 }

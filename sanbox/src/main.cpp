@@ -101,28 +101,58 @@ static void TestScrollPanel() {
 
 	auto scrollPanel = draggablePanel->AddChild<ScrollPanel>();
 	scrollPanel->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+
+	//for (int i = 0; i < 50; ++i) {
+	//	auto btn = scrollPanel->AddChild<Button>(std::format("button {}", i));
+	//	btn->clicked.Connect("on_clicked",
+	//		[i]() {
+	//			SDL_Log("click button: %d\n", i);
+	//		});
+	//	btn->SetPosition(
+	//		SDL_randf() * 800 - 300,
+	//		SDL_randf() * 800 - 300
+	//	);
+	//}
+
+	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("add button");
+	btn->SetPosition(100, 400);
+
+	btn->clicked.Connect("on_clicked",
+		[scrollPanel]() {
+			auto btn = scrollPanel->AddChildDeferred<Button>(std::format("button {}", scrollPanel->GetChildrenCount()));
+			btn->SetPosition(
+				SDL_randf() * 800 - 300,
+				SDL_randf() * 800 - 300
+			);
+		});
+
+	//scrollPanel->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);
+	//SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::ScrollPanelBackground, Color::YELLOW);
+	//SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::ScrollbarSlider_H, Color::YELLOW);
+	//scrollPanel->CustomThemeColor(ThemeColorFlags::ScrollbarSlider_H, Color::BLUE);
 }
 
 int main(int argc, char** argv) {
-	 GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
-	 Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
-	 //win.SwitchStyle(StyleManager::LightStyle);
+	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
+	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
+	//win.SwitchStyle(StyleManager::LightStyle);
 
-	 //win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
-	 //win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
+	//win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
-	 win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
-	 auto lbl2 = win.AddComponent<Label>("");
-	 lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
-	 lbl2->SetPositionY(100);
+	win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
+	auto lbl2 = win.AddComponent<Label>("");
+	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
+	lbl2->SetPositionY(100);
 
-	 TestScrollBar();
+	//TestScrollBar();
+	TestScrollPanel();
 
-	 win.EnableVsync(true);
-	 //SG_GuiManager.SetTargetFrameRate(165);
-	 //SG_GuiManager.SetUnlimitedFrameRate(true);
-	 SG_GuiManager.Run();
-	 GuiManager::Quit();
-	
+	win.EnableVsync(true);
+	//SG_GuiManager.SetTargetFrameRate(165);
+	//SG_GuiManager.SetUnlimitedFrameRate(true);
+	SG_GuiManager.Run();
+	GuiManager::Quit();
+
 	return 0;
 }

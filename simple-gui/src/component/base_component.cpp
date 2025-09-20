@@ -12,8 +12,9 @@ namespace SimpleGui {
 	void BaseComponent::PreparationOfUpdateChildren() {
 		// add caches of children to m_children, and clear caches
 		for (auto& child : m_childCaches) {
+			auto temp = child.get();
 			m_children.push_back(std::move(child));
-			child->EnteredComponentTree();
+			temp->EnteredComponentTree();
 		}
 		m_childCaches.clear();
 
@@ -387,6 +388,7 @@ namespace SimpleGui {
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
 		if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
+		else if (m_parent) return m_parent->GetThemeColor(flag);
 		else if (m_window) return m_window->GetCurrentStyle().colors[flag];
 		else return SG_GuiManager.GetDefaultStyle().colors[flag];
 	}

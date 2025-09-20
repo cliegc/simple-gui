@@ -45,9 +45,10 @@ namespace SimpleGui {
 		float m_mouseWheelDelta;
 
 	private:
-		void UpdateHorizontalSlider();
-		void UpdateVerticalSlider();
+		void UpdateHorizontalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect);
+		void UpdateVerticalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect);
 		void UpdateTargetChildrenPosition(BaseComponent* cmp, float distance) const;
 		void UpdateSliderPositionByWheel(float delta, int direction);
+		static Rect AdjustTargetChildrenBoundaryGlobalRect(const Rect& boundaryGRect, const Rect& targetContentGRect);
 	};
 }

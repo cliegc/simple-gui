@@ -36,12 +36,18 @@ namespace SimpleGui {
 		DraggablePanelSizeGrip,
 		DraggablePanelBorder,
 
-		ScrollbarSlot,
-		ScrollbarSlider,
-		ScrollbarSliderHovered,
-		ScrollbarSliderPressed,
-		ScrollbarBorder,
-
+		ScrollbarSlot_H,
+		ScrollbarSlider_H,
+		ScrollbarSliderHovered_H,
+		ScrollbarSliderPressed_H,
+		ScrollbarBorder_H,
+		
+		ScrollbarSlot_V,
+		ScrollbarSlider_V,
+		ScrollbarSliderHovered_V,
+		ScrollbarSliderPressed_V,
+		ScrollbarBorder_V,
+		
 		ScrollPanelBackground,
 		ScrollPanelBorder,
 

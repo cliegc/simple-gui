@@ -126,9 +126,9 @@ namespace SimpleGui {
 		virtual Font& GetFont();
 
 		Color GetThemeColor(ThemeColorFlags flag);
-		void CustomThemeColor(ThemeColorFlags flag, const Color& color);
-		void ClearCustomThemeColor(ThemeColorFlags flag);
-		void ClearCustomThemeColors();
+		virtual void CustomThemeColor(ThemeColorFlags flag, const Color& color);
+		virtual void ClearCustomThemeColor(ThemeColorFlags flag);
+		virtual void ClearCustomThemeColors();
 
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctions(Args&& ...args) {

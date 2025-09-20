@@ -34,7 +34,7 @@ namespace SimpleGui {
 				return true;
 			}
 		}
-		else if (!m_dragSliderData.canDragging && !m_slider.visibleGRect.ContainPoint(renderPos)){
+		else if (!m_dragSliderData.canDragging && !m_slider.visibleGRect.ContainPoint(renderPos)) {
 			m_mouseState = MouseState::Normal;
 		}
 
@@ -64,18 +64,24 @@ namespace SimpleGui {
 
 		if (m_visibleGRect.ContainPoint(renderPos)) {
 			if (auto ev = event->Convert<MouseButtonEvent>();
-			ev && ev->IsPressed(MouseButton::Left)) {
-				// 点击槽，滑块移动到点击位置, bug
+				ev && ev->IsPressed(MouseButton::Left)) {
+				// 点击槽，滑块移动到点击位置, 
 				Rect contentGRect = GetContentGlobalRect();
-				if (m_direction == Direction::Horizontal) {
+				if (m_direction == Direction::Horizontal &&
+					(renderPos.x < m_slider.visibleGRect.Left() ||
+						renderPos.x > m_slider.visibleGRect.Right())) {
 					float scale = (renderPos.x - contentGRect.Left()) / (contentGRect.size.w - m_slider.globalRect.size.w);
 					SetScroll(scale);
+					return true;
 				}
-				else {
+				else if (m_direction == Direction::Vertical &&
+					(renderPos.y < m_slider.visibleGRect.Top() ||
+						renderPos.y > m_slider.visibleGRect.Bottom())) {
 					float scale = (renderPos.y - contentGRect.Top()) / (contentGRect.size.h - m_slider.globalRect.size.h);
 					SetScroll(scale);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (auto ev = event->Convert<MouseWheelEvent>()) {
@@ -94,40 +100,60 @@ namespace SimpleGui {
 
 		BaseComponent::Update();
 
-		if (m_direction == Direction::Horizontal) UpdateHorizontalSlider();
-		else UpdateVerticalSlider();
+		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(m_target);
+		Rect targetContentGRect = m_target->GetContentGlobalRect();
+		boundaryGRect = AdjustTargetChildrenBoundaryGlobalRect(boundaryGRect, targetContentGRect);
+		if (m_direction == Direction::Horizontal) UpdateHorizontalSlider(boundaryGRect, targetContentGRect);
+		else UpdateVerticalSlider(boundaryGRect, targetContentGRect);
 	}
 
 	void ScrollBar::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
+		Color slotColor = GetThemeColor(ThemeColorFlags::ScrollbarSlot_H);
+		Color sliderColor = GetThemeColor(ThemeColorFlags::ScrollbarSlider_H);
+		Color hoveredColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered_H);
+		Color pressedColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderPressed_H);
+		Color borderColor = GetThemeColor(ThemeColorFlags::ScrollbarBorder_H);
+
+		if (m_direction == Direction::Vertical) {
+			slotColor = GetThemeColor(ThemeColorFlags::ScrollbarSlot_V);
+			sliderColor = GetThemeColor(ThemeColorFlags::ScrollbarSlider_V);
+			hoveredColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered_V);
+			pressedColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderPressed_V);
+			borderColor = GetThemeColor(ThemeColorFlags::ScrollbarBorder_V);
+		}
+
 		// draw slot
-		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollbarSlot));
+		renderer.FillRect(m_visibleGRect, slotColor);
 
 		renderer.SetClipRect(m_visibleGRect);
 		// draw slider
 		if (m_mouseState == MouseState::Normal)
-			renderer.FillRect(m_slider.visibleGRect, GetThemeColor(ThemeColorFlags::ScrollbarSlider));
+			renderer.FillRect(m_slider.visibleGRect, sliderColor);
 		else if (m_mouseState == MouseState::Hovering)
-			renderer.FillRect(m_slider.visibleGRect, GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered));
+			renderer.FillRect(m_slider.visibleGRect, hoveredColor);
 		else if (m_mouseState == MouseState::Pressed)
-			renderer.FillRect(m_slider.visibleGRect, GetThemeColor(ThemeColorFlags::ScrollbarSliderPressed));
+			renderer.FillRect(m_slider.visibleGRect, pressedColor);
 		//draw border
-		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollbarBorder));
+		renderer.DrawRect(GetGlobalRect(), borderColor);
 		renderer.ClearClipRect();
-		
+
 		// debug
 		//renderer.DrawRect(CalcChildrenBoundaryGlobalRect(m_target), Color::GREEN);
+		//renderer.FillRect(m_slider.globalRect, GetThemeColor(ThemeColorFlags::ScrollbarSlider));
 
 		BaseComponent::Render(renderer);
 	}
 
-	void ScrollBar::UpdateHorizontalSlider() {
+	void ScrollBar::UpdateHorizontalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect) {
 		// CalcChildrenBoundaryGlobalRect无需一直计算，可缓存优化
 		// 在BaseComponent中添加m_childrenBoundaryGRect成员变量，在添加子组件和子组件大小改变时重新计算
-		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(m_target);
-		Rect targetContentGRect = m_target->GetContentGlobalRect();
-		if (targetContentGRect.ContainRect(boundaryGRect)) {
+		if (IsZeroApprox(boundaryGRect.Area()) ||
+			(boundaryGRect.Left() > targetContentGRect.Left() ||
+				IsEqualApprox(boundaryGRect.Left(), targetContentGRect.Left())) &&
+			(boundaryGRect.Right() < targetContentGRect.Right() ||
+				IsEqualApprox(boundaryGRect.Right(), targetContentGRect.Right()))) {
 			m_slider.globalRect.size.w = 0;
 			m_slider.globalRect.size.h = 0;
 			m_slider.visibleGRect.size.w = 0;
@@ -166,12 +192,14 @@ namespace SimpleGui {
 		}
 	}
 
-	void ScrollBar::UpdateVerticalSlider() {
+	void ScrollBar::UpdateVerticalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect) {
 		// CalcChildrenBoundaryGlobalRect无需一直计算，可缓存优化
 		// 在BaseComponent中添加m_childrenBoundaryGRect成员变量，在添加子组件和子组件大小改变时重新计算
-		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(m_target);
-		Rect targetContentGRect = m_target->GetContentGlobalRect();
-		if (targetContentGRect.ContainRect(boundaryGRect)) {
+		if (IsZeroApprox(boundaryGRect.Area()) ||
+			(boundaryGRect.Top() > targetContentGRect.Top() ||
+				IsEqualApprox(boundaryGRect.Top(), targetContentGRect.Top())) &&
+			(boundaryGRect.Bottom() < targetContentGRect.Bottom() ||
+				IsEqualApprox(boundaryGRect.Bottom(), targetContentGRect.Bottom()))) {
 			m_slider.globalRect.size.w = 0;
 			m_slider.globalRect.size.h = 0;
 			m_slider.visibleGRect.size.w = 0;
@@ -232,6 +260,32 @@ namespace SimpleGui {
 		else {
 			m_slider.globalRect.position.y += delta * direction;
 		}
+	}
+
+	Rect ScrollBar::AdjustTargetChildrenBoundaryGlobalRect(const Rect& boundaryGRect, const Rect& targetContentGRect) {
+		if (IsZeroApprox(boundaryGRect.Area())) return boundaryGRect;
+		if (targetContentGRect.ContainRect(boundaryGRect)) return boundaryGRect;
+
+		Rect rect = boundaryGRect;
+		if (rect.Left() < targetContentGRect.Left() &&
+			rect.Right() < targetContentGRect.Right()) {
+			rect.size.w = targetContentGRect.Right() - rect.Left();
+		}
+		else if (rect.Left() > targetContentGRect.Left() &&
+			rect.Right() > targetContentGRect.Right()) {
+			rect.position.x = targetContentGRect.position.x;
+		}
+
+		if (rect.Top() < targetContentGRect.Top() &&
+			rect.Bottom() < targetContentGRect.Bottom()) {
+			rect.size.h = targetContentGRect.Bottom() - rect.Top();
+		}
+		else if (rect.Top() > targetContentGRect.Top() &&
+			rect.Bottom() > targetContentGRect.Bottom()) {
+			rect.position.y = targetContentGRect.position.y;
+		}
+
+		return rect;
 	}
 
 	void ScrollBar::SetScroll(float scale) {
