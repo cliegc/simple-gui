@@ -94,10 +94,10 @@ namespace SimpleGui {
         inline Vec2 BottomLeft() const { return Vec2(position.x, position.y + size.h); };
         inline Vec2 BottomRight() const { return Vec2(position.x + size.w, position.y + size.h); };
         inline Vec2 Center() const { return Vec2(position.x + size.w / 2, position.y + size.h / 2); };
-        inline float Left() const { return position.x; }
-        inline float Top() const { return position.y; }
-        inline float Right() const { return position.x + size.w; }
-        inline float Bottom() const { return position.y + size.h; }
+        constexpr inline float Left() const { return position.x; }
+        constexpr inline float Top() const { return position.y; }
+        constexpr inline float Right() const { return position.x + size.w; }
+        constexpr inline float Bottom() const { return position.y + size.h; }
 
         bool IsIntersect(const Rect& rect) const;
         Rect GetIntersection(const Rect& rect) const;

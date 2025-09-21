@@ -21,9 +21,9 @@ namespace SimpleGui {
 		// remove NeedRemove children from m_children
 		for (auto it = m_children.begin(); it != m_children.end();) {
 			if (!(*it) || (*it)->m_needRemove) {
+				if ((*it) && (*it)->m_needRemove) (*it)->ExitedComponentTree();
 				it = m_children.erase(it);
 			}
-			if ((*it) && (*it)->m_needRemove) (*it)->ExitedComponentTree();
 			else {
 				++it;
 			}

@@ -6,6 +6,7 @@ namespace SimpleGui {
 	ScrollPanel::ScrollPanel() {
 		m_hScrollBar = std::make_unique<ScrollBar>(Direction::Horizontal);
 		m_vScrollBar = std::make_unique<ScrollBar>(Direction::Vertical);
+		m_shiftPressed = false;
 
 		m_hScrollBar->SetTarget(this);
 		m_vScrollBar->SetTarget(this);

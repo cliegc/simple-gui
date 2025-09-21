@@ -102,21 +102,20 @@ static void TestScrollPanel() {
 	auto scrollPanel = draggablePanel->AddChild<ScrollPanel>();
 	scrollPanel->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 
-	//for (int i = 0; i < 50; ++i) {
-	//	auto btn = scrollPanel->AddChild<Button>(std::format("button {}", i));
-	//	btn->clicked.Connect("on_clicked",
-	//		[i]() {
-	//			SDL_Log("click button: %d\n", i);
-	//		});
-	//	btn->SetPosition(
-	//		SDL_randf() * 800 - 300,
-	//		SDL_randf() * 800 - 300
-	//	);
-	//}
+	for (int i = 0; i < 500; ++i) {
+		auto btn = scrollPanel->AddChild<Button>(std::format("button {}", i));
+		btn->clicked.Connect("on_clicked",
+			[i]() {
+				SDL_Log("click button: %d\n", i);
+			});
+		btn->SetPosition(
+			SDL_randf() * 800 - 300,
+			SDL_randf() * 800 - 300
+		);
+	}
 
 	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("add button");
 	btn->SetPosition(100, 400);
-
 	btn->clicked.Connect("on_clicked",
 		[scrollPanel]() {
 			auto btn = scrollPanel->AddChildDeferred<Button>(std::format("button {}", scrollPanel->GetChildrenCount()));
@@ -124,6 +123,13 @@ static void TestScrollPanel() {
 				SDL_randf() * 800 - 300,
 				SDL_randf() * 800 - 300
 			);
+		});
+	
+	auto btn2 = SG_GuiManager.GetWindow().AddComponent<Button>("clear all");
+	btn2->SetPosition(100, 450);
+	btn2->clicked.Connect("on_clicked", 
+		[scrollPanel]() {
+			scrollPanel->ClearAllChildrenDeferred();
 		});
 
 	//scrollPanel->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);

@@ -61,7 +61,6 @@ namespace SimpleGui {
 			}
 		}
 
-
 		if (m_visibleGRect.ContainPoint(renderPos)) {
 			if (auto ev = event->Convert<MouseButtonEvent>();
 				ev && ev->IsPressed(MouseButton::Left)) {
@@ -273,7 +272,8 @@ namespace SimpleGui {
 		}
 		else if (rect.Left() > targetContentGRect.Left() &&
 			rect.Right() > targetContentGRect.Right()) {
-			rect.position.x = targetContentGRect.position.x;
+			rect.size.w = rect.Right() - targetContentGRect.Left();
+			rect.position.x = targetContentGRect.Left();
 		}
 
 		if (rect.Top() < targetContentGRect.Top() &&
@@ -282,7 +282,8 @@ namespace SimpleGui {
 		}
 		else if (rect.Top() > targetContentGRect.Top() &&
 			rect.Bottom() > targetContentGRect.Bottom()) {
-			rect.position.y = targetContentGRect.position.y;
+			rect.size.h = rect.Bottom() - targetContentGRect.Top();
+			rect.position.y = targetContentGRect.Top();
 		}
 
 		return rect;
