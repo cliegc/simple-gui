@@ -87,6 +87,7 @@
     <ClInclude Include="include\extended_functions.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="include\component\line_edit.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -96,6 +97,8 @@
     <ClInclude Include="include\timer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+=======
+>>>>>>> 8d952745addb839b8392269f21812764a2c25bcc
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -158,6 +161,7 @@
     <ClCompile Include="src\event.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="src\component\line_edit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -170,5 +174,7 @@
     <ClCompile Include="src\timer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+=======
+>>>>>>> 8d952745addb839b8392269f21812764a2c25bcc
   </ItemGroup>
 </Project>

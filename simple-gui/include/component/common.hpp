@@ -2,6 +2,7 @@
 #include <utility>
 #include <SDL3/SDL_time.h>
 #include "math.hpp"
+#include "timer.hpp"
 
 
 namespace SimpleGui {
@@ -58,7 +59,6 @@ namespace SimpleGui {
 	};
 
 	class Renderer;
-	class Timer;
 
 	class Caret {
 	public:
