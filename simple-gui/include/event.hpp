@@ -31,11 +31,6 @@ namespace SimpleGui {
 		KeyBoardTextInputEvent = 1 << 16,
 
 		DropEvent = 1 << 17,
-
-		ComponentEvent = 1 << 18,
-		ComponentEnteredTreeEvent = 1 << 19,
-		ComponentExitedTreeEvent = 1 << 20,
-		ComponentResizeEvent = 1 << 21,
 	};
 
 	inline constexpr EventType operator|(EventType type1, EventType type2) {
@@ -83,8 +78,6 @@ namespace SimpleGui {
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextInputEvent, KeyBoardTextInputEvent)
 
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropEvent, DropEvent)
-
-		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::ComponentEvent, ComponentEvent)
 
 		template<typename T>
 		T* Convert() {
@@ -230,8 +223,6 @@ namespace SimpleGui {
 		Left,
 		Right,
 		Middle,
-		WheelUp,
-		WheelDown,
 	};
 
 	class MouseButtonEvent final : public MouseEvent {
@@ -345,14 +336,6 @@ namespace SimpleGui {
 	};
 #pragma endregion
 
-#pragma region Component Event
-	class ComponentEvent : public Event {
-		friend class EventManager;
-		SG_EVENT_GET_TYPE(EventType::ComponentEvent)
-	};
-#pragma endregion
-
-
 #pragma region Event Pool
 	//template<typename T>
 	//struct EventItem final {
@@ -393,10 +376,6 @@ namespace SimpleGui {
 	private:
 		SDL_Event m_event{};
 		Window* m_window;
-		//EventCaches<MouseMotionEvent> m_mouseMotionEvents;
-		//EventCaches<MouseWheelEvent> m_mouseWheelEvents;
-		//EventCaches<KeyBoardButtonEvent> m_keyBoardButtonEvents;
-		//EventCaches<DropEvent> m_dropEvents;
 
 		Event* PollEvent();
 		Event* ConvertEvent(const SDL_Event& event) const;

@@ -166,10 +166,12 @@
     <ClInclude Include="include\signal.hpp" />
     <ClInclude Include="include\simple_gui.hpp" />
     <ClInclude Include="include\texture.hpp" />
+    <ClInclude Include="include\timer.hpp" />
     <ClInclude Include="include\window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
+    <ClCompile Include="src\component\common.cpp" />
     <ClCompile Include="src\component\draggable_panel.cpp" />
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />
@@ -190,6 +192,7 @@
     <ClCompile Include="src\math.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

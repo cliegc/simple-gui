@@ -13,6 +13,7 @@ namespace SimpleGui {
 		BaseComponent::EnteredComponentTree(m_lbl.get());
 		SetSize(m_lbl->GetSize());
 		SetMinSize(m_lbl->GetMinSize());
+		m_lbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
 	}
 
 	std::string Button::GetText() const {
@@ -35,6 +36,7 @@ namespace SimpleGui {
 	bool Button::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
+		if (BaseComponent::HandleEvent(event)) return true;
 		if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) {
 			m_mouseState = MouseState::Normal;
 		}
@@ -44,7 +46,7 @@ namespace SimpleGui {
 					m_mouseState = MouseState::Pressed;
 					return true;
 				}
-				else if (ev->IsReleased(MouseButton::Left)) {
+				else if (m_mouseState == MouseState::Pressed && ev->IsReleased(MouseButton::Left)) {
 					m_mouseState = MouseState::Hovering;
 					clicked();
 					return true;
@@ -53,11 +55,11 @@ namespace SimpleGui {
 
 			if (m_mouseState != MouseState::Pressed) {
 				m_mouseState = MouseState::Hovering;
-				return true;
+				return false;
 			}
 		}
 
-		return BaseComponent::HandleEvent(event);
+		return false;
 	}
 
 	void Button::Update() {

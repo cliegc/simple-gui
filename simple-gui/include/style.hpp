@@ -51,6 +51,14 @@ namespace SimpleGui {
 		ScrollPanelBackground,
 		ScrollPanelBorder,
 
+		LineEditBackground,
+		LineEditForeground,
+		LineEditPlaceholder,
+		LineEditBorder,
+		LineEditCaret,
+		LineEditSelectedBackground,
+		LineEditSelectedForeground,
+
 		FlagsTotal
 	};
 

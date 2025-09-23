@@ -93,6 +93,9 @@
     <ClInclude Include="include\component\scroll_panel.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\timer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui_manager.cpp">
@@ -159,6 +162,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\component\scroll_panel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\common.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

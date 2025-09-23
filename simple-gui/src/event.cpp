@@ -2,10 +2,6 @@
 
 
 namespace SimpleGui {
-	enum CustomSDLEventType {
-		ComponentResizeEvent = SDL_EVENT_USER + 1,
-	};
-
 	EventManager::EventManager(Window* window): m_window(window) {
 	}
 

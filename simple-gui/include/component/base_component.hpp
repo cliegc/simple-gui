@@ -9,6 +9,7 @@
 #include "math.hpp"
 #include "common.hpp"
 #include "extended_functions.hpp"
+#include "signal.hpp"
 
 
 namespace SimpleGui {

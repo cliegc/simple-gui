@@ -4,7 +4,6 @@
 #include <string_view>
 #include <memory>
 #include <optional>
-#include "signal.hpp"
 #include "renderer.hpp"
 #include "style.hpp"
 #include "font.hpp"
@@ -89,17 +88,10 @@ namespace SimpleGui {
 		inline TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
 		inline Renderer& GetRenderer() const { return *m_renderer; }
 
-	public:
-		Signal<> closed;
-		Signal<> resized;
-		Signal<> maximized;
-		Signal<> minimized;
-
 	private:
 		friend class GuiManager;
 		friend class EventManager;
 
-		bool m_visible;
 		SDL_Window* m_window;
 		std::unique_ptr<Renderer> m_renderer;
 		std::unique_ptr<StyleManager> m_styleManager;

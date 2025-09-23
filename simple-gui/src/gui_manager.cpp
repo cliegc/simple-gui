@@ -15,6 +15,7 @@ namespace SimpleGui {
 
 
 	GuiManager::~GuiManager() {
+		m_timerManager.reset();
 		m_fpsController.reset();
 		m_eventManager.reset();
 		m_window.reset();
@@ -43,6 +44,7 @@ namespace SimpleGui {
 		s_guiManager->m_window->SwitchStyle(StyleManager::DarkStyle);
 		s_guiManager->m_eventManager = std::make_unique<EventManager>(s_guiManager->m_window.get());
 		s_guiManager->m_fpsController = std::make_unique<FrameRateController>(s_guiManager->m_window.get());
+		s_guiManager->m_timerManager = std::make_unique<TimerManager>();
 	}
 
 	void GuiManager::Quit() {
@@ -74,6 +76,9 @@ namespace SimpleGui {
 			// control framerate
 			m_fpsController->Update();
 
+			// update tiemrs
+			m_timerManager->Update();
+
 			// handle event
 			while (event = m_eventManager->PollEvent()) {
 				if (event->IsApplicationQuitEvent()) {
@@ -86,12 +91,10 @@ namespace SimpleGui {
 
 				m_eventManager->FreeEvent(event);
 			}
-			
+
 			// update and render
 			m_window->UpdateAndRender();
 		}
 	}
-
-
 }
 

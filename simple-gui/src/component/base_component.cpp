@@ -109,6 +109,15 @@ namespace SimpleGui {
 
 		PreparationOfUpdateChildren();
 
+		//if (!m_lastGRect.position.IsEqualApprox(GetGlobalPosition()) ||
+		//	!m_lastGRect.size.IsEqualApprox(m_size)) {
+		//	SDL_Log("component rect changed\n");
+		//	if (m_parent) {
+		//		m_parent->m_childrenBoundaryGRect = CalcChildrenBoundaryGlobalRect(m_parent);
+		//	}
+		//	m_lastGRect = GetGlobalRect();
+		//}
+
 		// calc visible size
 		CalcVisibleGlobalRect(m_parent, this);
 

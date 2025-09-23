@@ -63,6 +63,7 @@ namespace SimpleGui {
 			m_dragData.dragGRect.size.h = m_handleThickness + m_position.y;
 			if (m_dragData.dragGRect.size.h < 0) m_dragData.dragGRect.size.h = 0;
 		}
+		m_dragData.dragGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_dragData.dragGRect);
 
 		// update size_grip_rect
 		Vec2 bottomRight = globalRect.BottomRight();

@@ -5,6 +5,7 @@
 #include "window.hpp"
 #include "event.hpp"
 #include "framerate.hpp"
+#include "timer.hpp"
 #include "deleter.hpp"
 #include "font.hpp"
 
@@ -71,6 +72,9 @@ namespace SimpleGui {
         inline uint32_t GetTargetFrameRate() const { return m_fpsController->GetTargetFrameRate(); }
         inline void SetTargetFrameRate(uint32_t fps) { m_fpsController->SetTargetFrameRate(fps); };
 
+        inline Timer* GetTimer(float interval) { return m_timerManager->GetTimer(interval); }
+        inline void KillTimer(Timer* timer) { m_timerManager->KillTiemr(timer); }
+
         Vec2 GetMousePosition() const;
 
     private:
@@ -81,6 +85,7 @@ namespace SimpleGui {
         std::unique_ptr<Window> m_window;
         std::unique_ptr<EventManager> m_eventManager;
         std::unique_ptr<FrameRateController> m_fpsController;
+        std::unique_ptr<TimerManager> m_timerManager;
 
         GuiManager() = default;
     };

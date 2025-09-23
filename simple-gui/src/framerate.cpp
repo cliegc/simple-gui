@@ -27,7 +27,7 @@ namespace SimpleGui {
 		auto endFrameTime = Clock::now();
 		m_frameCount++;
 		m_sumDeltaTime += endFrameTime - m_lastFrameTime;
-		if (m_sumDeltaTime >= std::chrono::milliseconds(100)) {
+		if (m_sumDeltaTime >= std::chrono::milliseconds(500)) {
 			m_realFrameRate = static_cast<double>(m_frameCount) / (static_cast<double>(m_sumDeltaTime.count()) / 1000000000.0);
 			m_frameCount = 0;
 			m_sumDeltaTime = std::chrono::nanoseconds(0);

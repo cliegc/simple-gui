@@ -1,18 +1,9 @@
 #pragma once
 #include "base_component.hpp"
-#include <variant>
+#include "label.hpp"
 
 
 namespace SimpleGui {
-
-	class Caret {
-	private:
-		float m_width;
-		Color m_color;
-		bool m_blink;
-		float m_blinkInterval = 0.65;
-	};
-
 	enum class LineEditContentType {
 		Text,
 		Int,
@@ -23,6 +14,10 @@ namespace SimpleGui {
 	public:
 		LineEdit(LineEditContentType type = LineEditContentType::Text, std::string_view placeholder = "");
 		~LineEdit() = default;
+
+		virtual bool HandleEvent(Event* event) override;
+		virtual void Update() override;
+		virtual void Render(const Renderer& renderer) override;
 
 		inline std::string GetContentText() const { return m_content; }
 		inline int GetContentInt() const {};
@@ -54,9 +49,10 @@ namespace SimpleGui {
 		std::string m_placeholder;
 		LineEditContentType m_contentType;
 		Alignment m_aligment = Alignment::Begin;
+		Caret m_caret;
 		bool m_editable = true;
 		bool m_selectingEnabled = true;
-		bool m_secretEnable;
+		bool m_secretEnable = false;
 		char m_secretChar = '*';
 	};
 }
