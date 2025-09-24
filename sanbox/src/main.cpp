@@ -143,6 +143,37 @@ static void TestScrollPanel() {
 	//scrollPanel->CustomThemeColor(ThemeColorFlags::ScrollbarSlider_H, Color::BLUE);
 }
 
+
+static void TestTimer() {
+	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("kill timer");
+	auto timer = SG_GuiManager.GetTimer(1.f);
+	
+	timer->timeout.Connect("on_timeout_change_btn_color",
+		[]() {
+			Color color(
+				SDL_randf() * 255,
+				SDL_randf() * 255,
+				SDL_randf() * 255
+			);
+			SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::Background, color);
+		});
+
+	btn->SetPosition(200, 200);
+	btn->clicked.Connect("on_clicked_kill_timer",
+		[timer]() {
+			if (timer) SG_GuiManager.KillTimer(timer);
+			else SDL_Log("btn clicked: delete timer");
+		});
+
+
+	timer->Start();
+}
+
+
+static void TestLineEdit() {
+	SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
+}
+
 int main(int argc, char** argv) {
 	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
@@ -157,7 +188,9 @@ int main(int argc, char** argv) {
 	lbl2->SetPositionY(100);
 
 	//TestScrollBar();
-	TestScrollPanel();
+	//TestScrollPanel();
+	//TestLineEdit();
+	TestTimer();
 
 	win.EnableVsync(true);
 	//SG_GuiManager.SetTargetFrameRate(165);

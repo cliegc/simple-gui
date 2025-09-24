@@ -13,5 +13,6 @@
 #include "component/draggable_panel.hpp"
 #include "component/scrollbar.hpp"
 #include "component/scroll_panel.hpp"
+#include "component/line_edit.hpp"
 #include "component/layout/box_layout.hpp"
 #include "component/layout/anchor_point_layout.hpp"

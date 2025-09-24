@@ -15,10 +15,14 @@ namespace SimpleGui {
 
 
 	GuiManager::~GuiManager() {
-		m_timerManager.reset();
 		m_fpsController.reset();
+		SDL_Log("delete fps controller");
 		m_eventManager.reset();
+		SDL_Log("delete event manager");
 		m_window.reset();
+		SDL_Log("delete window");
+		m_timerManager.reset();
+		SDL_Log("delete tiemr manager");
 	}
 
 	void GuiManager::Init(int argc, char** argv, std::string_view fontPath) {
@@ -69,8 +73,8 @@ namespace SimpleGui {
 	}
 
 	void GuiManager::Run() {
-		bool running = true;
 		Event* event = nullptr;
+		bool running = true;
 
 		while (running) {
 			// control framerate

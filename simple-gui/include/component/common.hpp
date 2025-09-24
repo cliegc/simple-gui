@@ -63,12 +63,12 @@ namespace SimpleGui {
 	class Caret {
 	public:
 		Caret();
-		virtual ~Caret();
+		virtual ~Caret() = default;
 
+		void Update() const;
 		void Render(const Renderer& renderer, Rect& rect) const;
 
-		inline float GetWidth() const { return m_width; }
-		inline void SetWidth(float width) { m_width = width; }
+		inline Rect& GetGlobalRect() { return m_gRect; }
 
 		inline Color GetColor() const { return m_color; }
 		inline void SetColor(const Color& color) { m_color = color; }
@@ -80,10 +80,10 @@ namespace SimpleGui {
 		inline void SetBlinkInterval(float interval) { m_timer->SetInterval(interval); }
 
 	private:
-		float m_width;
+		Rect m_gRect;
 		Color m_color;
 		bool m_blink;
 		bool m_visible;
-		Timer* m_timer;
+		std::unique_ptr<Timer> m_timer;
 	};
 }

@@ -118,8 +118,20 @@ namespace SimpleGui {
 		case SDL_EVENT_KEY_UP: {
 			auto ev = new KeyBoardButtonEvent();
 			ev->Setup(event);
-			ev->m_pressed = event.key.down;
-			ev->m_repeat = event.key.repeat;
+			return ev;
+		}
+		case SDL_EVENT_TEXT_INPUT: {
+			auto ev = new KeyBoardTextInputEvent();
+			ev->Setup(event.text.windowID, event.text.timestamp);
+			ev->m_text = event.text.text;
+			return ev;
+		}
+		case SDL_EVENT_TEXT_EDITING: {
+			auto ev = new KeyBoardTextEditingEvent();
+			ev->Setup(event.edit.windowID, event.edit.timestamp);
+			ev->m_text = event.edit.text;
+			ev->m_start = event.edit.start;
+			ev->m_length = event.edit.length;
 			return ev;
 		}
 		case SDL_EVENT_DROP_FILE:

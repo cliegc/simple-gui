@@ -6,6 +6,9 @@ namespace SimpleGui {
 	Label::Label(std::string_view text) : BaseComponent() {
 		//Init(text);
 		m_text = text;
+
+		m_textAlignments.first = TextAlignment::Left;
+		m_textAlignments.second = TextAlignment::Top;
 	}
 
 	void Label::EnteredComponentTree() {
@@ -16,9 +19,6 @@ namespace SimpleGui {
 		m_padding = m_window->GetCurrentStyle().componentPadding;
 
 		AdjustSize(m_ttfText.get());
-
-		m_textAlignments.first = TextAlignment::Left;
-		m_textAlignments.second = TextAlignment::Top;
 	}
 
 	void Label::Update() {

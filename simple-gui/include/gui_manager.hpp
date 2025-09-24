@@ -73,7 +73,7 @@ namespace SimpleGui {
         inline void SetTargetFrameRate(uint32_t fps) { m_fpsController->SetTargetFrameRate(fps); };
 
         inline Timer* GetTimer(float interval) { return m_timerManager->GetTimer(interval); }
-        inline void KillTimer(Timer* timer) { m_timerManager->KillTiemr(timer); }
+        inline void KillTimer(Timer* timer) { m_timerManager->KillTimer(timer); }
 
         Vec2 GetMousePosition() const;
 

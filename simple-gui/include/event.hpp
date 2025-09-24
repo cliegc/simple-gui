@@ -29,8 +29,9 @@ namespace SimpleGui {
 		KeyBoardEvent = 1 << 14,
 		KeyBoardButtonEvent = 1 << 15,
 		KeyBoardTextInputEvent = 1 << 16,
+		KeyBoardTextEditingEvent = 1 << 17,
 
-		DropEvent = 1 << 17,
+		DropEvent = 1 << 18,
 	};
 
 	inline constexpr EventType operator|(EventType type1, EventType type2) {
@@ -76,6 +77,7 @@ namespace SimpleGui {
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardEvent, KeyBoardEvent)
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardButtonEvent, KeyBoardButtonEvent)
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextInputEvent, KeyBoardTextInputEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextEditingEvent, KeyBoardTextEditingEvent)
 
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropEvent, DropEvent)
 
@@ -278,15 +280,27 @@ namespace SimpleGui {
 	class KeyBoardEvent : public Event {
 		friend class EventManager;
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent)
+	};
 
+	class KeyBoardButtonEvent final : public KeyBoardEvent {
+		friend class EventManager;
+		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardButtonEvent)
+
+	public:
 		inline ScanCode GetScanCode() const { return m_scanCode; }
 		inline KeyCode GetKeyCode() const { return m_key; }
 		inline KeyMod GetKeyMod() const { return m_mod; }
 
-	protected:
+		inline bool IsPressed() const { return m_pressed; }
+		inline bool IsReleased() const { return !m_pressed; }
+		inline bool IsRepeat() const { return m_repeat; }
+
+	private:
 		ScanCode m_scanCode;
 		KeyCode m_key;
 		KeyMod m_mod;
+		bool m_pressed = false;
+		bool m_repeat = false;
 
 		inline void Setup(const SDL_Event& event) {
 			m_winID = event.key.windowID;
@@ -294,21 +308,35 @@ namespace SimpleGui {
 			m_scanCode = event.key.scancode;
 			m_key = event.key.scancode;
 			m_mod = event.key.mod;
+			m_pressed = event.key.down;
+			m_repeat = event.key.repeat;
 		}
 	};
 
-	class KeyBoardButtonEvent final : public KeyBoardEvent {
+	class KeyBoardTextInputEvent final : public KeyBoardEvent {
 		friend class EventManager;
-		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardButtonEvent)
-	public:
+		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardTextInputEvent)
 
-		inline bool IsPressed() const { return m_pressed; }
-		inline bool IsReleased() const { return !m_pressed; }
-		inline bool IsRepeat() const { return m_repeat; }
+	public:
+		inline std::string GetInputText() const { return m_text; }
 
 	private:
-		bool m_pressed = false;
-		bool m_repeat = false;
+		std::string m_text;
+	};
+
+	class KeyBoardTextEditingEvent final : public KeyBoardEvent {
+		friend class EventManager;
+		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardTextEditingEvent)
+
+	public:
+		inline std::string GetEditingText() const { return m_text; }
+		inline Sint32 GetSelectedEditingTextStartCursorPos() const { return m_start; }
+		inline Sint32 GetSelectedEditingTextLength() const { return m_length; }
+
+	private:
+		std::string m_text;
+		Sint32 m_start;
+		Sint32 m_length;
 	};
 #pragma endregion
 

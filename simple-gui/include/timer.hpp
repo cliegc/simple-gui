@@ -10,6 +10,8 @@ namespace SimpleGui {
 	public:
 		Signal<> timeout;
 
+		Timer() = default;
+		Timer(float interval);
 		~Timer() = default;
 
 		inline float GetInterval() const { return m_interval; }
@@ -22,16 +24,17 @@ namespace SimpleGui {
 		inline void SetPaused(bool val) { m_paused = val; }
 
 		void Start();
-
+		void Update();
+		
 	private:
 		float m_interval;
 		bool m_oneShot;
 		bool m_paused;
+		bool m_kill;
 		size_t m_count;
 		Uint64 m_lastTime;
 
-		Timer(float interval);
-		void Update();
+		void Kill();
 	};
 
 	class TimerManager final {
@@ -44,8 +47,7 @@ namespace SimpleGui {
 		std::vector<std::unique_ptr<Timer>> m_timers;
 
 		Timer* GetTimer(float interval);
-		void KillTiemr(Timer* timer);
-
+		void KillTimer(Timer* timer);
 		void Update();
 	};
 }

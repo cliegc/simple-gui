@@ -4,33 +4,22 @@
 
 
 namespace SimpleGui {
-	enum class LineEditContentType {
-		Text,
-		Int,
-		Float,
-	};
-
 	class LineEdit final : public BaseComponent {
 	public:
-		LineEdit(LineEditContentType type = LineEditContentType::Text, std::string_view placeholder = "");
+		LineEdit(std::string_view placeholder = "");
 		~LineEdit() = default;
 
 		virtual bool HandleEvent(Event* event) override;
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
-		inline std::string GetContentText() const { return m_content; }
-		inline int GetContentInt() const {};
-		inline float GetContentFloat() const {};
+		inline std::string GetText() const { return m_text; }
 		
 		inline std::string GetPlaceholder() const { return m_placeholder; }
 		inline void SetPlaceholder(std::string_view placeholder) { m_placeholder = placeholder; }
 
-		inline LineEditContentType GetContentType() const { return m_contentType; }
-		inline void SetContentType(LineEditContentType type) { m_contentType = type; }
-
 		inline Alignment GetAlignment() const { return m_aligment; }
-		inline void SetAlignment(Alignment alignment) { m_aligment = alignment; }
+		void SetAlignment(Alignment alignment);
 
 		inline bool IsEditable() const { return m_editable; }
 		inline void SetEditable(bool value) { m_editable = value; }
@@ -44,15 +33,25 @@ namespace SimpleGui {
 		inline char GetSecretChar() const { return m_secretChar; }
 		inline void SetSecretChar(char c) { m_secretChar = c; }
 
+		inline bool IsCaretBlink() const { return m_caret.IsBlink(); }
+		inline void SetCaretBlink(bool blink) { m_caret.SetBlink(blink); }
+		inline float GetCaretBlinkInterval() { return m_caret.GetBlinkInterval(); }
+		inline void SetCaretBlinkInterval(float interval) { m_caret.SetBlinkInterval(interval); }
+
+	protected:
+		virtual void EnteredComponentTree() override;
+
 	private:
-		std::string m_content;
+		std::unique_ptr<Label> m_textLbl;
+		std::unique_ptr<Label> m_selectedTextLbl;
+		std::string m_text;
 		std::string m_placeholder;
-		LineEditContentType m_contentType;
-		Alignment m_aligment = Alignment::Begin;
+		Alignment m_aligment;
 		Caret m_caret;
-		bool m_editable = true;
-		bool m_selectingEnabled = true;
-		bool m_secretEnable = false;
-		char m_secretChar = '*';
+		bool m_active;
+		bool m_editable;
+		bool m_selectingEnabled;
+		bool m_secretEnable;
+		char m_secretChar;
 	};
 }

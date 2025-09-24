@@ -55,6 +55,7 @@ namespace SimpleGui {
 		LineEditForeground,
 		LineEditPlaceholder,
 		LineEditBorder,
+		LineEditActivatedBorder,
 		LineEditCaret,
 		LineEditSelectedBackground,
 		LineEditSelectedForeground,
