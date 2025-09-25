@@ -306,7 +306,7 @@ namespace SimpleGui {
 			m_winID = event.key.windowID;
 			m_timestamp = event.key.timestamp;
 			m_scanCode = event.key.scancode;
-			m_key = event.key.scancode;
+			m_key = event.key.key;
 			m_mod = event.key.mod;
 			m_pressed = event.key.down;
 			m_repeat = event.key.repeat;

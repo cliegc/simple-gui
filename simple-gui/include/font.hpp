@@ -2,6 +2,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <string_view>
 #include <string>
+#include "math.hpp"
 
 
 namespace SimpleGui {
@@ -27,6 +28,11 @@ namespace SimpleGui {
 		inline void SetSize(float ptsize) { TTF_SetFontSize(m_font, ptsize); }
 		
 		inline int GetHeight() const { TTF_GetFontHeight(m_font); }
+		inline Vec2 GetTextSize(std::string_view text) {
+			int w, h;
+			TTF_GetStringSize(m_font, text.data(), text.size(), &w, &h);
+			return Vec2(static_cast<float>(w), static_cast<float>(h));
+		}
 
 		inline std::string GetFamilyName() const { TTF_GetFontFamilyName(m_font); }
 

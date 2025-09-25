@@ -13,8 +13,8 @@ namespace SimpleGui {
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
-		inline std::string GetText() const { return m_text; }
-		
+		inline std::string GetText() const { return m_textLbl->GetText(); }
+
 		inline std::string GetPlaceholder() const { return m_placeholder; }
 		inline void SetPlaceholder(std::string_view placeholder) { m_placeholder = placeholder; }
 
@@ -44,7 +44,7 @@ namespace SimpleGui {
 	private:
 		std::unique_ptr<Label> m_textLbl;
 		std::unique_ptr<Label> m_selectedTextLbl;
-		std::string m_text;
+		std::string m_string;
 		std::string m_placeholder;
 		Alignment m_aligment;
 		Caret m_caret;
@@ -53,5 +53,7 @@ namespace SimpleGui {
 		bool m_selectingEnabled;
 		bool m_secretEnable;
 		char m_secretChar;
+
+		inline bool IsShowPlaceholder() const { return m_string.empty() && !m_placeholder.empty(); }
 	};
 }

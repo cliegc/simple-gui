@@ -29,9 +29,11 @@ namespace SimpleGui {
 		BaseComponent::EnteredComponentTree(m_selectedTextLbl.get());
 		
 		m_padding = m_window->GetCurrentStyle().componentPadding;
+		m_textLbl->SetPadding(0, 0, 0, 0);
+		m_selectedTextLbl->SetPadding(0, 0, 0, 0);
 		SetMinSize(GetFont().GetSize() + m_padding.left + m_padding.right,
 			m_textLbl->GetSize().h + m_padding.top + m_padding.bottom);
-		SetWidth(100);
+		SetWidth(150);
 	}
 
 	bool LineEdit::HandleEvent(Event* event) {
@@ -48,14 +50,29 @@ namespace SimpleGui {
 			else SDL_StopTextInput(&m_window->GetSDLWindow());
 		}
 
+		if (!m_active) return false;
+
 		if (auto ev = event->Convert<KeyBoardTextInputEvent>()) {
-			m_text += ev->GetInputText();
-			SDL_Log("input text: %s\n", m_text.c_str());
+			m_string += ev->GetInputText();
+			m_textLbl->SetText(m_string);
+			SDL_Log("input text: %s\n", m_string.c_str());
 			return true;
 		}
 		else if (auto ev = event->Convert<KeyBoardTextEditingEvent>()) {
 			SDL_Log("editing text: %s\n", ev->GetEditingText().c_str());
+			m_textLbl->SetText(m_string + ev->GetEditingText());
 			return true;
+		}
+		else if (auto ev = event->Convert<KeyBoardButtonEvent>();
+			ev && ev->IsPressed()) {
+			SDL_Log("KeyBoardButtonEvent and pressed");
+			if (ev->GetKeyCode() == SDLK_BACKSPACE) {
+				SDL_Log("KeyBoardButtonEvent and backspace pressed");
+				if (!m_string.empty()) {
+					m_string.pop_back();
+					m_textLbl->SetText(m_string);
+				}
+			}
 		}
 
 		return false;
@@ -66,7 +83,21 @@ namespace SimpleGui {
 
 		BaseComponent::Update();
 
+		auto contentGRect = GetContentGlobalRect();
+
+		// update lbl
+		m_textLbl->Update();
+		// update textLbl pos
+
 		// update caret pos
+		float offset = IsShowPlaceholder() ? 0.f : GetFont().GetTextSize(m_textLbl->GetText()).w;
+		m_caret.GetGlobalRect().position.x = offset + contentGRect.Left();
+		m_caret.GetGlobalRect().position.y = contentGRect.Top();
+		m_caret.GetGlobalRect().size.h = contentGRect.size.h;
+		// clamp caret pos
+		m_caret.GetGlobalRect().position.x =
+			SDL_clamp(m_caret.GetGlobalRect().position.x,
+				contentGRect.Left(), contentGRect.Right());
 		m_caret.Update();
 	}
 
@@ -77,7 +108,7 @@ namespace SimpleGui {
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LineEditBackground));
 
 		// draw text and placeholder text
-		if (m_text.empty() && !m_placeholder.empty()) {
+		if (IsShowPlaceholder()) {
 			m_textLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::LineEditPlaceholder));
 		}
 		else {
@@ -89,7 +120,7 @@ namespace SimpleGui {
 
 		// draw caret
 		m_caret.SetColor(GetThemeColor(ThemeColorFlags::LineEditCaret));
-		//m_caret.Render(renderer, );
+		m_caret.Render(renderer);
 
 		// draw borer
 		renderer.SetClipRect(m_visibleGRect);

@@ -6,6 +6,7 @@ namespace SimpleGui {
 	Label::Label(std::string_view text) : BaseComponent() {
 		//Init(text);
 		m_text = text;
+		m_wrapEnabled = false;
 
 		m_textAlignments.first = TextAlignment::Left;
 		m_textAlignments.second = TextAlignment::Top;
@@ -96,7 +97,8 @@ namespace SimpleGui {
 			m_textRect.position.y = (globalRect.size.h - m_textRect.size.h) / 2 + globalRect.position.y;
 		}
 
-		TTF_SetTextWrapWidth(m_ttfText.get(), globalRect.size.w - m_padding.left - m_padding.right);
+		if (m_wrapEnabled)
+			TTF_SetTextWrapWidth(m_ttfText.get(), globalRect.size.w - m_padding.left - m_padding.right);
 	}
 
 	std::string Label::GetText() const {

@@ -171,7 +171,8 @@ static void TestTimer() {
 
 
 static void TestLineEdit() {
-	SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
+	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
+	lineEdit->SetPosition(200, 200);
 }
 
 int main(int argc, char** argv) {
@@ -189,11 +190,11 @@ int main(int argc, char** argv) {
 
 	//TestScrollBar();
 	//TestScrollPanel();
-	//TestLineEdit();
-	TestTimer();
+	TestLineEdit();
+	//TestTimer();
 
-	win.EnableVsync(true);
-	//SG_GuiManager.SetTargetFrameRate(165);
+	//win.EnableVsync(true);
+	SG_GuiManager.SetTargetFrameRate(60);
 	//SG_GuiManager.SetUnlimitedFrameRate(true);
 	SG_GuiManager.Run();
 	GuiManager::Quit();
@@ -254,11 +255,13 @@ int main(int argc, char** argv) {
 //            if (event.type == SDL_EVENT_TEXT_INPUT) {
 //                // 添加输入的文本
 //                text += event.text.text;
+//                SDL_Log("text input: %s", text.c_str());
 //                return true;
 //            }
 //            else if (event.type == SDL_EVENT_TEXT_EDITING) {
 //                // 更新正在编辑的文本（用于中文输入法）
 //                composition = event.edit.text;
+//                SDL_Log("text editiing: %s", composition.c_str());
 //                return true;
 //            }
 //            else if (event.type == SDL_EVENT_KEY_DOWN) {
@@ -301,7 +304,7 @@ int main(int argc, char** argv) {
 //
 //            // 创建文本表面
 //            SDL_Surface* textSurface = TTF_RenderText_Blended(font, displayText.c_str(), displayText.length(), textColor);
-//            std::cout << "text: " << displayText << std::endl;
+//            //std::cout << "text: " << displayText << std::endl;
 //                //TTF_RenderUTF8_Blended(font, displayText.c_str(), textColor);
 //            if (textSurface) {
 //                // 创建纹理

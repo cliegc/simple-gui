@@ -21,6 +21,9 @@ namespace SimpleGui {
 		TTF_Direction GetTextDirection() const;
 		void SetTextDirection(TTF_Direction direction);
 
+		inline bool IsWrapEnabled() const { return m_wrapEnabled; }
+		inline void SetWrapEnabled(bool enable) { m_wrapEnabled = enable; }
+
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
@@ -31,6 +34,7 @@ namespace SimpleGui {
 		std::string m_text;
 		UniqueTextPtr m_ttfText;
 		Rect m_textRect;
+		bool m_wrapEnabled;
 
 		TextAlignments m_textAlignments;
 

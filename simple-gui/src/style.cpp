@@ -131,6 +131,15 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ScrollPanelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::ScrollPanelBorder] = Color(0x3d444dff);
 
+		style->colors[ThemeColorFlags::LineEditBackground] = Color(47, 47, 47);
+		style->colors[ThemeColorFlags::LineEditForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::LineEditPlaceholder] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::LineEditBorder] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::LineEditActivatedBorder] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::LineEditCaret] = Color::WHITE;
+		style->colors[ThemeColorFlags::LineEditSelectedBackground] = Color::WHITE;
+		style->colors[ThemeColorFlags::LineEditSelectedForeground] = Color::BLACK;
+
 		return std::move(style);
 	}
 
