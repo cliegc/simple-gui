@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)3rdlib\SDL3_ttf\include;$(ProjectDir)3rdlib\SDL3_image\include;$(ProjectDir)3rdlib\SDL3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)3rdlib\utfcpp;$(ProjectDir)include;$(ProjectDir)3rdlib\SDL3_ttf\include;$(ProjectDir)3rdlib\SDL3_image\include;$(ProjectDir)3rdlib\SDL3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)3rdlib\SDL3_ttf\include;$(ProjectDir)3rdlib\SDL3_image\include;$(ProjectDir)3rdlib\SDL3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)3rdlib\utfcpp;$(ProjectDir)include;$(ProjectDir)3rdlib\SDL3_ttf\include;$(ProjectDir)3rdlib\SDL3_image\include;$(ProjectDir)3rdlib\SDL3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="3rdlib\utfcpp\utf8.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\checked.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\core.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp11.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp17.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp20.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
     <ClInclude Include="include\component\button.hpp" />
     <ClInclude Include="include\component\draggable_panel.hpp" />
     <ClInclude Include="include\component\layout\anchor_point_layout.hpp" />

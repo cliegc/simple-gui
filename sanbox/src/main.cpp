@@ -173,10 +173,12 @@ static void TestTimer() {
 static void TestLineEdit() {
 	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
 	lineEdit->SetPosition(200, 200);
+	lineEdit->CustomThemeColor(ThemeColorFlags::LineEditForeground, Color::RED);
 }
 
 int main(int argc, char** argv) {
-	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
+	//GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
+	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\msyh.ttc");
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 	//win.SwitchStyle(StyleManager::LightStyle);
 

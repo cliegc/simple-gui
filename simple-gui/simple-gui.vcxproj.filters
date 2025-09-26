@@ -1,180 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\component\button.cpp" />
+    <ClCompile Include="src\component\common.cpp" />
+    <ClCompile Include="src\component\draggable_panel.cpp" />
+    <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
+    <ClCompile Include="src\component\layout\box_layout.cpp" />
+    <ClCompile Include="src\component\line_edit.cpp" />
+    <ClCompile Include="src\component\root_component.cpp" />
+    <ClCompile Include="src\component\scrollbar.cpp" />
+    <ClCompile Include="src\component\scroll_panel.cpp" />
+    <ClCompile Include="src\component\texture_rect.cpp" />
+    <ClCompile Include="src\event.cpp" />
+    <ClCompile Include="src\extended_functions.cpp" />
+    <ClCompile Include="src\font.cpp" />
+    <ClCompile Include="src\framerate.cpp" />
+    <ClCompile Include="src\style.cpp" />
+    <ClCompile Include="src\component\base_component.cpp" />
+    <ClCompile Include="src\component\label.cpp" />
+    <ClCompile Include="src\deleter.cpp" />
+    <ClCompile Include="src\gui_manager.cpp" />
+    <ClCompile Include="src\math.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\timer.cpp" />
+    <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\gui_manager.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\math.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\renderer.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\common.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\simple_gui.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\base_component.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\signal.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\label.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\deleter.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\style.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\button.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\draggable_panel.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\root_component.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\texture_rect.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\layout\box_layout.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\layout\layout.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\layout\anchor_point_layout.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\scrollbar.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\event.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\texture.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\font.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\window.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\framerate.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\extended_functions.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="include\component\line_edit.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\component\scroll_panel.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\timer.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-=======
->>>>>>> 8d952745addb839b8392269f21812764a2c25bcc
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\gui_manager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\math.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\base_component.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\label.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\deleter.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\style.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\button.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\draggable_panel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\root_component.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\texture_rect.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\layout\box_layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\layout\anchor_point_layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\scrollbar.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\font.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\window.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\framerate.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\extended_functions.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\event.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="src\component\line_edit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\scroll_panel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\component\common.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\timer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-=======
->>>>>>> 8d952745addb839b8392269f21812764a2c25bcc
+    <ClInclude Include="include\component\button.hpp" />
+    <ClInclude Include="include\component\draggable_panel.hpp" />
+    <ClInclude Include="include\component\layout\anchor_point_layout.hpp" />
+    <ClInclude Include="include\component\layout\box_layout.hpp" />
+    <ClInclude Include="include\component\layout\layout.hpp" />
+    <ClInclude Include="include\component\root_component.hpp" />
+    <ClInclude Include="include\component\scrollbar.hpp" />
+    <ClInclude Include="include\component\scroll_panel.hpp" />
+    <ClInclude Include="include\component\texture_rect.hpp" />
+    <ClInclude Include="include\event.hpp" />
+    <ClInclude Include="include\extended_functions.hpp" />
+    <ClInclude Include="include\font.hpp" />
+    <ClInclude Include="include\framerate.hpp" />
+    <ClInclude Include="include\component\line_edit.hpp" />
+    <ClInclude Include="include\style.hpp" />
+    <ClInclude Include="include\component\base_component.hpp" />
+    <ClInclude Include="include\component\common.hpp" />
+    <ClInclude Include="include\component\label.hpp" />
+    <ClInclude Include="include\deleter.hpp" />
+    <ClInclude Include="include\gui_manager.hpp" />
+    <ClInclude Include="include\math.hpp" />
+    <ClInclude Include="include\renderer.hpp" />
+    <ClInclude Include="include\signal.hpp" />
+    <ClInclude Include="include\simple_gui.hpp" />
+    <ClInclude Include="include\texture.hpp" />
+    <ClInclude Include="include\timer.hpp" />
+    <ClInclude Include="include\window.hpp" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\checked.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\core.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp11.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp17.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\cpp20.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
+    <ClInclude Include="3rdlib\utfcpp\utf8.h" />
   </ItemGroup>
 </Project>

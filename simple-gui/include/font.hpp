@@ -27,10 +27,13 @@ namespace SimpleGui {
 		inline float GetSize() const { return TTF_GetFontSize(m_font); }
 		inline void SetSize(float ptsize) { TTF_SetFontSize(m_font, ptsize); }
 		
-		inline int GetHeight() const { TTF_GetFontHeight(m_font); }
+		inline int GetHeight() const { return TTF_GetFontHeight(m_font); }
 		inline Vec2 GetTextSize(std::string_view text) {
+			return GetTextSize(text, text.length());
+		}
+		inline Vec2 GetTextSize(std::string_view text, size_t length) {
 			int w, h;
-			TTF_GetStringSize(m_font, text.data(), text.size(), &w, &h);
+			TTF_GetStringSize(m_font, text.data(), length, &w, &h);
 			return Vec2(static_cast<float>(w), static_cast<float>(h));
 		}
 

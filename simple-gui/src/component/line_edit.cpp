@@ -1,3 +1,4 @@
+#include <utf8.h>
 #include "component/line_edit.hpp"
 #include "gui_manager.hpp"
 
@@ -9,16 +10,21 @@ namespace SimpleGui {
 
 		m_placeholder = placeholder;
 		m_aligment = Alignment::Begin;
+		m_caretIndex = 0;
 		m_active = false;
 		m_editable = true;
 		m_selectingEnabled = true;
 		m_secretEnable = false;
 		m_secretChar = '*';
+		m_cursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT));
 		SetAlignment(m_aligment);
 
 		m_textLbl->SetPadding(0, 0, 0, 0);
 		m_selectedTextLbl->SetPadding(0, 0, 0, 0);
 		m_selectedTextLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
+
+		m_caret.SetBlink(true);
+		m_caret.SetVisible(false);
 	}
 
 	void LineEdit::EnteredComponentTree() {
@@ -27,7 +33,7 @@ namespace SimpleGui {
 		SetComponentOwner(m_selectedTextLbl.get(), m_window, this);
 		BaseComponent::EnteredComponentTree(m_textLbl.get());
 		BaseComponent::EnteredComponentTree(m_selectedTextLbl.get());
-		
+
 		m_padding = m_window->GetCurrentStyle().componentPadding;
 		m_textLbl->SetPadding(0, 0, 0, 0);
 		m_selectedTextLbl->SetPadding(0, 0, 0, 0);
@@ -39,41 +45,27 @@ namespace SimpleGui {
 	bool LineEdit::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		if (BaseComponent::HandleEvent(event)) return true;
-
 		Vec2 mousePos = SG_GuiManager.GetMousePosition();
 		if (auto ev = event->Convert<MouseButtonEvent>();
 			ev && ev->IsPressed(MouseButton::Left)) {
 			m_active = m_visibleGRect.ContainPoint(mousePos);
 
-			if (m_active) SDL_StartTextInput(&m_window->GetSDLWindow());
-			else SDL_StopTextInput(&m_window->GetSDLWindow());
-		}
-
-		if (!m_active) return false;
-
-		if (auto ev = event->Convert<KeyBoardTextInputEvent>()) {
-			m_string += ev->GetInputText();
-			m_textLbl->SetText(m_string);
-			SDL_Log("input text: %s\n", m_string.c_str());
-			return true;
-		}
-		else if (auto ev = event->Convert<KeyBoardTextEditingEvent>()) {
-			SDL_Log("editing text: %s\n", ev->GetEditingText().c_str());
-			m_textLbl->SetText(m_string + ev->GetEditingText());
-			return true;
-		}
-		else if (auto ev = event->Convert<KeyBoardButtonEvent>();
-			ev && ev->IsPressed()) {
-			SDL_Log("KeyBoardButtonEvent and pressed");
-			if (ev->GetKeyCode() == SDLK_BACKSPACE) {
-				SDL_Log("KeyBoardButtonEvent and backspace pressed");
-				if (!m_string.empty()) {
-					m_string.pop_back();
-					m_textLbl->SetText(m_string);
-				}
+			if (m_active) {
+				SDL_StartTextInput(&m_window->GetSDLWindow());
+				m_caret.SetVisible(true);
+			}
+			else {
+				SDL_StopTextInput(&m_window->GetSDLWindow());
+				m_caret.SetVisible(false);
 			}
 		}
+
+		if (HandleMouseCursor(event)) return true;
+		// TODO these code -> class TextEdit
+		if (HandleInput(event)) return true;
+		if (HandleMouseModifyCaretIndex(event)) return true;
+
+		if (BaseComponent::HandleEvent(event)) return true;
 
 		return false;
 	}
@@ -90,10 +82,13 @@ namespace SimpleGui {
 		// update textLbl pos
 
 		// update caret pos
-		float offset = IsShowPlaceholder() ? 0.f : GetFont().GetTextSize(m_textLbl->GetText()).w;
+		UpdateCaretPosition();
+
+		//float offset = IsShowPlaceholder() ? 0.f : GetFont().GetTextSize(m_textLbl->GetText()).w;
+		float offset = m_caretIndex ? GetFont().GetTextSize(m_textLbl->GetText(), m_caretIndex).w : 0;
 		m_caret.GetGlobalRect().position.x = offset + contentGRect.Left();
-		m_caret.GetGlobalRect().position.y = contentGRect.Top();
-		m_caret.GetGlobalRect().size.h = contentGRect.size.h;
+		m_caret.GetGlobalRect().size.h = GetFont().GetHeight();
+		m_caret.GetGlobalRect().position.y = (contentGRect.size.h - m_caret.GetGlobalRect().size.h) / 2 + contentGRect.Top();
 		// clamp caret pos
 		m_caret.GetGlobalRect().position.x =
 			SDL_clamp(m_caret.GetGlobalRect().position.x,
@@ -103,7 +98,7 @@ namespace SimpleGui {
 
 	void LineEdit::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
-		
+
 		// draw bg
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LineEditBackground));
 
@@ -131,6 +126,177 @@ namespace SimpleGui {
 		BaseComponent::Render(renderer);
 	}
 
+	inline void LineEdit::SetFont(std::unique_ptr<Font> font) {
+	}
+
+	void LineEdit::SetFont(std::string_view path, int size) {
+	}
+
+	size_t LineEdit::GetMoveCaretToLeftOneStepOffset() {
+		if (m_caretIndex == 0) return 0;
+
+		size_t lastIndex = 0;
+		size_t offset = 0;
+		for (auto it = m_string.begin(); it != m_string.end();) {
+			utf8::next(it, m_string.end());
+			size_t byteIndex = it - m_string.begin();
+			if (byteIndex == m_caretIndex) {
+				offset = byteIndex - lastIndex;
+				break;
+			}
+			lastIndex = byteIndex;
+		}
+		return offset;
+	}
+
+	size_t LineEdit::GetMoveCaretToRightOneStepOffset() {
+		if (m_caretIndex == m_string.length()) return 0;
+
+		size_t lastIndex = 0;
+		size_t offset = 0;
+
+		if (m_caretIndex == 0) {
+			auto it = m_string.begin();
+			utf8::next(it, m_string.end());
+			offset = it - m_string.begin();
+			return offset;
+		}
+
+		for (auto it = m_string.begin(); it != m_string.end();) {
+			utf8::next(it, m_string.end());
+			size_t byteIndex = it - m_string.begin();
+			if (byteIndex == m_caretIndex) {
+				lastIndex = byteIndex;
+				utf8::next(it, m_string.end());
+				byteIndex = it - m_string.begin();
+				offset = byteIndex - lastIndex;
+				break;
+			}
+		}
+		return offset;
+	}
+
+	void LineEdit::UpdateCaretPosition() {
+
+	}
+
+	bool LineEdit::HandleMouseCursor(Event* event) {
+		if (auto ev = event->Convert<MouseMotionEvent>()) {
+			if (m_visibleGRect.ContainPoint(ev->GetPosition())) {
+				SDL_SetCursor(m_cursor.get());
+			}
+			else if (SDL_GetCursor() == m_cursor.get()) {
+				SDL_SetCursor(SDL_GetDefaultCursor());
+			}
+		}
+		return false;
+	}
+
+	bool LineEdit::HandleInput(Event* event) {
+		if (!m_active) return false;
+
+		// input text
+		if (auto ev = event->Convert<KeyBoardTextInputEvent>()) {
+			auto inputText = ev->GetInputText();
+			m_string.insert(m_caretIndex, inputText);
+			m_textLbl->SetText(m_string);
+			m_caretIndex += inputText.length();
+			m_caret.SetVisible(true);
+			SDL_Log("input text: %s\n", m_string.c_str());
+			SDL_Log("m_caretIndex: %d", m_caretIndex);
+			//SDL_Log("font size: %f", GetFont().GetSize());
+			return true;
+		}
+
+		// editiing text
+		else if (auto ev = event->Convert<KeyBoardTextEditingEvent>()) {
+			SDL_Log("editing text: %s\n", ev->GetEditingText().c_str());
+			//m_str
+			//m_textLbl->SetText(m_string + ev->GetEditingText());
+			//m_caretIndex += 
+			m_caret.SetVisible(true);
+			return true;
+		}
+
+		else if (auto ev = event->Convert<KeyBoardButtonEvent>();
+			ev && ev->IsPressed()) {
+			// backspace£¬delete char
+			if (ev->GetKeyCode() == SDLK_BACKSPACE) {
+				if (!m_string.empty() && m_caretIndex) {
+					size_t offset = GetMoveCaretToLeftOneStepOffset();
+					size_t index = (m_caretIndex - offset) < 0 ? 0 : m_caretIndex - offset;
+					size_t count = offset > m_string.length() ? m_string.length() : offset;
+					m_string.erase(index, count);
+					m_textLbl->SetText(m_string);
+					MoveCaretToLeft(offset);
+
+					if (m_string.empty()) {
+						m_textLbl->SetText(m_placeholder);
+					}
+
+					return true;
+				}
+			}
+
+			// move caret to left
+			else if (ev->GetKeyCode() == SDLK_LEFT) {
+				MoveCaretToLeft(GetMoveCaretToLeftOneStepOffset());
+				m_caret.SetVisible(true);
+				return true;
+			}
+
+			// move caret to right
+			else if (ev->GetKeyCode() == SDLK_RIGHT) {
+				MoveCaretToRight(GetMoveCaretToRightOneStepOffset());
+				m_caret.SetVisible(true);
+				return true;
+			}
+
+			// Home
+			else if (ev->GetKeyCode() == SDLK_HOME) {
+				m_caretIndex = 0;
+				m_caret.SetVisible(true);
+				return true;
+			}
+
+			// End
+			else if (ev->GetKeyCode() == SDLK_END) {
+				m_caretIndex = m_string.length();
+				m_caret.SetVisible(true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool LineEdit::HandleMouseModifyCaretIndex(Event* event) {
+		if (m_string.empty()) return false;
+
+		if (auto ev = event->Convert<MouseButtonEvent>()) {
+			if (!m_visibleGRect.ContainPoint(ev->GetPosition())) return false;
+
+			float x = ev->GetPosition().x - GetContentGlobalRect().Left();
+			if (x > GetFont().GetTextSize(m_string).w) {
+				m_caretIndex = m_string.length();
+				return true;
+			}
+
+			size_t lastIndex = 0;
+			for (auto it = m_string.begin(); it != m_string.end();) {
+				utf8::next(it, m_string.end());
+				size_t byteIndex = it - m_string.begin();
+				float w = GetFont().GetTextSize(m_string, byteIndex).w;
+				if (x < w - GetFont().GetSize() * 0.5f) {
+					m_caretIndex = lastIndex;
+					return true;
+				}
+				lastIndex = byteIndex;
+			}
+		}
+
+		return false;
+	}
+
 	void LineEdit::SetAlignment(Alignment alignment) {
 		TextAlignment aln =
 			alignment == Alignment::Begin ? TextAlignment::Left :
@@ -138,4 +304,6 @@ namespace SimpleGui {
 		m_textLbl->SetTextAlignments(aln, TextAlignment::Center);
 		m_aligment = alignment;
 	}
+
+
 }
