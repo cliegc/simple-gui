@@ -7,6 +7,7 @@ namespace SimpleGui {
 		//Init(text);
 		m_text = text;
 		m_wrapEnabled = false;
+		m_sizeFollowTextEnabled = false;
 
 		m_textAlignments.first = TextAlignment::Left;
 		m_textAlignments.second = TextAlignment::Top;
@@ -26,6 +27,10 @@ namespace SimpleGui {
 		SG_CMP_UPDATE_CONDITIONS;
 
 		UpdateTextAlignments();
+
+		if (m_sizeFollowTextEnabled) {
+			SetSize(m_ttfText->internal->w, m_ttfText->internal->h);
+		}
 
 		BaseComponent::Update();
 	}

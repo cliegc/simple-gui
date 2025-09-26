@@ -9,7 +9,6 @@ namespace SimpleGui {
 		m_selectedTextLbl = std::make_unique<Label>("");
 
 		m_placeholder = placeholder;
-		m_aligment = Alignment::Begin;
 		m_caretIndex = 0;
 		m_active = false;
 		m_editable = true;
@@ -17,14 +16,17 @@ namespace SimpleGui {
 		m_secretEnable = false;
 		m_secretChar = '*';
 		m_cursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT));
-		SetAlignment(m_aligment);
 
 		m_textLbl->SetPadding(0, 0, 0, 0);
+		m_textLbl->SetSizeFollowTextEnabled(true);
 		m_selectedTextLbl->SetPadding(0, 0, 0, 0);
 		m_selectedTextLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
 
 		m_caret.SetBlink(true);
 		m_caret.SetVisible(false);
+
+		// debug
+		m_textLbl->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GRAY);
 	}
 
 	void LineEdit::EnteredComponentTree() {
@@ -79,14 +81,14 @@ namespace SimpleGui {
 
 		// update lbl
 		m_textLbl->Update();
-		// update textLbl pos
+		m_textLbl->SetPositionY((contentGRect.size.h - m_textLbl->GetSize().h) / 2);
 
 		// update caret pos
 		UpdateCaretPosition();
 
 		//float offset = IsShowPlaceholder() ? 0.f : GetFont().GetTextSize(m_textLbl->GetText()).w;
 		float offset = m_caretIndex ? GetFont().GetTextSize(m_textLbl->GetText(), m_caretIndex).w : 0;
-		m_caret.GetGlobalRect().position.x = offset + contentGRect.Left();
+		m_caret.GetGlobalRect().position.x = offset + contentGRect.Left() + m_textLbl->GetPosition().x;
 		m_caret.GetGlobalRect().size.h = GetFont().GetHeight();
 		m_caret.GetGlobalRect().position.y = (contentGRect.size.h - m_caret.GetGlobalRect().size.h) / 2 + contentGRect.Top();
 		// clamp caret pos
@@ -94,6 +96,8 @@ namespace SimpleGui {
 			SDL_clamp(m_caret.GetGlobalRect().position.x,
 				contentGRect.Left(), contentGRect.Right());
 		m_caret.Update();
+
+		// move caret to set textLbl pos
 	}
 
 	void LineEdit::Render(const Renderer& renderer) {
@@ -130,6 +134,41 @@ namespace SimpleGui {
 	}
 
 	void LineEdit::SetFont(std::string_view path, int size) {
+	}
+
+	void LineEdit::MoveCaretToLeft(int offset) {
+		int index = m_caretIndex - offset;
+		m_caretIndex = index > 0 ? index : 0;
+
+		if (!m_caretIndex) return;
+		float ofs = GetMoveCaretToLeftOneStepOffset();
+		float w1 = GetFont().GetTextSize(m_string, m_caretIndex).w;
+		float w2 = GetFont().GetTextSize(m_string, m_caretIndex - ofs).w;
+		if (w1 < GetContentGlobalRect().size.w) {
+			m_textLbl->SetPositionX(0);
+		}
+		else if (w2 + m_textLbl->GetPosition().x < 0) {
+			m_textLbl->SetPositionX(m_textLbl->GetPosition().x + w1 - w2);
+		}
+	}
+
+	void LineEdit::MoveCaretToRight(int offset) {
+		size_t strLen = m_string.length();
+		int index = m_caretIndex + offset;
+		m_caretIndex = index < strLen ? index : strLen;
+
+		if (m_caretIndex == strLen) return;
+		float ofs = GetMoveCaretToRightOneStepOffset();
+		float w = m_textLbl->GetSize().w;
+		float w1 = GetFont().GetTextSize(m_string, m_caretIndex).w;
+		float w2 = GetFont().GetTextSize(m_string, m_caretIndex + ofs).w;
+		float contentW = GetContentGlobalRect().size.w;
+		if (w2 > contentW && w - w2 < contentW) {
+			m_textLbl->SetPositionX(contentW - w);
+		}
+		else if (w1 > contentW) {
+			m_textLbl->SetPositionX(m_textLbl->GetPosition().x - w2 + w1);
+		}
 	}
 
 	size_t LineEdit::GetMoveCaretToLeftOneStepOffset() {
@@ -199,12 +238,20 @@ namespace SimpleGui {
 		if (auto ev = event->Convert<KeyBoardTextInputEvent>()) {
 			auto inputText = ev->GetInputText();
 			m_string.insert(m_caretIndex, inputText);
-			m_textLbl->SetText(m_string);
 			m_caretIndex += inputText.length();
 			m_caret.SetVisible(true);
+			m_textLbl->SetText(m_string);
 			SDL_Log("input text: %s\n", m_string.c_str());
-			SDL_Log("m_caretIndex: %d", m_caretIndex);
-			//SDL_Log("font size: %f", GetFont().GetSize());
+
+			Rect contentGRect = GetContentGlobalRect();
+			
+			if ((m_caretIndex == m_string.length() ||
+				IsEqualApprox(m_caret.GetGlobalRect().Left(), contentGRect.Right())) &&
+				m_textLbl->GetSize().w > contentGRect.size.w) {
+				float w = GetFont().GetTextSize(m_string, m_caretIndex).w;
+				m_textLbl->SetPositionX(contentGRect.size.w - w);
+			}
+
 			return true;
 		}
 
@@ -255,6 +302,7 @@ namespace SimpleGui {
 			// Home
 			else if (ev->GetKeyCode() == SDLK_HOME) {
 				m_caretIndex = 0;
+				m_textLbl->SetPositionX(0);
 				m_caret.SetVisible(true);
 				return true;
 			}
@@ -262,6 +310,10 @@ namespace SimpleGui {
 			// End
 			else if (ev->GetKeyCode() == SDLK_END) {
 				m_caretIndex = m_string.length();
+				float contentW = GetContentGlobalRect().size.w;
+				if (m_textLbl->GetSize().w > contentW) {
+					m_textLbl->SetPositionX(contentW - m_textLbl->GetSize().w);
+				}
 				m_caret.SetVisible(true);
 				return true;
 			}
@@ -296,14 +348,4 @@ namespace SimpleGui {
 
 		return false;
 	}
-
-	void LineEdit::SetAlignment(Alignment alignment) {
-		TextAlignment aln =
-			alignment == Alignment::Begin ? TextAlignment::Left :
-			(alignment == Alignment::Center ? TextAlignment::Center : TextAlignment::Right);
-		m_textLbl->SetTextAlignments(aln, TextAlignment::Center);
-		m_aligment = alignment;
-	}
-
-
 }

@@ -24,6 +24,9 @@ namespace SimpleGui {
 		inline bool IsWrapEnabled() const { return m_wrapEnabled; }
 		inline void SetWrapEnabled(bool enable) { m_wrapEnabled = enable; }
 
+		inline bool IsSizeFollowText() const {return m_sizeFollowTextEnabled; }
+		inline void SetSizeFollowTextEnabled(bool enable) { m_sizeFollowTextEnabled = enable; }
+
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
@@ -35,6 +38,7 @@ namespace SimpleGui {
 		UniqueTextPtr m_ttfText;
 		Rect m_textRect;
 		bool m_wrapEnabled;
+		bool m_sizeFollowTextEnabled;
 
 		TextAlignments m_textAlignments;
 

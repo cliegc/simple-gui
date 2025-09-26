@@ -21,9 +21,6 @@ namespace SimpleGui {
 		inline std::string GetPlaceholder() const { return m_placeholder; }
 		inline void SetPlaceholder(std::string_view placeholder) { m_placeholder = placeholder; }
 
-		inline Alignment GetAlignment() const { return m_aligment; }
-		void SetAlignment(Alignment alignment);
-
 		inline bool IsEditable() const { return m_editable; }
 		inline void SetEditable(bool value) { m_editable = value; }
 
@@ -59,7 +56,6 @@ namespace SimpleGui {
 		std::unique_ptr<Label> m_selectedTextLbl;
 		std::string m_string;
 		std::string m_placeholder;
-		Alignment m_aligment;
 		UniqueCursorPtr m_cursor;
 		Caret m_caret;
 		size_t m_caretIndex;
@@ -70,17 +66,9 @@ namespace SimpleGui {
 		char m_secretChar;
 
 		inline bool IsShowPlaceholder() const { return m_string.empty() && !m_placeholder.empty(); }
-		inline void MoveCaretToLeft(int offset = 1) { 
-			int index = m_caretIndex - offset;
-			m_caretIndex = index > 0 ? index : 0;
-		}
-
-		inline void MoveCaretToRight(int offset = 1) {
-			size_t strLen = m_string.length();
-			int index = m_caretIndex + offset;
-			m_caretIndex = index < strLen ? index : strLen;
-		}
-
+		
+		void MoveCaretToLeft(int offset = 1);
+		void MoveCaretToRight(int offset = 1);
 		size_t GetMoveCaretToLeftOneStepOffset();
 		size_t GetMoveCaretToRightOneStepOffset();
 
