@@ -50,7 +50,7 @@ namespace SimpleGui {
 		s_guiManager->m_fpsController = std::make_unique<FrameRateController>(s_guiManager->m_window.get());
 		s_guiManager->m_timerManager = std::make_unique<TimerManager>();
 
-		SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "composition");
+		//SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "composition");
 	}
 
 	void GuiManager::Quit() {

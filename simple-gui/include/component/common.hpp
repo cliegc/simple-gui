@@ -101,4 +101,12 @@ namespace SimpleGui {
 		bool m_visible;
 		std::unique_ptr<Timer> m_timer;
 	};
+
+	class Window;
+
+	class IMEUtils final {
+	public:
+		static void SetIMECandidateWindowPosition(const Window& win, const Vec2& pos);
+		static void SetIMECompositionWindowPosition(const Window& win, const Vec2& pos);
+	};
 }

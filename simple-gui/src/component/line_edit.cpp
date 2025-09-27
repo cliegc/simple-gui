@@ -26,7 +26,7 @@ namespace SimpleGui {
 		m_caret.SetVisible(false);
 
 		// debug
-		m_textLbl->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GRAY);
+		//m_textLbl->CustomThemeColor(ThemeColorFlags::LabelBorder, Color::GRAY);
 	}
 
 	void LineEdit::EnteredComponentTree() {
@@ -55,6 +55,10 @@ namespace SimpleGui {
 			if (m_active) {
 				SDL_StartTextInput(&m_window->GetSDLWindow());
 				m_caret.SetVisible(true);
+
+				// set IME composition window positon
+				Vec2 pos = GetGlobalRect().BottomLeft();
+				IMEUtils::SetIMECompositionWindowPosition(*m_window, pos);
 			}
 			else {
 				SDL_StopTextInput(&m_window->GetSDLWindow());
@@ -84,8 +88,6 @@ namespace SimpleGui {
 		m_textLbl->SetPositionY((contentGRect.size.h - m_textLbl->GetSize().h) / 2);
 
 		// update caret pos
-		UpdateCaretPosition();
-
 		//float offset = IsShowPlaceholder() ? 0.f : GetFont().GetTextSize(m_textLbl->GetText()).w;
 		float offset = m_caretIndex ? GetFont().GetTextSize(m_textLbl->GetText(), m_caretIndex).w : 0;
 		m_caret.GetGlobalRect().position.x = offset + contentGRect.Left() + m_textLbl->GetPosition().x;
@@ -96,8 +98,6 @@ namespace SimpleGui {
 			SDL_clamp(m_caret.GetGlobalRect().position.x,
 				contentGRect.Left(), contentGRect.Right());
 		m_caret.Update();
-
-		// move caret to set textLbl pos
 	}
 
 	void LineEdit::Render(const Renderer& renderer) {
@@ -215,10 +215,6 @@ namespace SimpleGui {
 		return offset;
 	}
 
-	void LineEdit::UpdateCaretPosition() {
-
-	}
-
 	bool LineEdit::HandleMouseCursor(Event* event) {
 		if (auto ev = event->Convert<MouseMotionEvent>()) {
 			if (m_visibleGRect.ContainPoint(ev->GetPosition())) {
@@ -252,16 +248,6 @@ namespace SimpleGui {
 				m_textLbl->SetPositionX(contentGRect.size.w - w);
 			}
 
-			return true;
-		}
-
-		// editiing text
-		else if (auto ev = event->Convert<KeyBoardTextEditingEvent>()) {
-			SDL_Log("editing text: %s\n", ev->GetEditingText().c_str());
-			//m_str
-			//m_textLbl->SetText(m_string + ev->GetEditingText());
-			//m_caretIndex += 
-			m_caret.SetVisible(true);
 			return true;
 		}
 
@@ -327,7 +313,7 @@ namespace SimpleGui {
 		if (auto ev = event->Convert<MouseButtonEvent>()) {
 			if (!m_visibleGRect.ContainPoint(ev->GetPosition())) return false;
 
-			float x = ev->GetPosition().x - GetContentGlobalRect().Left();
+			float x = ev->GetPosition().x - m_textLbl->GetGlobalPosition().x;
 			if (x > GetFont().GetTextSize(m_string).w) {
 				m_caretIndex = m_string.length();
 				return true;

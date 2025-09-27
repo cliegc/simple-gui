@@ -13,7 +13,7 @@ namespace SimpleGui {
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
-		inline std::string GetText() const { return m_textLbl->GetText(); }
+		inline std::string GetText() const { return m_string; }
 		inline std::string GetSelectedText() const { return m_selectedTextLbl->GetText(); }
 		//void SetSelectedTextRange(int startIndex, int endIndex);
 		//void SetMaxInputLength(int length);
@@ -71,8 +71,6 @@ namespace SimpleGui {
 		void MoveCaretToRight(int offset = 1);
 		size_t GetMoveCaretToLeftOneStepOffset();
 		size_t GetMoveCaretToRightOneStepOffset();
-
-		void UpdateCaretPosition();
 
 		bool HandleMouseCursor(Event* event);
 		bool HandleInput(Event* event);
