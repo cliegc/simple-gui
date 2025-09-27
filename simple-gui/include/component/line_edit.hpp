@@ -16,7 +16,12 @@ namespace SimpleGui {
 		inline std::string GetText() const { return m_string; }
 		inline std::string GetSelectedText() const { return m_selectedTextLbl->GetText(); }
 		//void SetSelectedTextRange(int startIndex, int endIndex);
-		//void SetMaxInputLength(int length);
+
+		inline size_t GetMaxInputLength() const { return m_maxLength; }
+		inline void SetMaxInputLength(size_t length) {
+			length = SDL_clamp(length, 0, MAX_LENGTH);
+			m_maxLength = length;
+		}
 
 		inline std::string GetPlaceholder() const { return m_placeholder; }
 		inline void SetPlaceholder(std::string_view placeholder) { m_placeholder = placeholder; }
@@ -51,6 +56,8 @@ namespace SimpleGui {
 			int endCaretIndex;
 		};
 
+		const size_t MAX_LENGTH = 512;
+
 	private:
 		std::unique_ptr<Label> m_textLbl;
 		std::unique_ptr<Label> m_selectedTextLbl;
@@ -59,6 +66,7 @@ namespace SimpleGui {
 		UniqueCursorPtr m_cursor;
 		Caret m_caret;
 		size_t m_caretIndex;
+		size_t m_maxLength;
 		bool m_active;
 		bool m_editable;
 		bool m_selectingEnabled;

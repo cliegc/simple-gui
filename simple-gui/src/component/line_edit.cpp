@@ -10,6 +10,7 @@ namespace SimpleGui {
 
 		m_placeholder = placeholder;
 		m_caretIndex = 0;
+		m_maxLength = MAX_LENGTH;
 		m_active = false;
 		m_editable = true;
 		m_selectingEnabled = true;
@@ -236,6 +237,34 @@ namespace SimpleGui {
 			m_string.insert(m_caretIndex, inputText);
 			m_caretIndex += inputText.length();
 			m_caret.SetVisible(true);
+
+			// limit length, need to consider the byte length of characters
+			//if (m_string.length() > m_maxLength) {
+			//	m_string.erase(m_maxLength, m_string.length() - m_maxLength);
+	
+			//}
+
+			size_t lastIndex = 0;
+			for (auto it = m_string.begin(); it != m_string.end();) {
+				utf8::next(it, m_string.end());
+				size_t byteIndex = it - m_string.begin();
+
+				if (byteIndex > m_maxLength) {
+					SDL_Log("byteIndex=%d, lastIndex=%d, count=%d", byteIndex, lastIndex, m_string.length() - m_maxLength);
+					m_string.erase(lastIndex, m_string.length() - lastIndex);
+
+					if (m_caretIndex > m_maxLength) {
+						m_caretIndex = m_maxLength;
+					}
+
+					if (m_caretIndex >= m_maxLength) {
+						m_caretIndex = lastIndex;
+					}
+					break;
+				}
+				lastIndex = byteIndex;
+			}
+
 			m_textLbl->SetText(m_string);
 			SDL_Log("input text: %s\n", m_string.c_str());
 
