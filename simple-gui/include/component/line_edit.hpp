@@ -46,6 +46,10 @@ namespace SimpleGui {
 		inline virtual void SetFont(std::unique_ptr<Font> font) override;
 		virtual void SetFont(std::string_view path, int size) override;
 
+	public:
+		Signal<const std::string&> textChanged;
+		Signal<const std::string&> textChangeRejected;
+
 	protected:
 		virtual void EnteredComponentTree() override;
 

@@ -239,11 +239,6 @@ namespace SimpleGui {
 			m_caret.SetVisible(true);
 
 			// limit length, need to consider the byte length of characters
-			//if (m_string.length() > m_maxLength) {
-			//	m_string.erase(m_maxLength, m_string.length() - m_maxLength);
-	
-			//}
-
 			size_t lastIndex = 0;
 			for (auto it = m_string.begin(); it != m_string.end();) {
 				utf8::next(it, m_string.end());
@@ -251,6 +246,7 @@ namespace SimpleGui {
 
 				if (byteIndex > m_maxLength) {
 					SDL_Log("byteIndex=%d, lastIndex=%d, count=%d", byteIndex, lastIndex, m_string.length() - m_maxLength);
+					std::string rejectedText = m_string.substr(lastIndex, m_string.length() - lastIndex);
 					m_string.erase(lastIndex, m_string.length() - lastIndex);
 
 					if (m_caretIndex > m_maxLength) {
@@ -260,12 +256,15 @@ namespace SimpleGui {
 					if (m_caretIndex >= m_maxLength) {
 						m_caretIndex = lastIndex;
 					}
+
+					textChangeRejected.Emit(rejectedText);
 					break;
 				}
 				lastIndex = byteIndex;
 			}
 
 			m_textLbl->SetText(m_string);
+			textChanged.Emit(m_string);
 			SDL_Log("input text: %s\n", m_string.c_str());
 
 			Rect contentGRect = GetContentGlobalRect();

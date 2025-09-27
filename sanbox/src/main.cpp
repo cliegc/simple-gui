@@ -173,8 +173,18 @@ static void TestTimer() {
 static void TestLineEdit() {
 	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
 	lineEdit->SetPosition(200, 200);
-	//lineEdit->SetMaxInputLength(4);
+	lineEdit->SetMaxInputLength(4);
 	//lineEdit->CustomThemeColor(ThemeColorFlags::LineEditForeground, Color::RED);
+
+	lineEdit->textChanged.Connect("on_textChanged",
+		[](const std::string& string) {
+			SDL_Log("on_textChanged: %s", string.c_str());
+		});
+
+	lineEdit->textChangeRejected.Connect("on_textChangeRejected",
+		[](const std::string& string) {
+			SDL_Log("on_textChangeRejected: %s", string.c_str());
+		});
 }
 
 int main(int argc, char** argv) {
