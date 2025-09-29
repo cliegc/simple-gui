@@ -54,13 +54,34 @@ namespace SimpleGui {
 		virtual void EnteredComponentTree() override;
 
 	private:
-		struct SelectedRegion final {
-			Rect gRect;
+		struct SelectTextData final {
+			float startCaretPosX;
+			float startMousePosX;
 			int startCaretIndex;
 			int endCaretIndex;
+			bool canSelect;
+			bool selecting;
 		};
 
 		const size_t MAX_LENGTH = 512;
+
+	private:
+		struct SingleCharData final {
+			size_t index;
+			int bytes;
+			size_t totalBytes;			// 开始字符到该字符的字节数
+			Vec2 totalSize;				// 开始字符到该字符的矩形大小
+		};
+
+		enum class UpdateTextCachesType {
+			Replace,
+			Insert,
+			Erase,
+		};
+
+		std::vector<SingleCharData> m_textCaches;
+
+		void UpdateTextCaches(const std::string& text, UpdateTextCachesType type, size_t charIndex = 0, size_t count = 0);
 
 	private:
 		std::unique_ptr<Label> m_textLbl;
@@ -68,6 +89,7 @@ namespace SimpleGui {
 		std::string m_string;
 		std::string m_placeholder;
 		UniqueCursorPtr m_cursor;
+		SelectTextData m_selectTextData;
 		Caret m_caret;
 		size_t m_caretIndex;
 		size_t m_maxLength;
@@ -83,9 +105,11 @@ namespace SimpleGui {
 		void MoveCaretToRight(int offset = 1);
 		size_t GetMoveCaretToLeftOneStepOffset();
 		size_t GetMoveCaretToRightOneStepOffset();
+		size_t MapMousePosXToCaretIndex(float x);
 
 		bool HandleMouseCursor(Event* event);
-		bool HandleInput(Event* event);
-		bool HandleMouseModifyCaretIndex(Event* event);
+		bool HandleInputText(Event* event);
+		bool HandleShortKey(Event* event);
+		bool HandleSelectText(Event* event);
 	};
 }

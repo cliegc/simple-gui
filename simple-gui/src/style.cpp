@@ -137,8 +137,8 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::LineEditBorder] = Color(0x3d444dff);
 		style->colors[ThemeColorFlags::LineEditActivatedBorder] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::LineEditCaret] = Color::WHITE;
-		style->colors[ThemeColorFlags::LineEditSelectedBackground] = Color::WHITE;
-		style->colors[ThemeColorFlags::LineEditSelectedForeground] = Color::BLACK;
+		style->colors[ThemeColorFlags::LineEditSelectedBackground] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::LineEditSelectedForeground] = Color::WHITE;
 
 		return std::move(style);
 	}

@@ -295,6 +295,10 @@ namespace SimpleGui {
 		inline bool IsReleased() const { return !m_pressed; }
 		inline bool IsRepeat() const { return m_repeat; }
 
+		inline bool IsCtrlAnd(KeyCode key) const {
+			return (m_mod == SDL_KMOD_LCTRL || m_mod == SDL_KMOD_RCTRL) && m_key == key;
+		}
+
 	private:
 		ScanCode m_scanCode;
 		KeyCode m_key;
