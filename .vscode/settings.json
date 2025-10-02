@@ -1,0 +1,10 @@
+{
+    "codeLineCounter.includeDirs": [
+        "d:\\code\\c_c++\\simple-gui\\simple-gui\\include",
+        "d:\\code\\c_c++\\simple-gui\\simple-gui\\src"
+    ],
+    "codeLineCounter.excludePatterns": [
+        "**/node_modules/**",
+        "**/.git/**"
+    ]
+}

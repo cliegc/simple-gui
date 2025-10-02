@@ -141,7 +141,7 @@ namespace SimpleGui {
 		m_caret.SetColor(GetThemeColor(ThemeColorFlags::LineEditCaret));
 		m_caret.Render(renderer);
 
-		// draw borer
+		// draw border
 		renderer.SetClipRect(m_visibleGRect);
 		Color borderColor = m_active ? GetThemeColor(ThemeColorFlags::LineEditActivatedBorder) : GetThemeColor(ThemeColorFlags::LineEditBorder);
 		renderer.DrawRect(GetGlobalRect(), borderColor);
@@ -278,6 +278,15 @@ namespace SimpleGui {
 			m_string.insert(m_caretIndex, inputText);
 			m_caretIndex += inputText.length();
 			m_caret.SetVisible(true);
+
+			SDL_Log("length of input text = %d", inputText.length());
+
+			//m_string.insert(m_textCaches[m_caretIndex].totalBytes, inputText);
+			//size_t oldLen = m_textCaches.size();
+			//UpdateTextCaches();
+			//m_caretIndex += m_textCaches.size() - oldLen;
+			//m_caret.SetVisible(true);
+
 
 			// limit length, need to consider the byte length of characters
 			size_t lastIndex = 0;

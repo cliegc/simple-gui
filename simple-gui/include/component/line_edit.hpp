@@ -73,15 +73,9 @@ namespace SimpleGui {
 			Vec2 totalSize;				// 开始字符到该字符的矩形大小
 		};
 
-		enum class UpdateTextCachesType {
-			Replace,
-			Insert,
-			Erase,
-		};
-
 		std::vector<SingleCharData> m_textCaches;
 
-		void UpdateTextCaches(const std::string& text, UpdateTextCachesType type, size_t charIndex = 0, size_t count = 0);
+		void UpdateTextCaches();
 
 	private:
 		std::unique_ptr<Label> m_textLbl;
