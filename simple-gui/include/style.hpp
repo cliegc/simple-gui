@@ -60,6 +60,11 @@ namespace SimpleGui {
 		LineEditSelectedBackground,
 		LineEditSelectedForeground,
 
+		ProgressBarSlot,
+		ProgressBarProgress,
+		ProgressBarForeground,
+		ProgressBarBorder,
+
 		FlagsTotal
 	};
 

@@ -25,6 +25,7 @@
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\window.cpp" />
+    <ClCompile Include="src\component\progress_bar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
@@ -61,5 +62,6 @@
     <ClInclude Include="3rdlib\utfcpp\utf8\cpp20.h" />
     <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
     <ClInclude Include="3rdlib\utfcpp\utf8.h" />
+    <ClInclude Include="include\component\progress_bar.hpp" />
   </ItemGroup>
 </Project>

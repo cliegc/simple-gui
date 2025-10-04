@@ -170,6 +170,69 @@ static void TestTimer() {
 }
 
 
+static void TestProgressBar() {
+	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test progress bar");
+	draggablePanel->SetSize(300, 300);
+
+	auto bar = draggablePanel->AddChild<ProgressBar>(0, 0, 100);
+	bar->SetSize(200, 200);
+	bar->ShowProgressText(true);
+	bar->SetIndeterminate(true);
+
+	//bar->SetProgressFillMode(ProgressFillMode::RightToLeft);
+	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("switch fill mode");
+	btn->SetPosition(500, 400);
+
+	static int count = 0;
+	btn->clicked.Connect("on_clicked_switch_fill_mode",
+		[bar]() {
+			bar->SetProgressFillMode((ProgressFillMode)(count % 6));
+			count++;
+		});
+
+	auto addBtn = SG_GuiManager.GetWindow().AddComponent<Button>("add");
+	addBtn->SetPosition(btn->GetGlobalRect().Right() + 10, 400);
+	addBtn->clicked.Connect("on_clicked_add",
+		[bar]() {
+			float value = bar->GetValue();
+			bar->SetValue(value + 5);
+		});
+
+	bar->valueChanged.Connect("on_value_changed",
+		[bar](float value) {
+			if (IsEqualApprox(value, bar->GetMaxValue())) {
+				SDL_Log("reach max value");
+			}
+		});
+
+	auto timer = SG_GuiManager.GetTimer(0.5f);
+	timer->timeout.Connect("on_timeout",
+		[bar]() {
+			float value = bar->GetValue();
+			if (IsEqualApprox(value, bar->GetMaxValue())) {
+				bar->SetValue(bar->GetMinValue());
+			}
+			else {
+				bar->SetValue(value + 25);
+			}
+			
+		});
+
+	auto timerBtn = SG_GuiManager.GetWindow().AddComponent<Button>("start timer");
+	timerBtn->SetPosition(400, 100);
+	timerBtn->clicked.Connect("on_clicked_timer",
+		[timer, timerBtn]() {
+			timer->SetPaused(!timer->IsPaused());
+			if (timer->IsPaused()) {
+				timerBtn->SetText("start timer");
+			}
+			else {
+				timerBtn->SetText("pause timer");
+			}
+		});
+}
+
+
 static void TestLineEdit() {
 	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
 	lineEdit->SetPosition(200, 200);
@@ -203,8 +266,9 @@ int main(int argc, char** argv) {
 
 	//TestScrollBar();
 	//TestScrollPanel();
-	TestLineEdit();
+	//TestLineEdit();
 	//TestTimer();
+	TestProgressBar();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);

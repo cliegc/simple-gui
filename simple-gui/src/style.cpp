@@ -140,6 +140,11 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::LineEditSelectedBackground] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::LineEditSelectedForeground] = Color::WHITE;
 
+		style->colors[ThemeColorFlags::ProgressBarSlot] = Color(47, 47, 47);
+		style->colors[ThemeColorFlags::ProgressBarProgress] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::ProgressBarForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::ProgressBarBorder] = Color(0x3d444dff);
+
 		return std::move(style);
 	}
 
