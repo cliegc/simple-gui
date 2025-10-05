@@ -4,7 +4,7 @@
 
 
 namespace SimpleGui {
-	ProgressBar::ProgressBar(float value, float minValue, float maxValue) {
+	ProgressBar::ProgressBar(float value, float minValue, float maxValue): Range(value, minValue, maxValue) {
 		m_progressLbl = std::make_unique<Label>("");
 
 		SetMinValue(minValue);
@@ -12,9 +12,9 @@ namespace SimpleGui {
 		SetValue(value);
 
 		m_indeterminateProgressData.delta = 0.f;
-		m_indeterminateProgressData.speed = 150.f;
+		m_indeterminateProgressData.speed = 200.f;
 		m_indeterminateProgressData.minLength = 5.f;
-		m_indeterminateProgressData.lengthScale = 0.15f;
+		m_indeterminateProgressData.lengthScale = 0.25f;
 
 		m_progressLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
 	}
@@ -65,7 +65,7 @@ namespace SimpleGui {
 	}
 
 	void ProgressBar::UpdateProgressGlobalRect(const Rect& contentGRect) {
-		float scale = (m_value - m_minValue) / (m_maxValue - m_minValue);
+		float scale = GetValueToMinValueInterval() / GetInterval();
 		
 		// update rect follow fill mode
 		switch (m_fillMode) {
@@ -174,27 +174,9 @@ namespace SimpleGui {
 	}
 
 	void ProgressBar::SetValue(float value) {
-		float old = m_value;
-		value = SDL_clamp(value, m_minValue, m_maxValue);
-		m_value = value;
-		if (!IsEqualApprox(m_value, old)) valueChanged.Emit(m_value);
+		Range::SetValue(value);
 
-		m_progressLbl->SetText(std::format("{}%", static_cast<int>((m_value - m_minValue) / (m_maxValue - m_minValue) * 100)));
-	}
-
-	void ProgressBar::SetMinValue(float value) {
-		if (value > m_value) m_value = value;
-		if (value > m_maxValue) m_maxValue = value;
-		float old = m_minValue;
-		m_minValue = value;
-		if (!IsEqualApprox(m_minValue, old)) minValueChanged.Emit(m_minValue);
-	}
-
-	void ProgressBar::SetMaxValue(float value) {
-		if (value < m_value) m_value = value;
-		if (value < m_minValue) m_minValue = value;
-		float old = m_maxValue;
-		m_maxValue = value;
-		if (!IsEqualApprox(m_maxValue, old)) maxValueChanged.Emit(m_maxValue);
+		m_progressLbl->SetText(std::format("{}%", 
+			static_cast<int>(GetValueToMinValueInterval() / GetInterval() * 100)));
 	}
 }

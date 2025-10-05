@@ -118,6 +118,14 @@ namespace SimpleGui {
         return std::sqrt(LengthSquared());
     }
 
+    constexpr float Vec2::DistanceSquard(const Vec2& other) const {
+        return (*this - other).LengthSquared();
+    }
+
+    float Vec2::Distance(const Vec2& other) const {
+        return (*this - other).Length();
+    }
+
     SDL_FPoint Vec2::ToSDLFPoint() const {
         return { x, y };
     }

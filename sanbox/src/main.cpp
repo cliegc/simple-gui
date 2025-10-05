@@ -175,7 +175,7 @@ static void TestProgressBar() {
 	draggablePanel->SetSize(300, 300);
 
 	auto bar = draggablePanel->AddChild<ProgressBar>(0, 0, 100);
-	bar->SetSize(200, 200);
+	bar->SetSize(200, 20);
 	bar->ShowProgressText(true);
 	bar->SetIndeterminate(true);
 
@@ -186,7 +186,24 @@ static void TestProgressBar() {
 	static int count = 0;
 	btn->clicked.Connect("on_clicked_switch_fill_mode",
 		[bar]() {
-			bar->SetProgressFillMode((ProgressFillMode)(count % 6));
+			ProgressFillMode mode = static_cast<ProgressFillMode>(count % 6);
+			bar->SetProgressFillMode(mode);
+
+			switch (mode) {
+			case SimpleGui::ProgressFillMode::LeftToRight:
+			case SimpleGui::ProgressFillMode::RightToLeft:
+			case SimpleGui::ProgressFillMode::CenterH: {
+				bar->SetSize(200, 20);
+				break;
+			};
+			case SimpleGui::ProgressFillMode::BottomToTop:
+			case SimpleGui::ProgressFillMode::TopToBottom:
+			case SimpleGui::ProgressFillMode::CenterV: {
+				bar->SetSize(20, 200);
+				break;
+			}
+			}
+
 			count++;
 		});
 

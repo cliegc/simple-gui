@@ -15,5 +15,6 @@
 #include "component/scroll_panel.hpp"
 #include "component/line_edit.hpp"
 #include "component/progress_bar.hpp"
+#include "component/slider.hpp"
 #include "component/layout/box_layout.hpp"
 #include "component/layout/anchor_point_layout.hpp"

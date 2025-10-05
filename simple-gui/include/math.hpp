@@ -51,8 +51,13 @@ namespace SimpleGui {
 
         constexpr float Dot(const Vec2&) const;
         constexpr float Cross(const Vec2&) const;
+        
         constexpr float LengthSquared() const;
         float Length() const;
+
+        constexpr float DistanceSquard(const Vec2&) const;
+        float Distance(const Vec2&) const;
+
         SDL_FPoint ToSDLFPoint() const;
         SDL_Point ToSDLPoint() const;
 

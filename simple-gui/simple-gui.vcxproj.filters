@@ -26,6 +26,7 @@
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\component\progress_bar.cpp" />
+    <ClCompile Include="src\component\slider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
@@ -63,5 +64,6 @@
     <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
     <ClInclude Include="3rdlib\utfcpp\utf8.h" />
     <ClInclude Include="include\component\progress_bar.hpp" />
+    <ClInclude Include="include\component\slider.hpp" />
   </ItemGroup>
 </Project>

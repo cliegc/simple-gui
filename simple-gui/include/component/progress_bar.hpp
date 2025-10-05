@@ -1,7 +1,6 @@
 #pragma once
 #include "base_component.hpp"
 #include "label.hpp"
-#include "signal.hpp"
 
 
 namespace SimpleGui {
@@ -14,7 +13,7 @@ namespace SimpleGui {
 		CenterV,
 	};
 
-	class ProgressBar final : public BaseComponent {
+	class ProgressBar final : public BaseComponent, public Range {
 	public:
 		ProgressBar(float value = 0.f, float minValue = 0.f, float maxValue = 100.f);
 		~ProgressBar() = default;
@@ -22,14 +21,7 @@ namespace SimpleGui {
 		virtual void Update() override;
 		virtual void Render(const Renderer& renderer) override;
 
-		inline float GetValue() const { return m_value; }
-		void SetValue(float value);
-
-		inline float GetMinValue() const { return m_minValue; }
-		void SetMinValue(float value);
-
-		inline float GetMaxValue() const { return m_maxValue; }
-		void SetMaxValue(float value);
+		virtual void SetValue(float value) override;
 
 		inline ProgressFillMode GetProgressFillMode() const { return m_fillMode; }
 		inline void SetProgressFillMode(ProgressFillMode mode) { m_fillMode = mode; }
@@ -40,13 +32,9 @@ namespace SimpleGui {
 		inline bool IsIndeterminate() const { return m_indeterminate; }
 		inline void SetIndeterminate(bool value) {
 			m_indeterminate = value;
+			m_indeterminateProgressData.delta = 0;
 			m_progressLbl->SetVisible(!m_indeterminate);
 		}
-
-	public:
-		Signal<float> valueChanged;
-		Signal<float> minValueChanged;
-		Signal<float> maxValueChanged;
 
 	protected:
 		virtual void EnteredComponentTree() override;
@@ -60,10 +48,6 @@ namespace SimpleGui {
 		};
 
 	private:
-		float m_value{};
-		float m_minValue{};
-		float m_maxValue{};
-		
 		Rect m_currProgressGRect{};
 		ProgressFillMode m_fillMode{};
 		bool m_showProgress{};

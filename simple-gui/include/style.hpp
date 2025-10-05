@@ -65,6 +65,10 @@ namespace SimpleGui {
 		ProgressBarForeground,
 		ProgressBarBorder,
 
+		SliderSlot,
+		SliderValue,
+		SliderHandler,
+
 		FlagsTotal
 	};
 

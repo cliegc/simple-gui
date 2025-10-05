@@ -157,6 +157,7 @@
     <ClInclude Include="include\component\root_component.hpp" />
     <ClInclude Include="include\component\scrollbar.hpp" />
     <ClInclude Include="include\component\scroll_panel.hpp" />
+    <ClInclude Include="include\component\slider.hpp" />
     <ClInclude Include="include\component\texture_rect.hpp" />
     <ClInclude Include="include\event.hpp" />
     <ClInclude Include="include\extended_functions.hpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="src\extended_functions.cpp" />
     <ClCompile Include="src\font.cpp" />
     <ClCompile Include="src\framerate.cpp" />
+    <ClCompile Include="src\component\slider.cpp" />
     <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\component\base_component.cpp" />
     <ClCompile Include="src\component\label.cpp" />
