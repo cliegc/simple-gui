@@ -16,6 +16,10 @@ namespace SimpleGui {
     bool IsEqualApprox(float left, float right);
     bool IsZeroApprox(double value);
 
+    inline float Clamp(float value, float minValue, float maxValue) {
+        return value < minValue ? minValue : (value > maxValue ? maxValue : value);
+    }
+
     struct Vec2 final {
         union {
             float x;

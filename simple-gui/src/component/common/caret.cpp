@@ -1,5 +1,5 @@
-#include "component/common.hpp"
-#include "gui_manager.hpp"
+#include "component/common/caret.hpp"
+#include "window.hpp"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -9,8 +9,7 @@
 
 
 namespace SimpleGui {
-#pragma region Caret
-	Caret::Caret(): 
+	Caret::Caret() :
 		m_color(Color::WHITE), m_blink(false), m_blinkFlag(true), m_visible(true) {
 		m_gRect.size.w = 1;
 		m_timer = std::make_unique<Timer>(0.65f);
@@ -87,37 +86,4 @@ namespace SimpleGui {
 		}
 	}
 #endif // _WIN32
-#pragma endregion
-
-#pragma region Range
-	Range::Range(float value, float minValue, float maxValue) {
-		SetMinValue(minValue);
-		SetMaxValue(maxValue);
-		SetValue(value);
-	}
-
-	void Range::SetValue(float value) {
-		float old = m_value;
-		value = SDL_clamp(value, m_minValue, m_maxValue);
-		m_value = value;
-		if (!IsEqualApprox(m_value, old)) valueChanged.Emit(m_value);
-	}
-
-	void Range::SetMinValue(float value) {
-		if (value > m_value) m_value = value;
-		if (value > m_maxValue) m_maxValue = value;
-		float old = m_minValue;
-		m_minValue = value;
-		if (!IsEqualApprox(m_minValue, old)) minValueChanged.Emit(m_minValue);
-	}
-
-	void Range::SetMaxValue(float value) {
-		if (value < m_value) m_value = value;
-		if (value < m_minValue) m_minValue = value;
-		float old = m_maxValue;
-		m_maxValue = value;
-		if (!IsEqualApprox(m_maxValue, old)) maxValueChanged.Emit(m_maxValue);
-	}
-	
-#pragma endregion
 }

@@ -7,9 +7,9 @@
 #include "renderer.hpp"
 #include "style.hpp"
 #include "math.hpp"
-#include "common.hpp"
 #include "extended_functions.hpp"
 #include "signal.hpp"
+#include "common/types.hpp"
 
 
 namespace SimpleGui {

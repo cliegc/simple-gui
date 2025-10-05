@@ -149,6 +149,11 @@
     <ClInclude Include="3rdlib\utfcpp\utf8\cpp20.h" />
     <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
     <ClInclude Include="include\component\button.hpp" />
+    <ClInclude Include="include\component\check_box.hpp" />
+    <ClInclude Include="include\component\common\caret.hpp" />
+    <ClInclude Include="include\component\common\range.hpp" />
+    <ClInclude Include="include\component\common\types.hpp" />
+    <ClInclude Include="include\component\common\utils.hpp" />
     <ClInclude Include="include\component\draggable_panel.hpp" />
     <ClInclude Include="include\component\layout\anchor_point_layout.hpp" />
     <ClInclude Include="include\component\layout\box_layout.hpp" />
@@ -166,7 +171,6 @@
     <ClInclude Include="include\component\line_edit.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
-    <ClInclude Include="include\component\common.hpp" />
     <ClInclude Include="include\component\label.hpp" />
     <ClInclude Include="include\deleter.hpp" />
     <ClInclude Include="include\gui_manager.hpp" />
@@ -180,7 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
-    <ClCompile Include="src\component\common.cpp" />
+    <ClCompile Include="src\component\check_box.cpp" />
+    <ClCompile Include="src\component\common\caret.cpp" />
+    <ClCompile Include="src\component\common\range.cpp" />
     <ClCompile Include="src\component\draggable_panel.cpp" />
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />

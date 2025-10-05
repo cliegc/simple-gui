@@ -5,7 +5,7 @@
 #include "renderer.hpp"
 #include "deleter.hpp"
 #include "extended_functions.hpp"
-#include "component/common.hpp"
+#include "component/common/types.hpp"
 #include "component/base_component.hpp"
 #include "component/label.hpp"
 #include "component/button.hpp"

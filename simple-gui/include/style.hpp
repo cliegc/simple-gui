@@ -6,8 +6,7 @@
 #include <unordered_map>
 #include <optional>
 #include "math.hpp"
-#include "component/common.hpp"
-
+#include "component/common/types.hpp"
 
 
 namespace SimpleGui {

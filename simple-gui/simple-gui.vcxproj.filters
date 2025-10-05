@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
-    <ClCompile Include="src\component\common.cpp" />
     <ClCompile Include="src\component\draggable_panel.cpp" />
     <ClCompile Include="src\component\layout\anchor_point_layout.cpp" />
     <ClCompile Include="src\component\layout\box_layout.cpp" />
@@ -27,6 +26,9 @@
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\component\progress_bar.cpp" />
     <ClCompile Include="src\component\slider.cpp" />
+    <ClCompile Include="src\component\check_box.cpp" />
+    <ClCompile Include="src\component\common\caret.cpp" />
+    <ClCompile Include="src\component\common\range.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
@@ -45,7 +47,6 @@
     <ClInclude Include="include\component\line_edit.hpp" />
     <ClInclude Include="include\style.hpp" />
     <ClInclude Include="include\component\base_component.hpp" />
-    <ClInclude Include="include\component\common.hpp" />
     <ClInclude Include="include\component\label.hpp" />
     <ClInclude Include="include\deleter.hpp" />
     <ClInclude Include="include\gui_manager.hpp" />
@@ -65,5 +66,10 @@
     <ClInclude Include="3rdlib\utfcpp\utf8.h" />
     <ClInclude Include="include\component\progress_bar.hpp" />
     <ClInclude Include="include\component\slider.hpp" />
+    <ClInclude Include="include\component\check_box.hpp" />
+    <ClInclude Include="include\component\common\types.hpp" />
+    <ClInclude Include="include\component\common\caret.hpp" />
+    <ClInclude Include="include\component\common\range.hpp" />
+    <ClInclude Include="include\component\common\utils.hpp" />
   </ItemGroup>
 </Project>

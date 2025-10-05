@@ -127,7 +127,7 @@ namespace SimpleGui {
 
 			float scale = 1.f;
 			if (m_direction == Direction::Horizontal) {
-				m_handlerGRect.position.x = SDL_clamp(
+				m_handlerGRect.position.x = Clamp(
 					m_handlerGRect.position.x,
 					m_slotGRect.Left() - m_handlerGRect.size.w / 2,
 					m_slotGRect.Right() - m_handlerGRect.size.w / 2 );
@@ -135,7 +135,7 @@ namespace SimpleGui {
 				scale = (m_handlerGRect.Center().x - m_slotGRect.Left()) / m_slotGRect.size.w;
 			}
 			else {
-				m_handlerGRect.position.y = SDL_clamp(
+				m_handlerGRect.position.y = Clamp(
 					m_handlerGRect.position.y,
 					m_slotGRect.Top() - m_handlerGRect.size.h / 2,
 					m_slotGRect.Bottom() - m_handlerGRect.size.h / 2);
