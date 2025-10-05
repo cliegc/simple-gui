@@ -310,7 +310,7 @@ int main(int argc, char** argv) {
 	//TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
-	//TestProgressBar();
+	TestProgressBar();
 	TestSlider();
 
 	//win.EnableVsync(true);

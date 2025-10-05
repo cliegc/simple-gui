@@ -31,21 +31,21 @@ namespace SimpleGui {
 		UpdateDirection();
 
 		Rect contentGRect = GetContentGlobalRect();
-		m_slotGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_slotGRect);
-		m_valueGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_valueGRect);
-		m_handlerVisibelGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_handlerGRect);
+		m_slotRect.visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_slotRect.gRect);
+		m_valueRect.visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_valueRect.gRect);
+		m_handlerRect.visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, contentGRect, m_handlerRect.gRect);
 	}
 
 	void Slider::Render(const Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.FillRect(m_slotGRect, GetThemeColor(ThemeColorFlags::SliderSlot));
-		renderer.FillRect(m_valueGRect, GetThemeColor(ThemeColorFlags::SliderValue));
+		renderer.FillRect(m_slotRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderSlot));
+		renderer.FillRect(m_valueRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderValue));
 		if (m_mouseState == MouseState::Hovering) {
-			renderer.FillRect(m_handlerVisibelGRect, GetThemeColor(ThemeColorFlags::SliderHandlerHovered));
+			renderer.FillRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandlerHovered));
 		}
 		else {
-			renderer.FillRect(m_handlerVisibelGRect, GetThemeColor(ThemeColorFlags::SliderHandler));
+			renderer.FillRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandler));
 		}
 
 		BaseComponent::Render(renderer);
@@ -59,34 +59,34 @@ namespace SimpleGui {
 		Vec2 contentCenterGPos = contentGRect.Center();
 
 		if (m_direction == Direction::Horizontal) {
-			m_slotGRect.position.x = contentGRect.Left() + m_handlerGRect.size.w / 2;
-			m_slotGRect.position.y = contentCenterGPos.y - m_slotGRect.size.h / 2;
-			m_slotGRect.size.w = contentGRect.size.w - m_handlerGRect.size.w;
+			m_slotRect.gRect.position.x = contentGRect.Left() + m_handlerRect.gRect.size.w / 2;
+			m_slotRect.gRect.position.y = contentCenterGPos.y - m_slotRect.gRect.size.h / 2;
+			m_slotRect.gRect.size.w = contentGRect.size.w - m_handlerRect.gRect.size.w;
 
 			if (!m_dragData.dragging) {
 				float scale = GetValueToMinValueInterval() / GetInterval();
-				m_handlerGRect.position.x = scale * m_slotGRect.size.w + m_slotGRect.Left() - m_handlerGRect.size.w / 2;
+				m_handlerRect.gRect.position.x = scale * m_slotRect.gRect.size.w + m_slotRect.gRect.Left() - m_handlerRect.gRect.size.w / 2;
 			}
 
-			m_handlerGRect.position.y = contentCenterGPos.y - m_handlerGRect.size.h / 2;
-			m_valueGRect.position = m_slotGRect.position;
-			m_valueGRect.size.w = m_handlerGRect.Center().x - contentGRect.Left();
+			m_handlerRect.gRect.position.y = contentCenterGPos.y - m_handlerRect.gRect.size.h / 2;
+			m_valueRect.gRect.position = m_slotRect.gRect.position;
+			m_valueRect.gRect.size.w = m_handlerRect.gRect.Center().x - contentGRect.Left();
 		}
 		else {
-			m_slotGRect.position.x = contentCenterGPos.x - m_slotGRect.size.w / 2;
-			m_slotGRect.position.y = contentGRect.Top() + m_handlerGRect.size.h / 2;
-			m_slotGRect.size.h = contentGRect.size.h - m_handlerGRect.size.h;
+			m_slotRect.gRect.position.x = contentCenterGPos.x - m_slotRect.gRect.size.w / 2;
+			m_slotRect.gRect.position.y = contentGRect.Top() + m_handlerRect.gRect.size.h / 2;
+			m_slotRect.gRect.size.h = contentGRect.size.h - m_handlerRect.gRect.size.h;
 
 			if (!m_dragData.dragging) {
 				float scale = GetValueToMinValueInterval() / GetInterval();
-				m_handlerGRect.position.y = m_slotGRect.Bottom() - scale * m_slotGRect.size.h - m_handlerGRect.size.h / 2;
+				m_handlerRect.gRect.position.y = m_slotRect.gRect.Bottom() - scale * m_slotRect.gRect.size.h - m_handlerRect.gRect.size.h / 2;
 			}
 
-			m_handlerGRect.position.x = contentCenterGPos.x - m_handlerGRect.size.w / 2;
-			m_valueGRect.position.x = m_slotGRect.position.x;
-			m_valueGRect.position.y = m_handlerGRect.Center().y;
-			m_valueGRect.size.w = m_slotGRect.size.w;
-			m_valueGRect.size.h = m_slotGRect.Bottom() - m_handlerGRect.Center().y;
+			m_handlerRect.gRect.position.x = contentCenterGPos.x - m_handlerRect.gRect.size.w / 2;
+			m_valueRect.gRect.position.x = m_slotRect.gRect.position.x;
+			m_valueRect.gRect.position.y = m_handlerRect.gRect.Center().y;
+			m_valueRect.gRect.size.w = m_slotRect.gRect.size.w;
+			m_valueRect.gRect.size.h = m_slotRect.gRect.Bottom() - m_handlerRect.gRect.Center().y;
 		}
 	}
 
@@ -97,13 +97,13 @@ namespace SimpleGui {
 		m_mouseState = MouseState::Normal;
 
 		if (!m_dragData.dragging &&
-			m_handlerGRect.ContainPoint(mousePos)) {
+			m_handlerRect.gRect.ContainPoint(mousePos)) {
 			m_mouseState = MouseState::Hovering;
 
 			if (auto ev = event->Convert<MouseButtonEvent>();
 				ev && ev->IsPressed(MouseButton::Left)) {
 				m_dragData.mouseStartPos = ev->GetPosition();
-				m_dragData.handleStartPos = m_handlerGRect.position;
+				m_dragData.handleStartPos = m_handlerRect.gRect.position;
 				m_dragData.canDrag = true;
 			}
 			return true;
@@ -123,24 +123,24 @@ namespace SimpleGui {
 			ev && m_dragData.canDrag) {
 			m_mouseState = MouseState::Hovering;
 			m_dragData.dragging = true;
-			m_handlerGRect.position = m_dragData.handleStartPos + ev->GetPosition() - m_dragData.mouseStartPos;
+			m_handlerRect.gRect.position = m_dragData.handleStartPos + ev->GetPosition() - m_dragData.mouseStartPos;
 
 			float scale = 1.f;
 			if (m_direction == Direction::Horizontal) {
-				m_handlerGRect.position.x = Clamp(
-					m_handlerGRect.position.x,
-					m_slotGRect.Left() - m_handlerGRect.size.w / 2,
-					m_slotGRect.Right() - m_handlerGRect.size.w / 2 );
+				m_handlerRect.gRect.position.x = Clamp(
+					m_handlerRect.gRect.position.x,
+					m_slotRect.gRect.Left() - m_handlerRect.gRect.size.w / 2,
+					m_slotRect.gRect.Right() - m_handlerRect.gRect.size.w / 2 );
 
-				scale = (m_handlerGRect.Center().x - m_slotGRect.Left()) / m_slotGRect.size.w;
+				scale = (m_handlerRect.gRect.Center().x - m_slotRect.gRect.Left()) / m_slotRect.gRect.size.w;
 			}
 			else {
-				m_handlerGRect.position.y = Clamp(
-					m_handlerGRect.position.y,
-					m_slotGRect.Top() - m_handlerGRect.size.h / 2,
-					m_slotGRect.Bottom() - m_handlerGRect.size.h / 2);
+				m_handlerRect.gRect.position.y = Clamp(
+					m_handlerRect.gRect.position.y,
+					m_slotRect.gRect.Top() - m_handlerRect.gRect.size.h / 2,
+					m_slotRect.gRect.Bottom() - m_handlerRect.gRect.size.h / 2);
 
-				scale = (m_slotGRect.Bottom() - m_handlerGRect.Center().y) / m_slotGRect.size.h;
+				scale = (m_slotRect.gRect.Bottom() - m_handlerRect.gRect.Center().y) / m_slotRect.gRect.size.h;
 			}
 
 			SetValue(scale * GetInterval() + GetMinValue());
@@ -155,14 +155,14 @@ namespace SimpleGui {
 
 		if (auto ev = event->Convert<MouseButtonEvent>();
 			ev && ev->IsPressed(MouseButton::Left)) {
-			if (!m_slotGRect.ContainPoint(ev->GetPosition())) return false;
+			if (!m_slotRect.gRect.ContainPoint(ev->GetPosition())) return false;
 
 			float scale = 1.f;
 			if (m_direction == Direction::Horizontal) {
-				scale = (ev->GetPosition().x - m_slotGRect.Left()) / m_slotGRect.size.w;
+				scale = (ev->GetPosition().x - m_slotRect.gRect.Left()) / m_slotRect.gRect.size.w;
 			}
 			else {
-				scale = (m_slotGRect.Bottom() - ev->GetPosition().y) / m_slotGRect.size.h;
+				scale = (m_slotRect.gRect.Bottom() - ev->GetPosition().y) / m_slotRect.gRect.size.h;
 			}
 
 			SetValue(scale * GetInterval() + GetMinValue());
@@ -200,14 +200,14 @@ namespace SimpleGui {
 		m_direction = direction;
 
 		if (m_direction == Direction::Horizontal) {
-			m_slotGRect.size.h = 5;
-			m_handlerGRect.size = H_HANDLER_SIZE;
-			m_valueGRect.size.h = m_slotGRect.size.h;
+			m_slotRect.gRect.size.h = 5;
+			m_handlerRect.gRect.size = H_HANDLER_SIZE;
+			m_valueRect.gRect.size.h = m_slotRect.gRect.size.h;
 		}
 		else {
-			m_slotGRect.size.w = 5;
-			m_handlerGRect.size = V_HANDLER_SIZE;
-			m_valueGRect.size.w = m_slotGRect.size.w;
+			m_slotRect.gRect.size.w = 5;
+			m_handlerRect.gRect.size = V_HANDLER_SIZE;
+			m_valueRect.gRect.size.w = m_slotRect.gRect.size.w;
 		}
 	}
 

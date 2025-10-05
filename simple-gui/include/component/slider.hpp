@@ -32,10 +32,9 @@ namespace SimpleGui {
 
 	private:
 		Direction m_direction{};
-		Rect m_slotGRect{};
-		Rect m_valueGRect{};
-		Rect m_handlerGRect{};
-		Rect m_handlerVisibelGRect{};
+		ComponentElementRect m_slotRect{};
+		ComponentElementRect m_valueRect{};
+		ComponentElementRect m_handlerRect{};
 		DragData m_dragData{};
 		MouseState m_mouseState{};
 		bool m_editabel{};

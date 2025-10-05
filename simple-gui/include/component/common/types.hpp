@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include "math.h"
 
 
 namespace SimpleGui {
@@ -9,6 +10,12 @@ namespace SimpleGui {
 		int right;
 		int bottom;
 	};
+
+	struct ComponentElementRect {
+		Rect gRect;
+		Rect visibleGRect;
+	};
+
 
 	enum class ComponentSizeConfig {
 		Fixed,
