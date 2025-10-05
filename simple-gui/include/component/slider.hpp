@@ -5,12 +5,15 @@
 namespace SimpleGui {
 	class Slider final : public BaseComponent, public Range {
 	public:
-		Slider(Direction direction, float value = 0, float minValue = 0, float maxValue = 100);
+		Slider(Direction direction = Direction::Horizontal, float value = 0, float minValue = 0, float maxValue = 100);
 		~Slider() = default;
 
-		virtual bool HandleEvent(Event* event);
-		virtual void Update();
-		virtual void Render(const Renderer& renderer);
+		virtual bool HandleEvent(Event* event) override;
+		virtual void Update() override;
+		virtual void Render(const Renderer& renderer) override;
+
+		inline Direction GetDirection() const { return m_direction; }
+		void SetDirection(Direction direction);
 
 		inline bool IsEditable() const { return m_editabel; }
 		inline void SetEditbale(bool value) { m_editabel = value; }
@@ -19,12 +22,6 @@ namespace SimpleGui {
 		inline void SetScrollable(bool value) { m_scrollable = value; }
 
 	private:
-		struct Handler {
-			Vec2 globalPositon;
-			float radius;
-			MouseState state;
-		};
-
 		struct DragData {
 			Vec2 mouseStartPos;
 			Vec2 handleStartPos;
@@ -36,8 +33,10 @@ namespace SimpleGui {
 		Direction m_direction{};
 		Rect m_slotGRect{};
 		Rect m_valueGRect{};
-		Handler m_handler{};
+		Rect m_handlerGRect{};
+		Rect m_handlerVisibelGRect{};
 		DragData m_dragData{};
+		MouseState m_mouseState{};
 		bool m_editabel{};
 		bool m_scrollable{};
 

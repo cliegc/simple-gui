@@ -68,6 +68,7 @@ namespace SimpleGui {
 		SliderSlot,
 		SliderValue,
 		SliderHandler,
+		SliderHandlerHovered,
 
 		FlagsTotal
 	};

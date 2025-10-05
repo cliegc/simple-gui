@@ -146,7 +146,9 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ProgressBarBorder] = Color(0x3d444dff);
 
 		style->colors[ThemeColorFlags::SliderSlot] = Color(47, 47, 47);
+		style->colors[ThemeColorFlags::SliderValue] = Color(0x8250df64);
 		style->colors[ThemeColorFlags::SliderHandler] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::SliderHandlerHovered] = Color(0x8266dfff);
 
 		return std::move(style);
 	}

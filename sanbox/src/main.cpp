@@ -250,6 +250,31 @@ static void TestProgressBar() {
 }
 
 
+static void TestSlider() {
+	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test slider");
+	draggablePanel->SetPosition(200, 100);
+	draggablePanel->SetSize(300, 300);
+
+	auto slider = draggablePanel->AddChild<Slider>(Direction::Horizontal);
+	slider->SetSize(200, 20);
+	slider->valueChanged.Connect("on_value_changed",
+		[](float value) {
+			SDL_Log("h slider value: %f", value);
+		});
+
+	auto v_slider = draggablePanel->AddChild<Slider>(Direction::Vertical);
+	v_slider->SetSize(20, 200);
+	v_slider->SetPosition(0, 100);
+	v_slider->valueChanged.Connect("on_value_changed",
+		[](float value) {
+			SDL_Log("v slider value: %f", value);
+		});
+
+	//slider->SetScrollable(false);
+	//v_slider->SetEditbale(false);
+}
+
+
 static void TestLineEdit() {
 	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
 	lineEdit->SetPosition(200, 200);
@@ -285,7 +310,8 @@ int main(int argc, char** argv) {
 	//TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
-	TestProgressBar();
+	//TestProgressBar();
+	TestSlider();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);
