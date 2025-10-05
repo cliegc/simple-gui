@@ -19,6 +19,12 @@ namespace SimpleGui {
 		inline void SetScrollable(bool value) { m_scrollable = value; }
 
 	private:
+		struct Handler {
+			Vec2 globalPositon;
+			float radius;
+			MouseState state;
+		};
+
 		struct DragData {
 			Vec2 mouseStartPos;
 			Vec2 handleStartPos;
@@ -27,16 +33,19 @@ namespace SimpleGui {
 		};
 
 	private:
-		Direction m_direction;
-		Rect m_slotGRect;
-		Rect m_valueGRect;
-		Vec2 m_handlerGPos;
-		float m_handlerRadius;
-		bool m_editabel;
-		bool m_scrollable;
+		Direction m_direction{};
+		Rect m_slotGRect{};
+		Rect m_valueGRect{};
+		Handler m_handler{};
+		DragData m_dragData{};
+		bool m_editabel{};
+		bool m_scrollable{};
 
 	private:
 		void UpdateDirection();
+		bool HandleDragHandler(Event* event);
+		bool HandleMouseClickedToChangeValue(Event* event);
+		bool HandleMouseWheelToChangeValue(Event* event);
 
 		static bool IsCircleContainPoint(const Vec2& center, float radius, const Vec2& point);
 	};

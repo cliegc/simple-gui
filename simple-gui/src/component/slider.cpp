@@ -1,16 +1,23 @@
 #include "component/slider.hpp"
+#include "gui_manager.hpp"
 
 
 namespace SimpleGui {
 	Slider::Slider(Direction direction, float value, float minValue, float maxValue): Range(value, minValue, maxValue) {
 		m_direction = direction;
-		m_handlerRadius = 5.f;
+		m_handler.radius = 5.f;
 		m_editabel = true;
 		m_scrollable = true;
 	}
 
 	bool Slider::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
+
+		if (BaseComponent::HandleEvent(event)) return true;
+
+		if (HandleDragHandler(event)) return true;
+		if (HandleMouseClickedToChangeValue(event)) return true;
+		if (HandleMouseWheelToChangeValue(event)) return true;
 
 		return false;
 	}
@@ -28,7 +35,7 @@ namespace SimpleGui {
 
 		renderer.FillRect(m_slotGRect, GetThemeColor(ThemeColorFlags::SliderSlot));
 		renderer.FillRect(m_valueGRect, GetThemeColor(ThemeColorFlags::SliderValue));
-		renderer.FillCircle(m_handlerGPos, m_handlerRadius, GetThemeColor(ThemeColorFlags::SliderHandler));
+		renderer.FillCircle(m_handler.globalPositon, m_handler.radius, GetThemeColor(ThemeColorFlags::SliderHandler));
 
 		BaseComponent::Render(renderer);
 	}
@@ -42,6 +49,26 @@ namespace SimpleGui {
 		else {
 
 		}
+	}
+
+	bool Slider::HandleDragHandler(Event* event) {
+		Vec2 mousePos = SG_GuiManager.GetMousePosition();
+		if (!IsCircleContainPoint(m_handler.globalPositon, m_handler.radius, mousePos)) return false;
+
+		if (auto ev = event->Convert<MouseButtonEvent>();
+			ev && ev->IsPressed(MouseButton::Left)) {
+
+		}
+
+		return false;
+	}
+
+	bool Slider::HandleMouseClickedToChangeValue(Event* event) {
+		return false;
+	}
+
+	bool Slider::HandleMouseWheelToChangeValue(Event* event) {
+		return false;
 	}
 
 	bool Slider::IsCircleContainPoint(const Vec2& center, float radius, const Vec2& point) {
