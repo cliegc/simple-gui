@@ -150,6 +150,7 @@
     <ClInclude Include="3rdlib\utfcpp\utf8\unchecked.h" />
     <ClInclude Include="include\component\button.hpp" />
     <ClInclude Include="include\component\check_box.hpp" />
+    <ClInclude Include="include\component\combo_box.hpp" />
     <ClInclude Include="include\component\common\caret.hpp" />
     <ClInclude Include="include\component\common\range.hpp" />
     <ClInclude Include="include\component\common\types.hpp" />
@@ -185,6 +186,7 @@
   <ItemGroup>
     <ClCompile Include="src\component\button.cpp" />
     <ClCompile Include="src\component\check_box.cpp" />
+    <ClCompile Include="src\component\combo_box.cpp" />
     <ClCompile Include="src\component\common\caret.cpp" />
     <ClCompile Include="src\component\common\range.cpp" />
     <ClCompile Include="src\component\draggable_panel.cpp" />

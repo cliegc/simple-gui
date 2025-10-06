@@ -75,6 +75,12 @@ namespace SimpleGui {
 		CheckBoxCheckedFlag,
 		CheckBoxCheckRectBorder,
 
+		ComboBoxBackground,
+		ComboBoxForeground,
+		ComboBoxBorder,
+		ComboBoxItemSelected,
+		ComboBoxItemHovered,
+
 		FlagsTotal
 	};
 

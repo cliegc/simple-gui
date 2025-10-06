@@ -29,6 +29,7 @@
     <ClCompile Include="src\component\check_box.cpp" />
     <ClCompile Include="src\component\common\caret.cpp" />
     <ClCompile Include="src\component\common\range.cpp" />
+    <ClCompile Include="src\component\combo_box.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\component\button.hpp" />
@@ -71,5 +72,6 @@
     <ClInclude Include="include\component\common\caret.hpp" />
     <ClInclude Include="include\component\common\range.hpp" />
     <ClInclude Include="include\component\common\utils.hpp" />
+    <ClInclude Include="include\component\combo_box.hpp" />
   </ItemGroup>
 </Project>
