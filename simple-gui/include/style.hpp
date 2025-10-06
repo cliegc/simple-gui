@@ -69,6 +69,12 @@ namespace SimpleGui {
 		SliderHandler,
 		SliderHandlerHovered,
 
+		CheckBoxBackground,
+		CheckBoxForeground,
+		CheckBoxCheckRectBackground,
+		CheckBoxCheckedFlag,
+		CheckBoxCheckRectBorder,
+
 		FlagsTotal
 	};
 

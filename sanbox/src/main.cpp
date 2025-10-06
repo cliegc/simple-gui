@@ -5,6 +5,8 @@
 #include <simple_gui.hpp>
 #include <style.hpp>
 
+
+
 using namespace SimpleGui;
 
 class DisplayFPSForLabel : public ExtendedFunctions {
@@ -275,6 +277,42 @@ static void TestSlider() {
 }
 
 
+static void TestCheckBox() {
+	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test check box");
+	draggablePanel->SetPosition(200, 100);
+	draggablePanel->SetSize(300, 300);
+
+	auto vBoxLayout = draggablePanel->AddChild<BoxLayout>(Direction::Vertical);
+	vBoxLayout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+
+	auto checkBox1 = vBoxLayout->AddChild<CheckBox>("test check box1");
+	auto checkBox2 = vBoxLayout->AddChild<CheckBox>("test check box2");
+	auto checkBox3 = vBoxLayout->AddChild<CheckBox>("test check box3");
+	auto checkBox4 = vBoxLayout->AddChild<CheckBox>("test check box4");
+
+	auto group = CheckBoxGroup::Create();
+	group->SetUniqueCheck(true);
+	checkBox1->SetGoup(group);
+	checkBox2->SetGoup(group);
+	checkBox3->SetGoup(group);
+	checkBox4->SetGoup(group);
+
+	group->checkStateChanged.Connect("on_check_state_changed",
+		[](CheckBox* box) {
+			SDL_Log("%s,checked = %s", box->GetText().c_str(), box->IsChecked() ? "true" : "false");
+		});
+
+	auto btn = vBoxLayout->AddChild<Button>("switch unique: on");
+	btn->clicked.Connect("on_clicked",
+		[btn, group]() {
+			bool on = group->IsUniqueCheck();
+			group->SetUniqueCheck(!on);
+			if (on) btn->SetText(std::format("switch unique: off"));
+			else btn->SetText(std::format("switch unique: on"));
+		});
+}
+
+
 static void TestLineEdit() {
 	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
 	lineEdit->SetPosition(200, 200);
@@ -310,8 +348,9 @@ int main(int argc, char** argv) {
 	//TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
-	TestProgressBar();
-	TestSlider();
+	//TestProgressBar();
+	//TestSlider();
+	TestCheckBox();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);

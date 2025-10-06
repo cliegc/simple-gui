@@ -150,6 +150,12 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::SliderHandler] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::SliderHandlerHovered] = Color(0x8266dfff);
 
+		style->colors[ThemeColorFlags::CheckBoxBackground] = Color(47, 47, 47, 0);
+		style->colors[ThemeColorFlags::CheckBoxForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::CheckBoxCheckRectBackground] = Color(47, 47, 47, 200);
+		style->colors[ThemeColorFlags::CheckBoxCheckedFlag] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::CheckBoxCheckRectBorder] = Color(0x3d444dff);
+
 		return std::move(style);
 	}
 

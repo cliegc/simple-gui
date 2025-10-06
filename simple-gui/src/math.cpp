@@ -277,8 +277,8 @@ namespace SimpleGui {
         return Rect(
             position.x - left,
             position.y - top,
-            size.w + right,
-            size.h + bottom);
+            size.w + right + left,
+            size.h + bottom + top);
     }
 
     bool Rect::IsIntersect(const Rect& rect) const {
