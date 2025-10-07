@@ -346,7 +346,7 @@ int main(int argc, char** argv) {
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 	//win.SwitchStyle(StyleManager::LightStyle);
 
-	//win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
@@ -355,13 +355,13 @@ int main(int argc, char** argv) {
 	lbl2->SetPositionY(100);
 
 	//TestScrollBar();
-	//TestScrollPanel();
+	TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
 	//TestProgressBar();
 	//TestSlider();
 	//TestCheckBox();
-	TestDraggablePanel();
+	//TestDraggablePanel();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);
