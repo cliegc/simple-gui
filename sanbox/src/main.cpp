@@ -330,6 +330,16 @@ static void TestLineEdit() {
 		});
 }
 
+static void TestDraggablePanel() {
+	auto layout = SG_GuiManager.GetWindow().AddComponent<BoxLayout>(Direction::Vertical);
+	layout->SetWidth(400);
+	layout->SetSizeConfigH(ComponentSizeConfig::Expanding);
+
+	layout->AddChild<DraggablePanel>("draggable panel 1");
+	layout->AddChild<DraggablePanel>("draggable panel 2");
+	layout->AddChild<DraggablePanel>("draggable panel 3");
+}
+
 int main(int argc, char** argv) {
 	//GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\msyh.ttc");
@@ -350,7 +360,8 @@ int main(int argc, char** argv) {
 	//TestTimer();
 	//TestProgressBar();
 	//TestSlider();
-	TestCheckBox();
+	//TestCheckBox();
+	TestDraggablePanel();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);
