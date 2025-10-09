@@ -106,7 +106,7 @@ namespace SimpleGui {
 		}
 
 		void operator()(const RenderClipCommandData& data) {
-			if (IsZeroApprox(data.rect.w * data.rect.h)) SDL_SetRenderClipRect(m_renderer, NULL);
+			if (data.disable) SDL_SetRenderClipRect(m_renderer, NULL);
 			else SDL_SetRenderClipRect(m_renderer, &data.rect);
 		}
 
@@ -169,12 +169,13 @@ namespace SimpleGui {
 	}
 
 	void Renderer::SetRenderClipRect(const SDL_Rect& rect) {
-		RenderCommand cmd{ .data = RenderClipCommandData{rect} };
+		RenderCommand cmd{ .data = RenderClipCommandData{rect, false} };
 		AddRenderCommand(std::move(cmd));
 	}
 
 	void Renderer::ClearRenderClipRect() {
-		SetRenderClipRect({0, 0, 0, 0});
+		RenderCommand cmd{ .data = RenderClipCommandData{{}, true} };
+		AddRenderCommand(std::move(cmd));
 	}
 
 	void Renderer::RenderLine(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_Color& color) {

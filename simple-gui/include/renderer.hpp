@@ -62,6 +62,7 @@ namespace SimpleGui {
 
     struct RenderClipCommandData final {
         SDL_Rect rect;
+        bool disable;
     };
 
     struct RenderCommand final {
