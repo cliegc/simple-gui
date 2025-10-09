@@ -92,7 +92,7 @@ namespace SimpleGui {
         SDL_FRect ToSDLFRect() const;
         SDL_Rect ToSDLRect() const;
 
-        inline constexpr float Area() const { return size.w * size.h; }
+        inline float Area() const { return abs(size.w * size.h); }
 
         void AdjustSizeToFitOtherRect(const Rect& other);
         void AdjustSizeToCoverOtherRect(const Rect& other);

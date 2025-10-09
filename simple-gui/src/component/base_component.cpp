@@ -41,11 +41,15 @@ namespace SimpleGui {
 		Rect parentContentGRect = parent->GetContentGlobalRect();
 		Rect parentVisibleContentGRect = parentContentGRect.GetIntersection(parentVisibleGRect);
 
+		if (parentVisibleContentGRect.size.w < 0) parentVisibleContentGRect.size.w = 0;
+		if (parentVisibleContentGRect.size.h < 0) parentVisibleContentGRect.size.h = 0;
 		target->m_visibleGRect = parentVisibleContentGRect.GetIntersection(globalRect);
 	}
 
 	Rect BaseComponent::CalcVisibleGlobalRect(const Rect& parentVisibleGRect, const Rect& parentContentGRect, const Rect& targetGRect) const {
 		Rect parentVisibleContentGRect = parentContentGRect.GetIntersection(parentVisibleGRect);
+		if (parentVisibleContentGRect.size.w < 0) parentVisibleContentGRect.size.w = 0;
+		if (parentVisibleContentGRect.size.h < 0) parentVisibleContentGRect.size.h = 0;
 		return parentVisibleContentGRect.GetIntersection(targetGRect);
 	}
 
