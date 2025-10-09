@@ -7,7 +7,7 @@
 namespace SimpleGui {
 	class TextureRect final : public BaseComponent {
 	public:
-		TextureRect(std::shared_ptr<Texture> texture);
+		TextureRect(std::shared_ptr<Texture> texture = nullptr);
 		virtual ~TextureRect() = default;
 
 		std::shared_ptr<Texture> GetTexture() const;

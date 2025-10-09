@@ -356,13 +356,26 @@ static void TestDraggablePanel() {
 	layout->AddChild<DraggablePanel>("draggable panel 3");
 }
 
+static void TestTextureRect() {
+	auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test texture rect");
+	dp->SetSize(300, 300);
+
+	auto texture = SG_GuiManager.GetWindow().GetRenderer().CreateSharedTexture("D:\\download\\edge\\bg.jpg");
+	auto textureRect = dp->AddChild<TextureRect>(texture);
+	textureRect->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
+
+	dp->SetTitle(texture->GetPath());
+}
+
+
 int main(int argc, char** argv) {
 	//GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
 	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\msyh.ttc");
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 	//win.SwitchStyle(StyleManager::LightStyle);
 
-	//win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
@@ -370,7 +383,7 @@ int main(int argc, char** argv) {
 	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	lbl2->SetPositionY(100);
 
-	TestScrollBar();
+	//TestScrollBar();
 	//TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
@@ -378,6 +391,7 @@ int main(int argc, char** argv) {
 	//TestSlider();
 	//TestCheckBox();
 	//TestDraggablePanel();
+	TestTextureRect();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);

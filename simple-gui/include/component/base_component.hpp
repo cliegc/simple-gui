@@ -110,6 +110,7 @@ namespace SimpleGui {
 		inline Window* GetWindow() const { return m_window; }
 
 		//void PresetChildrenCount(size_t count);
+
 		void AddChild(std::unique_ptr<BaseComponent> child);
 		void AddChildDeferred(std::unique_ptr<BaseComponent> child);
 		BaseComponent* GetChildAt(size_t idx) const;

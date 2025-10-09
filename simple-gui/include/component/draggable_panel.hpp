@@ -6,7 +6,7 @@
 namespace SimpleGui {
 	class DraggablePanel final : public BaseComponent {
 	public:
-		DraggablePanel(std::string_view title);
+		DraggablePanel(std::string_view title = "draggable panel");
 		~DraggablePanel() = default;
 
 		virtual bool HandleEvent(Event* event) override;
