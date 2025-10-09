@@ -13,6 +13,7 @@ namespace SimpleGui {
 		}
 	}
 
+	const float DEFAULT_FONT_SIZE = 12.f;
 
 	GuiManager::~GuiManager() {
 		m_fpsController.reset();
@@ -41,7 +42,7 @@ namespace SimpleGui {
 
 		s_guiManager = std::unique_ptr<GuiManager>(new GuiManager());
 		s_guiManager->m_cmdArgs.Setup(argc, argv);
-		s_guiManager->m_defaultResource.font = std::make_unique<Font>(fontPath, 16.f);
+		s_guiManager->m_defaultResource.font = std::make_unique<Font>(fontPath, DEFAULT_FONT_SIZE);
 		s_guiManager->m_defaultResource.style = StyleManager::CreateDarkStyle();
 		s_guiManager->m_window = std::make_unique<Window>("simple gui", 640, 480);
 		s_guiManager->m_window->SetFont(s_guiManager->m_defaultResource.font->GetPath(), s_guiManager->m_defaultResource.font->GetSize());

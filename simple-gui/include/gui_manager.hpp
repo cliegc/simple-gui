@@ -63,8 +63,8 @@ namespace SimpleGui {
         void Run();
 
         inline const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
-        inline Font& GetDefaultFont() const { return *m_defaultResource.font; }
-        inline Style& GetDefaultStyle() const { return *m_defaultResource.style; }
+        inline const Font& GetDefaultFont() const { return *m_defaultResource.font; }
+        inline const Style& GetDefaultStyle() const { return *m_defaultResource.style; }
 
         inline void SetUnlimitedFrameRate(bool value) { m_fpsController->SetUnlimitedFrameRate(value); }
         inline double GetDelta() const { return m_fpsController->GetDelta(); }

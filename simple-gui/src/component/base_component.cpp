@@ -389,7 +389,7 @@ namespace SimpleGui {
 
 	Font& BaseComponent::GetFont() {
 		if (!m_font || m_font->IsNull()) {
-			Font& font = m_window ? m_window->GetFont() : SG_GuiManager.GetDefaultFont();
+			const Font& font = m_window ? m_window->GetFont() : SG_GuiManager.GetDefaultFont();
 			m_font.reset(new Font(font.GetPath(), font.GetSize()));
 		}
 		return *m_font;
