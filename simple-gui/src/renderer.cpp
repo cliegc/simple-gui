@@ -4,6 +4,9 @@
 
 
 namespace SimpleGui {
+
+
+
 	Renderer::Renderer(SDL_Window* window) {
 		m_renderer = SDL_CreateRenderer(window, NULL);
 		if (!m_renderer) {
