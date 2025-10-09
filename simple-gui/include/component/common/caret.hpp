@@ -14,7 +14,7 @@ namespace SimpleGui {
 		virtual ~Caret() = default;
 
 		void Update() const;
-		void Render(const Renderer& renderer) const;
+		void Render(Renderer& renderer) const;
 
 		inline Rect& GetGlobalRect() { return m_gRect; }
 

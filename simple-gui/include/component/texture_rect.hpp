@@ -24,7 +24,7 @@ namespace SimpleGui {
 		void SetFlipV(bool flip);
 
 		virtual void Update() override;
-		virtual void Render(const Renderer& renderer) override;
+		virtual void Render(Renderer& renderer) override;
 
 	private:
 		std::shared_ptr<Texture> m_texture;

@@ -167,5 +167,9 @@ namespace SimpleGui {
         Type type;
     };
 
+    struct Circle final {
+        Vec2 center;
+        float radius;
+    };
 }
 

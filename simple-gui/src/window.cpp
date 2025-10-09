@@ -178,8 +178,9 @@ namespace SimpleGui {
 
 	void Window::UpdateAndRender() {
 		m_rootCmp->Update();
-		m_renderer->Clear();
+		//m_renderer->Clear();
 		m_rootCmp->Render(*m_renderer);
-		m_renderer->Present();
+		m_renderer->Render();
+		//m_renderer->Present();
 	}
 }

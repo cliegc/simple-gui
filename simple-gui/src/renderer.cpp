@@ -4,7 +4,116 @@
 
 
 namespace SimpleGui {
+	class RenderCommandDataVisitor final {
+	public:
+		RenderCommandDataVisitor(SDL_Renderer* renderer, const SDL_Color& color):
+			m_renderer(renderer), m_color(color) { }
+		~RenderCommandDataVisitor() = default;
 
+		void operator()(const RenderLineCommandData& data) {
+			SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+			SDL_RenderLine(m_renderer, data.start.x, data.start.y, data.end.x, data.end.y);
+		}
+
+		void operator()(const RenderLinesCommandData& data) {
+			SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+			SDL_RenderLines(m_renderer, data.points.data(), data.points.size());
+		}
+
+		void operator()(const RenderRectCommandData& data) {
+			SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+			if (data.fill) SDL_RenderFillRect(m_renderer, &data.rect);
+			else SDL_RenderRect(m_renderer, &data.rect);
+		}
+
+		void operator()(const RenderRectsCommandData& data) {
+			SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+			if (data.fill) SDL_RenderFillRects(m_renderer, data.rects.data(), data.rects.size());
+			else SDL_RenderRects(m_renderer, data.rects.data(), data.rects.size());
+		}
+
+		void operator()(const RenderTriangleCommandData& data) {
+			if (data.fill) {
+				SDL_FColor fc = {
+					m_color.r / 255.f,
+					m_color.g / 255.f,
+					m_color.b / 255.f,
+					m_color.a / 255.f
+				};
+				SDL_Vertex vertices[3] = {
+					// 第一个三角形 (左上、右上、左下)
+					{ data.p3, fc, {0}},
+					{ data.p1, fc, {0}},
+					{ data.p2, fc, {0}},
+				};
+				SDL_RenderGeometry(m_renderer, nullptr, vertices, 3, nullptr, 0);
+				
+			}
+			else {
+				SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+				SDL_FPoint points[4] = { data.p1, data.p2, data.p3 };
+				SDL_RenderLines(m_renderer, points, 4);
+			}
+		}
+
+		void operator()(const RenderCircleCommandData& data) {
+			SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+			if (data.fill) {
+				std::vector<SDL_FPoint> points;
+				for (float y = -data.radius; y <= data.radius; y++) {
+					float x = (int)sqrt(data.radius * data.radius - y * y);
+					points.emplace_back(data.center.x - x, data.center.y + y );
+					points.emplace_back(data.center.x + x, data.center.y + y);
+				}
+				SDL_RenderLines(m_renderer, points.data(), points.size());
+			}
+			else {
+				float x = data.radius;
+				float y = 0;
+				float err = 0;
+
+				while (x >= y) {
+					SDL_FPoint points[8] = {
+						{data.center.x + x, data.center.y + y},
+						{data.center.x + y, data.center.y + x},
+						{data.center.x - y, data.center.y + x},
+						{data.center.x - x, data.center.y + y},
+						{data.center.x - x, data.center.y - y},
+						{data.center.x - y, data.center.y - x},
+						{data.center.x + y, data.center.y - x},
+						{data.center.x + x, data.center.y - y}
+					};
+
+					SDL_RenderPoints(m_renderer, points, 8);
+
+					y += 1;
+					err += 1 + 2 * y;
+					if (2 * (err - x) + 1 > 0) {
+						x -= 1;
+						err += 1 - 2 * x;
+					}
+				}
+			}
+		}
+
+		void operator()(const RenderTextureCommandData& data) {
+			SDL_RenderTextureRotated(m_renderer, data.texture, &data.srcRect, &data.dstRect, data.angle, &data.center, data.mode);
+		}
+
+		void operator()(const RenderTextCommandData& data) {
+			TTF_SetTextColor(data.text, m_color.r, m_color.g, m_color.b, m_color.a);
+			TTF_DrawRendererText(data.text, data.pos.x, data.pos.y);
+		}
+
+		void operator()(const RenderClipCommandData& data) {
+			if (IsZeroApprox(data.rect.w * data.rect.h)) SDL_SetRenderClipRect(m_renderer, NULL);
+			else SDL_SetRenderClipRect(m_renderer, &data.rect);
+		}
+
+	private:
+		SDL_Renderer* m_renderer;
+		SDL_Color m_color;
+	};
 
 
 	Renderer::Renderer(SDL_Window* window) {
@@ -41,14 +150,14 @@ namespace SimpleGui {
 		m_clearColor = color;
 	}
 
-	void Renderer::Clear() {
-		SDL_SetRenderDrawColor(m_renderer, m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
-		SDL_RenderClear(m_renderer);
-	}
+	//void Renderer::Clear() {
+	//	SDL_SetRenderDrawColor(m_renderer, m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
+	//	SDL_RenderClear(m_renderer);
+	//}
 
-	void Renderer::Present() {
-		SDL_RenderPresent(m_renderer);
-	}
+	//void Renderer::Present() {
+	//	SDL_RenderPresent(m_renderer);
+	//}
 
 	void Renderer::SetClipRect(const Rect& rect) const {
 		auto rt = rect.ToSDLRect();
@@ -57,6 +166,51 @@ namespace SimpleGui {
 
 	void Renderer::ClearClipRect() const {
 		SDL_SetRenderClipRect(m_renderer, NULL);
+	}
+
+	void Renderer::SetRenderClipRect(const SDL_Rect& rect) {
+		RenderCommand cmd{ .data = RenderClipCommandData{rect} };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::ClearRenderClipRect() {
+		SetRenderClipRect({0, 0, 0, 0});
+	}
+
+	void Renderer::RenderLine(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_Color& color) {
+		RenderCommand cmd{ .data = RenderLineCommandData{p1, p2}, .color = color };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderLines() {
+	}
+
+	void Renderer::RenderRect(const SDL_FRect& rect, const SDL_Color& color, bool fill) {
+		RenderCommand cmd{ .data = RenderRectCommandData{rect, fill}, .color = color };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderRects() {
+	}
+
+	void Renderer::RenderTriangle(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_FPoint& p3, const SDL_Color& color, bool fill) {
+		RenderCommand cmd{ .data = RenderTriangleCommandData{p1, p2, p3, fill}, .color = color };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderCircle(const SDL_FPoint& center, float radius, const SDL_Color& color, bool fill) {
+		RenderCommand cmd{ .data = RenderCircleCommandData{center, radius, fill}, .color = color };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderTexture(SDL_Texture* texture, const SDL_FRect& srcRect, const SDL_FRect& dstRect, float angle, const SDL_FPoint center, SDL_FlipMode mode) {
+		RenderCommand cmd{ .data = RenderTextureCommandData{texture, srcRect, dstRect, angle, center, mode} };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderText(TTF_Text* text, const SDL_FPoint& pos, const SDL_Color& color) {
+		RenderCommand cmd{ .data = {RenderTextCommandData{text, pos}}, .color = color };
+		AddRenderCommand(std::move(cmd));
 	}
 
 	void Renderer::DrawLine(const Vec2& p1, const Vec2& p2, const Color& color) const {
@@ -246,7 +400,29 @@ namespace SimpleGui {
 		return new Texture(*this, path);
 	}
 
+	void Renderer::Render() {
+		SDL_SetRenderDrawColor(m_renderer, m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
+		SDL_RenderClear(m_renderer);
+		ExecuteRenderQueue(m_renderQueue);
+		ExecuteRenderQueue(m_topRenderQueue);
+		SDL_RenderPresent(m_renderer);
+	}
+
 	void Renderer::SetRenderColor(const Color& color) const {
 		SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	}
+
+	void Renderer::AddRenderCommand(RenderCommand&& cmd) {
+		if (m_topRender) m_topRenderQueue.push(cmd);
+		else m_renderQueue.push(cmd);
+	}
+
+	void Renderer::ExecuteRenderQueue(std::queue<RenderCommand>& queue) {
+		while (!queue.empty()) {
+			auto& cmd = queue.front();
+			RenderCommandDataVisitor visitor(m_renderer, cmd.color);
+			std::visit(visitor, cmd.data);
+			queue.pop();
+		}
 	}
 }

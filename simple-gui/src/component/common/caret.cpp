@@ -25,9 +25,10 @@ namespace SimpleGui {
 		m_timer->Update();
 	}
 
-	void Caret::Render(const Renderer& renderer) const {
+	void Caret::Render(Renderer& renderer) const {
 		if (!m_visible || !m_blinkFlag) return;
-		renderer.FillRect(m_gRect, m_color);
+		//renderer.FillRect(m_gRect, m_color);
+		renderer.RenderRect(m_gRect.ToSDLFRect(), m_color.ToSDLColor(), true);
 	}
 #pragma endregion
 

@@ -42,8 +42,11 @@ protected:
 		}
 	}
 
-	virtual void Render(const Renderer& renderer) override {
-		renderer.FillCircle(circlePos, 50, Color::GREEN);
+	virtual void Render(Renderer& renderer) override {
+		//renderer.FillCircle(circlePos, 50, Color::GREEN);
+		renderer.SetTopRender(true);
+		renderer.RenderCircle(circlePos.ToSDLFPoint(), 50, Color::GREEN.ToSDLColor(), true);
+		renderer.SetTopRender(false);
 	}
 };
 
@@ -56,10 +59,13 @@ public:
 	~DrawBackgroundFunctions() = default;
 
 protected:
-	virtual void Render(const Renderer& renderer) override {
+	virtual void Render(Renderer& renderer) override {
 		Rect srcRect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
-		renderer.DrawTexture(*m_texture.get(), srcRect, m_target->GetGlobalRect(), 0, srcRect.Center(), SDL_FLIP_NONE);
-		renderer.FillRect(m_target->GetGlobalRect(), Color(0, 0, 0, 200));
+		//renderer.DrawTexture(*m_texture.get(), srcRect, m_target->GetGlobalRect(), 0, srcRect.Center(), SDL_FLIP_NONE);
+		renderer.RenderTexture(&m_texture->GetSDLTexture(), srcRect.ToSDLFRect(),
+			m_target->GetGlobalRect().ToSDLFRect(), 0, srcRect.Center().ToSDLFPoint(), SDL_FLIP_NONE);
+		//renderer.FillRect(m_target->GetGlobalRect(), Color(0, 0, 0, 200));
+		renderer.RenderRect(m_target->GetGlobalRect().ToSDLFRect(), { 0, 0, 0, 200 }, true);
 	}
 
 private:
@@ -69,12 +75,13 @@ private:
 
 static void TestScrollBar() {
 	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test scrollbar");
-	draggablePanel->SetSize(200, 200);
-	draggablePanel->AddChild<Label>("this is a lebel")->SetPositionX(-50);
-	draggablePanel->AddChild<Button>("this is a button")->SetPosition(180, 100);
+	draggablePanel->SetSize(400, 400);
+
+	auto dp2 = draggablePanel->AddChild<DraggablePanel>("test scrollbar");
+	dp2->SetSize(200, 200);
 
 	for (int i = 0; i < 50; ++i) {
-		auto btn = draggablePanel->AddChild<Button>(std::format("button {}", i));
+		auto btn = dp2->AddChild<Button>(std::format("button {}", i));
 		btn->clicked.Connect("on_clicked",
 			[i]() {
 				SDL_Log("click button: %d\n", i);
@@ -85,39 +92,28 @@ static void TestScrollBar() {
 		);
 	}
 
-	auto v_scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Vertical);
-	v_scrollbar->SetPosition(200, 350);
+	auto v_scrollbar = draggablePanel->AddChild<ScrollBar>(Direction::Vertical);
 	v_scrollbar->SetMouseWheelDelta(10.f);
-	v_scrollbar->SetTarget(draggablePanel);
+	v_scrollbar->SetTarget(dp2);
 
-	auto h_scrollbar = SG_GuiManager.GetWindow().AddComponent<ScrollBar>(Direction::Horizontal);
-	h_scrollbar->SetPosition(200, 320);
+	auto h_scrollbar = draggablePanel->AddChild<ScrollBar>(Direction::Horizontal);
+	h_scrollbar->SetPosition(50, 0);
 	h_scrollbar->SetMouseWheelDelta(10.f);
-	h_scrollbar->SetTarget(draggablePanel);
+	h_scrollbar->SetTarget(dp2);
 }
 
 
 static void TestScrollPanel() {
 	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test scroll panel");
-	draggablePanel->SetSize(300, 300);
+	draggablePanel->SetSize(400, 400);
 
-	auto scrollPanel = draggablePanel->AddChild<ScrollPanel>();
+	auto dp2 = draggablePanel->AddChild<DraggablePanel>("test scroll panel");
+	dp2->SetSize(200, 200);
+
+	auto scrollPanel = dp2->AddChild<ScrollPanel>();
 	scrollPanel->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 
-	//for (int i = 0; i < 500; ++i) {
-	//	auto btn = scrollPanel->AddChild<Button>(std::format("button {}", i));
-	//	btn->clicked.Connect("on_clicked",
-	//		[i]() {
-	//			SDL_Log("click button: %d\n", i);
-	//		});
-	//	btn->SetPosition(
-	//		SDL_randf() * 800 - 300,
-	//		SDL_randf() * 800 - 300
-	//	);
-	//}
-
-	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("add button");
-	btn->SetPosition(100, 400);
+	auto btn = draggablePanel->AddChild<Button>("add button");
 	btn->clicked.Connect("on_clicked",
 		[scrollPanel]() {
 			auto btn = scrollPanel->AddChildDeferred<Button>(std::format("button {}", scrollPanel->GetChildrenCount()));
@@ -127,41 +123,40 @@ static void TestScrollPanel() {
 			);
 		});
 	
-	auto btn2 = SG_GuiManager.GetWindow().AddComponent<Button>("clear all");
-	btn2->SetPosition(100, 450);
-	btn2->SetSize(300, 300);
+	auto btn2 = draggablePanel->AddChild<Button>("clear all");
+	btn2->SetPosition(0, 100);
 	btn2->clicked.Connect("on_clicked", 
 		[scrollPanel]() {
 			scrollPanel->ClearAllChildrenDeferred();
 		});
-
-	auto btn3 = btn2->AddChild<Button>("btn3");
-	btn3->SetPosition(10, 10);
-	btn3->SetSize(200, 200);
-
-	//scrollPanel->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::RED);
-	//SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::ScrollPanelBackground, Color::YELLOW);
-	//SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::ScrollbarSlider_H, Color::YELLOW);
-	//scrollPanel->CustomThemeColor(ThemeColorFlags::ScrollbarSlider_H, Color::BLUE);
 }
 
 
 static void TestTimer() {
-	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("kill timer");
+	auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test timer");
+
 	auto timer = SG_GuiManager.GetTimer(1.f);
+	auto btn = dp->AddChild<Button>("timer: running");
+	auto btn2 = dp->AddChild<Button>("kill timer");
+	btn2->SetPosition(0, 100);
 	
 	timer->timeout.Connect("on_timeout_change_btn_color",
-		[]() {
+		[dp]() {
 			Color color(
 				SDL_randf() * 255,
 				SDL_randf() * 255,
 				SDL_randf() * 255
 			);
-			SG_GuiManager.GetWindow().GetRootComponent().CustomThemeColor(ThemeColorFlags::Background, color);
+			dp->CustomThemeColor(ThemeColorFlags::DraggablePanelBackround, color);
 		});
 
-	btn->SetPosition(200, 200);
-	btn->clicked.Connect("on_clicked_kill_timer",
+	btn->clicked.Connect("on_clicked",
+		[timer, btn]() {
+			timer->SetPaused(!timer->IsPaused());
+			btn->SetText(std::format("timer: {}", timer->IsPaused() ? "paused" : "running"));
+		});
+
+	btn2->clicked.Connect("on_clicked",
 		[timer]() {
 			if (timer) SG_GuiManager.KillTimer(timer);
 			else SDL_Log("btn clicked: delete timer");
@@ -176,14 +171,20 @@ static void TestProgressBar() {
 	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test progress bar");
 	draggablePanel->SetSize(300, 300);
 
+	auto layout = draggablePanel->AddChild<AnchorPointLayout>();
+	layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+
 	auto bar = draggablePanel->AddChild<ProgressBar>(0, 0, 100);
 	bar->SetSize(200, 20);
 	bar->ShowProgressText(true);
-	bar->SetIndeterminate(true);
+	//bar->SetIndeterminate(true);
+
+	layout->SetAnchorPoint(bar, AnchorPointType::Fixed, Vec2(10, 10));
 
 	//bar->SetProgressFillMode(ProgressFillMode::RightToLeft);
-	auto btn = SG_GuiManager.GetWindow().AddComponent<Button>("switch fill mode");
-	btn->SetPosition(500, 400);
+	auto btn = layout->AddChild<Button>("switch fill mode");
+	//btn->SetPosition(500, 400);
+	layout->SetAnchorPoint(btn, AnchorPointType::Fixed, Vec2(10, -10), AnchorPointLocation::BottomLeft, AnchorPointLocation::BottomLeft);
 
 	static int count = 0;
 	btn->clicked.Connect("on_clicked_switch_fill_mode",
@@ -209,8 +210,9 @@ static void TestProgressBar() {
 			count++;
 		});
 
-	auto addBtn = SG_GuiManager.GetWindow().AddComponent<Button>("add");
-	addBtn->SetPosition(btn->GetGlobalRect().Right() + 10, 400);
+	auto addBtn = layout->AddChild<Button>("add");
+	layout->SetAnchorPoint(addBtn, AnchorPointType::Fixed, Vec2(btn->GetGlobalRect().Right() + 10, -10),
+		AnchorPointLocation::BottomLeft, AnchorPointLocation::BottomLeft);
 	addBtn->clicked.Connect("on_clicked_add",
 		[bar]() {
 			float value = bar->GetValue();
@@ -237,8 +239,9 @@ static void TestProgressBar() {
 			
 		});
 
-	auto timerBtn = SG_GuiManager.GetWindow().AddComponent<Button>("start timer");
-	timerBtn->SetPosition(400, 100);
+	auto timerBtn = layout->AddChild<Button>("start timer");
+	layout->SetAnchorPoint(timerBtn, AnchorPointType::Fixed, Vec2(addBtn->GetGlobalRect().Right() + 10, -10),
+		AnchorPointLocation::BottomLeft, AnchorPointLocation::BottomLeft);
 	timerBtn->clicked.Connect("on_clicked_timer",
 		[timer, timerBtn]() {
 			timer->SetPaused(!timer->IsPaused());
@@ -248,6 +251,14 @@ static void TestProgressBar() {
 			else {
 				timerBtn->SetText("pause timer");
 			}
+		});
+
+	auto btn2 = layout->AddChild<Button>("SetIndeterminate");
+	layout->SetAnchorPoint(btn2, AnchorPointType::Fixed, Vec2(timerBtn->GetGlobalRect().Right() + 10, -10),
+		AnchorPointLocation::BottomLeft, AnchorPointLocation::BottomLeft);
+	btn2->clicked.Connect("on_clicked",
+		[bar]() {
+			bar->SetIndeterminate(!bar->IsIndeterminate());
 		});
 }
 
@@ -314,8 +325,11 @@ static void TestCheckBox() {
 
 
 static void TestLineEdit() {
-	auto lineEdit = SG_GuiManager.GetWindow().AddComponent<LineEdit>("input");
-	lineEdit->SetPosition(200, 200);
+	auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test line edit");
+	dp->SetSize(300, 300);
+
+	auto lineEdit = dp->AddChild<LineEdit>("input");
+	lineEdit->SetPosition(100, 100);
 	//lineEdit->SetMaxInputLength(4);
 	//lineEdit->CustomThemeColor(ThemeColorFlags::LineEditForeground, Color::RED);
 
@@ -331,9 +345,11 @@ static void TestLineEdit() {
 }
 
 static void TestDraggablePanel() {
-	auto layout = SG_GuiManager.GetWindow().AddComponent<BoxLayout>(Direction::Vertical);
-	layout->SetWidth(400);
-	layout->SetSizeConfigH(ComponentSizeConfig::Expanding);
+	auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test draggable panel");
+	dp->SetSize(300, 300);
+
+	auto layout = dp->AddChild<BoxLayout>(Direction::Vertical);
+	layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 
 	layout->AddChild<DraggablePanel>("draggable panel 1");
 	layout->AddChild<DraggablePanel>("draggable panel 2");
@@ -346,7 +362,7 @@ int main(int argc, char** argv) {
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 	//win.SwitchStyle(StyleManager::LightStyle);
 
-	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	//win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
@@ -354,8 +370,8 @@ int main(int argc, char** argv) {
 	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	lbl2->SetPositionY(100);
 
-	//TestScrollBar();
-	TestScrollPanel();
+	TestScrollBar();
+	//TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
 	//TestProgressBar();

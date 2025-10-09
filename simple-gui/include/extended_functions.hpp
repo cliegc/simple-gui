@@ -14,7 +14,7 @@ namespace SimpleGui {
 
 		virtual bool HandleEvent(Event* event) { return false; };
 		virtual void Update() {};
-		virtual void Render(const Renderer& renderer) {};
+		virtual void Render(Renderer& renderer) {};
 
 		BaseComponent* m_target = nullptr;
 	};
@@ -38,7 +38,7 @@ namespace SimpleGui {
 	private:
 		bool HandleEvent(Event* event);
 		void Update();
-		void Render(const Renderer& renderer);
+		void Render(Renderer& renderer);
 
 		void Clear();
 		// Œ¥ µœ÷

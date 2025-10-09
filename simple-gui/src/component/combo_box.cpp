@@ -28,7 +28,7 @@ namespace SimpleGui {
 		UpdateItemsList();
 	}
 
-	void ComboBox::Render(const Renderer& renderer) {
+	void ComboBox::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
 		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground));
@@ -59,7 +59,7 @@ namespace SimpleGui {
 	void ComboBox::UpdateItemsList() {
 	}
 
-	void ComboBox::RenderItemsList(const Renderer& renderer) {
+	void ComboBox::RenderItemsList(Renderer& renderer) {
 		if (!m_showItemsList) return;
 
 		renderer.FillRect(m_itemsRect.visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground));

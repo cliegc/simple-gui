@@ -11,7 +11,7 @@ namespace SimpleGui {
 
 		virtual bool HandleEvent(Event* event) override;
 		virtual void Update() override;
-		virtual void Render(const Renderer& renderer) override;
+		virtual void Render(Renderer& renderer) override;
 
 		inline std::string GetCurrentItem() const { return m_currItemLbl->GetText(); }
 		std::string GetItem(size_t index) const;
@@ -45,6 +45,6 @@ namespace SimpleGui {
 		bool HandleToggleItemsList(Event* event);
 		bool HandleSelectItem(Event* event);
 		void UpdateItemsList();
-		void RenderItemsList(const Renderer& renderer);
+		void RenderItemsList(Renderer& renderer);
 	};
 }

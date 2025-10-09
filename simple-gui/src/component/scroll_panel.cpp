@@ -80,18 +80,25 @@ namespace SimpleGui {
 
 		m_hScrollBar->m_visible = IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w) ? false : true;
 		m_vScrollBar->m_visible = IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h) ? false : true;
+
+		if (!m_hScrollBar->m_visible && m_hScrollBar->m_dragSliderData.canDragging) m_hScrollBar->m_dragSliderData.canDragging = false;
+		if (!m_vScrollBar->m_visible && m_vScrollBar->m_dragSliderData.canDragging) m_vScrollBar->m_dragSliderData.canDragging = false;
 	}
 
-	void ScrollPanel::Render(const Renderer& renderer) {
+	void ScrollPanel::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollPanelBackground));
+		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollPanelBackground));
+		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBackground).ToSDLColor(), true);
 		BaseComponent::Render(renderer);
 		m_hScrollBar->Render(renderer);
 		m_vScrollBar->Render(renderer);
-		renderer.SetClipRect(m_visibleGRect);
-		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder));
-		renderer.ClearClipRect();
+		//renderer.SetClipRect(m_visibleGRect);
+		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder));
+		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder).ToSDLColor(), false);
+		//renderer.ClearClipRect();
+		renderer.ClearRenderClipRect();
 
 		//debug
 		//renderer.DrawRect(GetContentGlobalRect(), Color::MAGENTA);

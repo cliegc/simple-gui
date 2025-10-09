@@ -33,7 +33,7 @@ namespace SimpleGui {
 
 		virtual bool HandleEvent(Event* event);
 		virtual void Update();
-		virtual void Render(const Renderer& renderer);
+		virtual void Render(Renderer& renderer);
 
 		inline Rect GetRect() const { return Rect{ m_position, m_size}; }
 		inline Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }

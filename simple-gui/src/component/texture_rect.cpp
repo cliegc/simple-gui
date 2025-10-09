@@ -40,21 +40,32 @@ namespace SimpleGui {
 		CalcVisibleGlobalRect(this, m_tipLbl.get());
 	}
 
-	void TextureRect::Render(const Renderer& renderer) {
+	void TextureRect::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
 		// draw bg
-		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround));
+		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround));
+		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::TextureRectBackround).ToSDLColor(), true);
 		
-		renderer.SetClipRect(m_visibleGRect);
+		//renderer.SetClipRect(m_visibleGRect);
+		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
 		if (m_texture && !m_texture->IsNull()) {
 			Rect rect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
-			renderer.DrawTexture(*m_texture, rect, m_textureGRect, 0, rect.Center(), m_flipMode);
+			//renderer.DrawTexture(*m_texture, rect, m_textureGRect, 0, rect.Center(), m_flipMode);
+			renderer.RenderTexture(
+				&m_texture->GetSDLTexture(),
+				rect.ToSDLFRect(),
+				m_textureGRect.ToSDLFRect(),
+				0,
+				rect.Center().ToSDLFPoint(),
+				m_flipMode);
 		}
 		m_tipLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::Foreground));
 		m_tipLbl->Render(renderer);
-		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder));
-		renderer.ClearClipRect();
+		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder));
+		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder).ToSDLColor(), false);
+		//renderer.ClearClipRect();
+		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);
 	}

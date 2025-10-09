@@ -131,7 +131,7 @@ namespace SimpleGui {
 		}
 	}
 
-	void BaseComponent::Render(const Renderer& renderer) {
+	void BaseComponent::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
 		/*if (m_disabled) {

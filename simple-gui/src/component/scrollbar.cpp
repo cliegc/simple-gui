@@ -106,16 +106,23 @@ namespace SimpleGui {
 		else UpdateVerticalSlider(boundaryGRect, targetContentGRect);
 	}
 
-	void ScrollBar::Render(const Renderer& renderer) {
+	void ScrollBar::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		Color slotColor = GetThemeColor(ThemeColorFlags::ScrollbarSlot_H);
-		Color sliderColor = GetThemeColor(ThemeColorFlags::ScrollbarSlider_H);
-		Color hoveredColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered_H);
-		Color pressedColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderPressed_H);
-		Color borderColor = GetThemeColor(ThemeColorFlags::ScrollbarBorder_H);
+		Color slotColor;
+		Color sliderColor;
+		Color hoveredColor;
+		Color pressedColor;
+		Color borderColor;
 
-		if (m_direction == Direction::Vertical) {
+		if (m_direction == Direction::Horizontal) {
+			slotColor = GetThemeColor(ThemeColorFlags::ScrollbarSlot_H);
+			sliderColor = GetThemeColor(ThemeColorFlags::ScrollbarSlider_H);
+			hoveredColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered_H);
+			pressedColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderPressed_H);
+			borderColor = GetThemeColor(ThemeColorFlags::ScrollbarBorder_H);
+		}
+		else {
 			slotColor = GetThemeColor(ThemeColorFlags::ScrollbarSlot_V);
 			sliderColor = GetThemeColor(ThemeColorFlags::ScrollbarSlider_V);
 			hoveredColor = GetThemeColor(ThemeColorFlags::ScrollbarSliderHovered_V);
@@ -124,19 +131,27 @@ namespace SimpleGui {
 		}
 
 		// draw slot
-		renderer.FillRect(m_visibleGRect, slotColor);
+		//renderer.FillRect(m_visibleGRect, slotColor);
+		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), slotColor.ToSDLColor(), true);
 
-		renderer.SetClipRect(m_visibleGRect);
+		//renderer.SetClipRect(m_visibleGRect);
+		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
 		// draw slider
 		if (m_mouseState == MouseState::Normal)
-			renderer.FillRect(m_slider.visibleGRect, sliderColor);
+			//renderer.FillRect(m_slider.visibleGRect, sliderColor);
+			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), sliderColor.ToSDLColor(), true);
 		else if (m_mouseState == MouseState::Hovering)
-			renderer.FillRect(m_slider.visibleGRect, hoveredColor);
+			//renderer.FillRect(m_slider.visibleGRect, hoveredColor);
+			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), hoveredColor.ToSDLColor(), true);
 		else if (m_mouseState == MouseState::Pressed)
-			renderer.FillRect(m_slider.visibleGRect, pressedColor);
+			//renderer.FillRect(m_slider.visibleGRect, pressedColor);
+			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), pressedColor.ToSDLColor(), true);
+
 		//draw border
-		renderer.DrawRect(GetGlobalRect(), borderColor);
-		renderer.ClearClipRect();
+		//renderer.DrawRect(GetGlobalRect(), borderColor);
+		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), borderColor.ToSDLColor(), false);
+		//renderer.ClearClipRect();
+		renderer.ClearRenderClipRect();
 
 		// debug
 		//renderer.DrawRect(CalcChildrenBoundaryGlobalRect(m_target), Color::GREEN);

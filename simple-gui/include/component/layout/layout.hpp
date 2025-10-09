@@ -9,7 +9,7 @@ namespace SimpleGui {
 		virtual ~Layout() = default;
 
 #ifdef SG_CMP_DEBUG_LAYOUT_BG
-		virtual void Render(const Renderer& renderer) override {
+		virtual void Render(Renderer& renderer) override {
 			SG_CMP_RENDER_CONDITIONS;
 			renderer.FillRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::Background));
 			BaseComponent::Render(renderer);

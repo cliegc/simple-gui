@@ -20,7 +20,7 @@ namespace SimpleGui {
 		~ProgressBar() = default;
 
 		virtual void Update() override;
-		virtual void Render(const Renderer& renderer) override;
+		virtual void Render(Renderer& renderer) override;
 
 		virtual void SetValue(float value) override;
 

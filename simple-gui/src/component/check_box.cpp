@@ -63,19 +63,25 @@ namespace SimpleGui {
 		m_textLbl->Update();
 	}
 
-	void CheckBox::Render(const Renderer& renderer) {
+	void CheckBox::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxBackground));
+		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxBackground));
+		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::CheckBoxBackground).ToSDLColor(), true);
 
 		//draw check rect
-		renderer.FillRect(m_checkRect.visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBackground));
+		//renderer.FillRect(m_checkRect.visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBackground));
+		renderer.RenderRect(m_checkRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBackground).ToSDLColor(), true);
 		if (m_checked) {
-			renderer.FillRect(m_checkedFlagRect.visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckedFlag));
+			//renderer.FillRect(m_checkedFlagRect.visibleGRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckedFlag));
+			renderer.RenderRect(m_checkedFlagRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::CheckBoxCheckedFlag).ToSDLColor(), true);
 		}
-		renderer.SetClipRect(m_checkRect.visibleGRect);
-		renderer.DrawRect(m_checkRect.gRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBorder));
-		renderer.ClearClipRect();
+		//renderer.SetClipRect(m_checkRect.visibleGRect);
+		renderer.SetRenderClipRect(m_checkRect.visibleGRect.ToSDLRect());
+		//renderer.DrawRect(m_checkRect.gRect, GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBorder));
+		renderer.RenderRect(m_checkRect.gRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::CheckBoxCheckRectBorder).ToSDLColor(), false);
+		//renderer.ClearClipRect();
+		renderer.ClearRenderClipRect();
 
 		//draw text label
 		m_textLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::CheckBoxForeground));

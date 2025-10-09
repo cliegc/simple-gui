@@ -10,22 +10,72 @@
 
 
 namespace SimpleGui {
-    struct RenderLineCommandData;
-    struct RenderRectCommandData;
-    struct RenderTriangleCommandData;
-    struct RenderGeometryCommandData;
-    struct RenderCircleCommandData;
-    struct RenderTextureCommandData;
-    struct RenderTextCommandData;
+    struct RenderLineCommandData final {
+        SDL_FPoint start;
+        SDL_FPoint end;
+    };
+
+    struct RenderLinesCommandData final {
+        std::vector<SDL_FPoint> points;
+    };
+
+    struct RenderRectCommandData final {
+        SDL_FRect rect;
+        bool fill;
+    };
+
+    struct RenderRectsCommandData final {
+        std::vector<SDL_FRect> rects;
+        bool fill;
+    };
+
+    struct RenderTriangleCommandData final {
+        SDL_FPoint p1;
+        SDL_FPoint p2;
+        SDL_FPoint p3;
+        bool fill;
+    };
+
+    //struct RenderGeometryCommandData {
+
+    //};
+
+    struct RenderCircleCommandData final {
+        SDL_FPoint center;
+        float radius;
+        bool fill;
+    };
+
+    struct RenderTextureCommandData final {
+        SDL_Texture* texture;
+        SDL_FRect srcRect;
+        SDL_FRect dstRect;
+        float angle;
+        SDL_FPoint center;
+        SDL_FlipMode mode;
+    };
+
+    struct RenderTextCommandData final {
+        TTF_Text* text;
+        SDL_FPoint pos;
+    };
+
+    struct RenderClipCommandData final {
+        SDL_Rect rect;
+    };
 
     struct RenderCommand final {
         std::variant<RenderLineCommandData,
+            RenderLinesCommandData,
             RenderRectCommandData,
+            RenderRectsCommandData,
             RenderTriangleCommandData,
-            RenderGeometryCommandData,
+            //RenderGeometryCommandData,
             RenderCircleCommandData,
             RenderTextureCommandData,
-            RenderTextCommandData> data;
+            RenderTextCommandData,
+            RenderClipCommandData> data;
+        SDL_Color color;
     };
 
 
@@ -40,11 +90,26 @@ namespace SimpleGui {
         Renderer& operator=(Renderer&&) = delete;
 
         void SetClearColor(const Color& color);
-        void Clear();
-        void Present();
+        //void Clear();
+        //void Present();
 
         void SetClipRect(const Rect& rect) const;
         void ClearClipRect() const;
+
+        //void AddRenderClipCommand(const Rect& rect);
+        //void AddRenderLineCommand()
+
+        void SetRenderClipRect(const SDL_Rect& rect);
+        void ClearRenderClipRect();
+
+        void RenderLine(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_Color& color);
+        void RenderLines();
+        void RenderRect(const SDL_FRect& rect, const SDL_Color& color, bool fill);
+        void RenderRects();
+        void RenderTriangle(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_FPoint& p3, const SDL_Color& color, bool fill);
+        void RenderCircle(const SDL_FPoint& center, float radius, const SDL_Color& color, bool fill);
+        void RenderTexture(SDL_Texture* texture, const SDL_FRect& srcRect, const SDL_FRect& dstRect, float angle, const SDL_FPoint center, SDL_FlipMode mode);
+        void RenderText(TTF_Text* text, const SDL_FPoint& pos, const SDL_Color& color);
 
         void DrawLine(const Vec2& p1, const Vec2& p2, const Color& color) const;
         void DrawRect(const Rect& rect, const Color& color) const;
@@ -78,11 +143,22 @@ namespace SimpleGui {
         inline SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
         inline TTF_TextEngine& GetTTFTextEngine() const { return *m_textEngine; }
 
+        inline bool IsTopRender() const { return m_topRender; }
+        inline void SetTopRender(bool top) { m_topRender = top; }
+
+        void Render();
+
     private:
         SDL_Renderer* m_renderer;
         TTF_TextEngine* m_textEngine;
         Color m_clearColor;
+        bool m_topRender;
+
+        std::queue<RenderCommand> m_renderQueue;
+        std::queue<RenderCommand> m_topRenderQueue;
        
         void SetRenderColor(const Color& color) const;
+        void AddRenderCommand(RenderCommand&& cmd);
+        void ExecuteRenderQueue(std::queue<RenderCommand>& queue);
     };
 }

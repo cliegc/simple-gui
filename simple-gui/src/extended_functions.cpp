@@ -20,7 +20,7 @@ namespace SimpleGui {
 		}
 	}
 
-	void ExtendedFunctionsManager::Render(const Renderer& renderer) {
+	void ExtendedFunctionsManager::Render(Renderer& renderer) {
 		for (auto& item : m_functions) {
 			item.second->Render(renderer);
 		}

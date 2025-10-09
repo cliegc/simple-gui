@@ -19,7 +19,7 @@ namespace SimpleGui {
 
 		virtual bool HandleEvent(Event*) override;
 		virtual void Update() override;
-		virtual void Render(const Renderer&) override;
+		virtual void Render(Renderer&) override;
 
 	public:
 		Signal<> clicked;
