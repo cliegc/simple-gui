@@ -2,12 +2,33 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
+#include <variant>
+#include <queue>
 #include "math.hpp"
 #include "texture.hpp"
 #include "font.hpp"
 
 
 namespace SimpleGui {
+    struct RenderLineCommandData;
+    struct RenderRectCommandData;
+    struct RenderTriangleCommandData;
+    struct RenderGeometryCommandData;
+    struct RenderCircleCommandData;
+    struct RenderTextureCommandData;
+    struct RenderTextCommandData;
+
+    struct RenderCommand final {
+        std::variant<RenderLineCommandData,
+            RenderRectCommandData,
+            RenderTriangleCommandData,
+            RenderGeometryCommandData,
+            RenderCircleCommandData,
+            RenderTextureCommandData,
+            RenderTextCommandData> data;
+    };
+
+
     class Renderer final {
     public:
         Renderer(SDL_Window* window);
