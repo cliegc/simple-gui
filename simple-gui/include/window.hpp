@@ -33,30 +33,30 @@ namespace SimpleGui {
 		Window& operator=(Window&&) = delete;
 
 		std::string GetTitle() const;
-		void SetTitle(std::string_view title);
+		void SetTitle(std::string_view title) const;
 
-		void SetIcon(std::string_view path);
+		void SetIcon(std::string_view path) const;
 
 		Vec2 GetPosition() const;
-		void SetPosition(int x, int y);
+		void SetPosition(int x, int y) const;
 
 		Vec2 GetSize() const;
-		void SetSize(int w, int h);
+		void SetSize(int w, int h) const;
 
 		bool IsResizable() const;
-		void SetResizable(bool resizable);
+		void SetResizable(bool resizable) const;
 
 		bool IsAllwaysOnTop() const;
-		void SetAllwaysOnTop(bool top);
+		void SetAllwaysOnTop(bool top) const;
 
 		bool IsFullScreen() const;
-		void SetFullScreen(bool full);
+		void SetFullScreen(bool full) const;
 
 		bool IsMaximized() const;
-		void ToggleMaximize();
+		void ToggleMaximize() const;
 
 		bool IsMinimized() const;
-		void ToggleMinimize();
+		void ToggleMinimize() const;
 
 		WindowState GetState() const;
 		void SetState(WindowState state);
@@ -64,29 +64,29 @@ namespace SimpleGui {
 		WindowID GetID() const;
 
 		bool IsEnabledVsync() const;
-		bool EnableVsync(bool enable);
+		bool EnableVsync(bool enable) const;
 
 		Font& GetFont() const;
 		void SetFont(std::string_view path, float ptsize);
 
 		Style& GetCurrentStyle() const;
-		std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
-		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
-		bool UnregisterStyle(const std::string& name);
-		void SwitchStyle(const std::string& name);
-		void SetStyleFollowSystem();
+		std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name) const;
+		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style) const;
+		bool UnregisterStyle(const std::string& name) const;
+		void SwitchStyle(const std::string& name) const;
+		void SetStyleFollowSystem() const;
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args) {
 			return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
 		}
 
-		inline RootComponent& GetRootComponent() const { return *m_rootCmp; }
+		RootComponent& GetRootComponent() const { return *m_rootCmp; }
 
-		inline SDL_Window& GetSDLWindow() const { return *m_window; }
-		inline SDL_Renderer& GetSDLRenderer() const { return m_renderer->GetSDLRenderer(); }
-		inline TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
-		inline Renderer& GetRenderer() const { return *m_renderer; }
+		SDL_Window& GetSDLWindow() const { return *m_window; }
+		SDL_Renderer& GetSDLRenderer() const { return m_renderer->GetSDLRenderer(); }
+		TTF_TextEngine& GetTTFTextEngine() const { return m_renderer->GetTTFTextEngine(); }
+		Renderer& GetRenderer() const { return *m_renderer; }
 
 	private:
 		friend class GuiManager;
@@ -99,7 +99,7 @@ namespace SimpleGui {
 		std::unique_ptr<RootComponent> m_rootCmp;
 
 	private:
-		void HandleEvent(Event* event);
-		void UpdateAndRender();
+		void HandleEvent(Event* event) const;
+		void UpdateAndRender() const;
 	};
 }

@@ -3,11 +3,11 @@
 
 
 namespace SimpleGui {
-	const Vec2 H_HANDLER_SIZE = Vec2(8, 15);
-	const Vec2 V_HANDLER_SIZE = Vec2(15, 8);
+	const auto H_HANDLER_SIZE = Vec2(8, 15);
+	const auto V_HANDLER_SIZE = Vec2(15, 8);
 
 	Slider::Slider(Direction direction, float value, float minValue, float maxValue) : Range(value, minValue, maxValue) {
-		m_editabel = true;
+		m_editable = true;
 		m_scrollable = true;
 		SetDirection(direction);
 	}
@@ -91,7 +91,7 @@ namespace SimpleGui {
 	}
 
 	bool Slider::HandleDragHandler(Event* event) {
-		if (!m_editabel) return false;
+		if (!m_editable) return false;
 
 		Vec2 mousePos = SG_GuiManager.GetMousePosition();
 		m_mouseState = MouseState::Normal;
@@ -151,7 +151,7 @@ namespace SimpleGui {
 	}
 
 	bool Slider::HandleMouseClickedToChangeValue(Event* event) {
-		if (!m_editabel) return false;
+		if (!m_editable) return false;
 
 		if (auto ev = event->Convert<MouseButtonEvent>();
 			ev && ev->IsPressed(MouseButton::Left)) {
@@ -173,7 +173,7 @@ namespace SimpleGui {
 	}
 
 	bool Slider::HandleMouseWheelToChangeValue(Event* event) {
-		if (!m_editabel || !m_scrollable) return false;
+		if (!m_editable || !m_scrollable) return false;
 
 		if (auto ev = event->Convert<MouseWheelEvent>();
 			ev && m_visibleGRect.ContainPoint(ev->GetPosition())) {
@@ -191,7 +191,7 @@ namespace SimpleGui {
 	}
 
 	bool Slider::IsCircleContainPoint(const Vec2& center, float radius, const Vec2& point) {
-		float l = center.DistanceSquard(point);
+		float l = center.DistanceSquared(point);
 		float r = radius * radius;
 		return l < r || IsEqualApprox(l, r);
 	}

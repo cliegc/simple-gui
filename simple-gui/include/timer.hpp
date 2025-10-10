@@ -11,28 +11,28 @@ namespace SimpleGui {
 		Signal<> timeout;
 
 		Timer() = default;
-		Timer(float interval);
+		explicit Timer(float interval);
 		~Timer() = default;
 
-		inline float GetInterval() const { return m_interval; }
-		inline void SetInterval(float interval) { m_interval = interval; }
+		float GetInterval() const { return m_interval; }
+		void SetInterval(float interval) { m_interval = interval; }
 
-		inline bool IsOneShot() const { return m_oneShot; }
-		inline void SetOneShot(bool val) { m_oneShot = val;}
+		bool IsOneShot() const { return m_oneShot; }
+		void SetOneShot(bool val) { m_oneShot = val;}
 
-		inline bool IsPaused() const { return m_paused; }
-		inline void SetPaused(bool val) { m_paused = val; }
+		bool IsPaused() const { return m_paused; }
+		void SetPaused(bool val) { m_paused = val; }
 
 		void Start();
 		void Update();
 		
 	private:
-		float m_interval;
-		bool m_oneShot;
-		bool m_paused;
-		bool m_kill;
-		size_t m_count;
-		Uint64 m_lastTime;
+		float m_interval{};
+		bool m_oneShot{};
+		bool m_paused{};
+		bool m_kill{};
+		size_t m_count{};
+		Uint64 m_lastTime{};
 
 		void Kill();
 	};

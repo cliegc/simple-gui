@@ -1,5 +1,6 @@
 #include "component/base_component.hpp"
 #include <algorithm>
+#include <memory>
 #include "gui_manager.hpp"
 
 
@@ -67,7 +68,7 @@ namespace SimpleGui {
 
 	Rect BaseComponent::CalcChildrenBoundaryGlobalRect(BaseComponent* cmp) const {
 		// 在Update中准备工作之后调用，不需要考虑m_childCaches
-		if (cmp->GetChildrenCount() == 0) return Rect();
+		if (cmp->GetChildrenCount() == 0) return {};
 		Rect rect = cmp->GetChildAt(0)->GetGlobalRect();
 		Vec2 bottomRight = rect.BottomRight();
 		for (auto& child : cmp->m_children) {
@@ -113,22 +114,13 @@ namespace SimpleGui {
 
 		PreparationOfUpdateChildren();
 
-		//if (!m_lastGRect.position.IsEqualApprox(GetGlobalPosition()) ||
-		//	!m_lastGRect.size.IsEqualApprox(m_size)) {
-		//	SDL_Log("component rect changed\n");
-		//	if (m_parent) {
-		//		m_parent->m_childrenBoundaryGRect = CalcChildrenBoundaryGlobalRect(m_parent);
-		//	}
-		//	m_lastGRect = GetGlobalRect();
-		//}
-
 		// calc visible size
 		CalcVisibleGlobalRect(m_parent, this);
 
 		// update extended functions
 		m_extFunctionsManager->Update();
 
-		// update child, and size configs of chid
+		// update child, and size configs of child
 		for (auto& child : m_children) {
 			UpdateChildSizeConfigs(child.get());
 			child->Update();
@@ -153,7 +145,7 @@ namespace SimpleGui {
 
 	Rect BaseComponent::GetContentGlobalRect() const {
 		Vec2 pos = GetGlobalPosition() + GetLocalCoordinateOriginOffset();
-		return Rect(pos, GetContentSize());
+		return {pos, GetContentSize()};
 	}
 
 	Vec2 BaseComponent::GetGlobalPosition() const {
@@ -300,10 +292,10 @@ namespace SimpleGui {
 	}
 
 	std::unique_ptr<BaseComponent> BaseComponent::RemoveChild(BaseComponent* cmp) {
-		auto it = std::find_if(m_children.begin(), m_children.end(),
-			[cmp](auto& child) {
-				return child.get() == cmp;
-			});
+		auto it = std::ranges::find_if(m_children,
+		                               [cmp](auto& child) {
+			                               return child.get() == cmp;
+		                               });
 
 		if (it != m_children.end()) {
 			std::unique_ptr<BaseComponent> child = std::move(*it);
@@ -318,10 +310,10 @@ namespace SimpleGui {
 	}
 
 	std::unique_ptr<BaseComponent> BaseComponent::RemoveChildDeferred(BaseComponent* cmp) {
-		auto it = std::find_if(m_children.begin(), m_children.end(),
-			[cmp](auto& child) {
-				return child.get() == cmp;
-			});
+		auto it = std::ranges::find_if(m_children,
+		                               [cmp](auto& child) {
+			                               return child.get() == cmp;
+		                               });
 		 
 		if (it != m_children.end()) {
 			std::unique_ptr<BaseComponent> child = std::move(*it);
@@ -336,23 +328,23 @@ namespace SimpleGui {
 	}
 
 	size_t BaseComponent::GetChildrenCount() const {
-		auto count1 = std::count_if(m_children.begin(), m_children.end(),
-			[](auto& child) {
-				return child != nullptr;
-			});
+		auto count1 = std::ranges::count_if(m_children,
+		                                    [](auto& child) {
+			                                    return child != nullptr;
+		                                    });
 		return count1 + m_childCaches.size();
 	}
 
 	bool BaseComponent::HasChild(BaseComponent* cmp) {
-		auto it = std::find_if(m_children.begin(), m_children.end(), 
-			[cmp](auto& child) {
-				return child.get() == cmp;
-			});
+		auto it = std::ranges::find_if(m_children,
+		                               [cmp](auto& child) {
+			                               return child.get() == cmp;
+		                               });
 
-		auto cachesIt = std::find_if(m_childCaches.begin(), m_childCaches.end(),
-			[cmp](auto& child) {
-				return child.get() == cmp;
-			});
+		auto cachesIt = std::ranges::find_if(m_childCaches,
+		                                     [cmp](auto& child) {
+			                                     return child.get() == cmp;
+		                                     });
 
 		return it != m_children.end() || cachesIt != m_childCaches.end();
 	}
@@ -366,7 +358,7 @@ namespace SimpleGui {
 		}
 	}
 
-	void BaseComponent::ClearAllChildrenDeferred() {
+	void BaseComponent::ClearAllChildrenDeferred() const {
 		for (auto& child : m_children) {
 			child->m_needRemove = true;
 		}
@@ -376,7 +368,7 @@ namespace SimpleGui {
 		}
 	}
 
-	void BaseComponent::ForEachChild(std::function<void(BaseComponent*)> fn) {
+	void BaseComponent::ForEachChild(const std::function<void(BaseComponent*)>& fn) {
 		for (auto& child : m_children) {
 			if (!child || child->m_needRemove) continue;
 			fn(child.get());
@@ -391,13 +383,13 @@ namespace SimpleGui {
 	Font& BaseComponent::GetFont() {
 		if (!m_font || m_font->IsNull()) {
 			const Font& font = m_window ? m_window->GetFont() : SG_GuiManager.GetDefaultFont();
-			m_font.reset(new Font(font.GetPath(), font.GetSize()));
+			m_font = std::make_unique<Font>(font.GetPath(), font.GetSize());
 		}
 		return *m_font;
 	}
 
 	void BaseComponent::SetFont(std::string_view path, int size) {
-		m_font.reset(new Font(path, size));
+		m_font = std::make_unique<Font>(path, size);
 	}
 
 	Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {

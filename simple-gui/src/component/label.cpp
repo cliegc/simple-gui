@@ -3,7 +3,7 @@
 
 
 namespace SimpleGui {
-	Label::Label(std::string_view text) : BaseComponent() {
+	Label::Label(std::string_view text) {
 		//Init(text);
 		m_text = text;
 		m_wrapEnabled = false;
@@ -39,7 +39,7 @@ namespace SimpleGui {
 		SG_CMP_RENDER_CONDITIONS;
 
 		renderer.SetRenderClipRect(m_visibleGRect);
-		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LabelBackgound), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LabelBackground), true);
 		renderer.RenderText(m_ttfText.get(), m_textRect.position, GetThemeColor(ThemeColorFlags::LabelForeground));
 		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::LabelBorder), false);
 		renderer.ClearRenderClipRect();
@@ -142,7 +142,7 @@ namespace SimpleGui {
 		return TTF_GetTextDirection(m_ttfText.get());
 	}
 
-	void Label::SetTextDirection(TTF_Direction direction) {
+	void Label::SetTextDirection(TTF_Direction direction) const {
 		TTF_SetTextDirection(m_ttfText.get(), direction);
 	}
 }

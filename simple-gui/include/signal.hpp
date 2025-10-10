@@ -10,7 +10,6 @@ namespace SimpleGui {
     public:
         using SlotType = std::function<void(Args...)>;
 
-    public:
         bool IsConnect(const std::string& name) {
             return m_slots.find(name) != m_slots.end();
         }

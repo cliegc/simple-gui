@@ -6,18 +6,18 @@ namespace SimpleGui {
 	class ScrollPanel final : public BaseComponent {
 	public:
 		ScrollPanel();
-		~ScrollPanel() = default;
+		~ScrollPanel() override = default;
 
-		inline void SetHScrollBarVisible(bool visible) const { m_hScrollBar->SetVisible(visible); }
-		inline void SetVScrollBarVisible(bool visible) const { m_vScrollBar->SetVisible(visible); }
+		void SetHScrollBarVisible(bool visible) const { m_hScrollBar->SetVisible(visible); }
+		void SetVScrollBarVisible(bool visible) const { m_vScrollBar->SetVisible(visible); }
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
 	protected:
-		virtual void EnteredComponentTree() override;
-		inline virtual Vec2 GetContentSize() const override;
+		void EnteredComponentTree() override;
+		inline Vec2 GetContentSize() const override;
 
 	private:
 		const int SCROLL_BAR_THICKNESS = 15;

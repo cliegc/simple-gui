@@ -9,7 +9,7 @@
 
 using namespace SimpleGui;
 
-class DisplayFPSForLabel : public ExtendedFunctions {
+class DisplayFPSForLabel final : public ExtendedFunctions {
 protected:
 	virtual void Update() override {
 		auto lbl = (Label*)m_target;
@@ -17,7 +17,7 @@ protected:
 	}
 };
 
-class DisplayDeltaForLabel : public ExtendedFunctions {
+class DisplayDeltaForLabel final : public ExtendedFunctions {
 protected:
 	virtual void Update() override {
 		auto lbl = (Label*)m_target;
@@ -25,7 +25,7 @@ protected:
 	}
 };
 
-class TestFrameRateControllerFunctions : public ExtendedFunctions {
+class TestFrameRateControllerFunctions final : public ExtendedFunctions {
 protected:
 	Vec2 circlePos{ 0.f, 100.f };
 	int direction = 1;
@@ -50,7 +50,7 @@ protected:
 	}
 };
 
-class DrawBackgroundFunctions : public ExtendedFunctions {
+class DrawBackgroundFunctions final : public ExtendedFunctions {
 public:
 	DrawBackgroundFunctions(std::shared_ptr<Texture> texture) {
 		m_texture = texture;
@@ -150,7 +150,7 @@ static void TestTimer() {
 				SDL_randf() * 255,
 				SDL_randf() * 255
 			);
-			dp->CustomThemeColor(ThemeColorFlags::DraggablePanelBackround, color);
+			dp->CustomThemeColor(ThemeColorFlags::DraggablePanelBackground, color);
 		});
 
 	btn->clicked.Connect("on_clicked",
@@ -306,10 +306,10 @@ static void TestCheckBox() {
 
 	auto group = CheckBoxGroup::Create();
 	group->SetUniqueCheck(true);
-	checkBox1->SetGoup(group);
-	checkBox2->SetGoup(group);
-	checkBox3->SetGoup(group);
-	checkBox4->SetGoup(group);
+	checkBox1->SetGroup(group);
+	checkBox2->SetGroup(group);
+	checkBox3->SetGroup(group);
+	checkBox4->SetGroup(group);
 
 	group->checkStateChanged.Connect("on_check_state_changed",
 		[](CheckBox* box) {
@@ -374,11 +374,11 @@ static void TestTextureRect() {
 
 int main(int argc, char** argv) {
 	//GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\simhei.ttf");
-	GuiManager::Init(argc, argv, "C:\\WINDOWS\\Fonts\\msyh.ttc");
+	GuiManager::Init(argc, argv, R"(C:\WINDOWS\Fonts\msyh.ttc)");
 	Window& win = SG_GuiManager.GetWindow("win1-60fps", 640, 480);
 	//win.SwitchStyle(StyleManager::LightStyle);
 
-	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
+	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture(R"(C:\Users\endif\Desktop\jinzi.png)"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
 	//TestScrollBar();
@@ -394,12 +394,12 @@ int main(int argc, char** argv) {
 	auto fpsLbl = win.AddComponent<Label>("");
 	fpsLbl->AddExtendedFunctions<DisplayFPSForLabel>();
 	fpsLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::GREEN);
-	fpsLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0,0,0,50));
+	fpsLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color(0,0,0,50));
 
 	auto lbl2 = win.AddComponent<Label>("");
 	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
 	lbl2->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::GREEN);
-	lbl2->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0, 0, 0, 50));
+	lbl2->CustomThemeColor(ThemeColorFlags::LabelBackground, Color(0, 0, 0, 50));
 	lbl2->SetPositionY(100);
 
 	//win.EnableVsync(true);

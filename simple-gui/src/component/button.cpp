@@ -4,7 +4,7 @@
 
 
 namespace SimpleGui {
-	Button::Button(std::string_view text) : BaseComponent() {
+	Button::Button(std::string_view text) {
 		m_lbl = std::make_unique<Label>(text);
 	}
 

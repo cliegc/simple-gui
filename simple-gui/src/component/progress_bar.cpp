@@ -7,8 +7,8 @@ namespace SimpleGui {
 	ProgressBar::ProgressBar(float value, float minValue, float maxValue): Range(value, minValue, maxValue) {
 		m_progressLbl = std::make_unique<Label>("");
 
-		SetMinValue(minValue);
-		SetMaxValue(maxValue);
+		Range::SetMinValue(minValue);
+		Range::SetMaxValue(maxValue);
 		SetValue(value);
 
 		m_indeterminateProgressData.delta = 0.f;
@@ -113,7 +113,7 @@ namespace SimpleGui {
 	}
 
 	void ProgressBar::UpdateIndeterminateProgressGlobalRect(const Rect& contentGRect) {
-		m_indeterminateProgressData.delta += SG_GuiManager.GetDelta() * m_indeterminateProgressData.speed;
+		m_indeterminateProgressData.delta += static_cast<float>(SG_GuiManager.GetDelta()) * m_indeterminateProgressData.speed;
 
 		switch (m_fillMode) {
 		case ProgressFillMode::LeftToRight:

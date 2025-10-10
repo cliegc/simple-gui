@@ -6,54 +6,54 @@
 namespace SimpleGui {
 	class DraggablePanel final : public BaseComponent {
 	public:
-		DraggablePanel(std::string_view title = "draggable panel");
-		~DraggablePanel() = default;
+		explicit DraggablePanel(std::string_view title = "draggable panel");
+		~DraggablePanel() override = default;
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
-		inline std::string GetTitle() const { return m_titleLbl->GetText(); }
-		inline void SetTitle(std::string_view title) { m_titleLbl->SetText(title); }
+		std::string GetTitle() const { return m_titleLbl->GetText(); }
+		void SetTitle(std::string_view title) const { m_titleLbl->SetText(title); }
 
-		inline bool IsHandleVisible() const { return m_handleVisible; }
-		inline void SetHandleVisible(bool visible) { m_handleVisible = visible; }
+		bool IsHandleVisible() const { return m_handleVisible; }
+		void SetHandleVisible(bool visible) { m_handleVisible = visible; }
 
-		inline bool IsResizable() const { return m_resizable; }
-		inline void SetResizable(bool resizable) { m_resizable = resizable; }
+		bool IsResizable() const { return m_resizable; }
+		void SetResizable(bool resizable) { m_resizable = resizable; }
 
-		inline bool IsGlobalDragEnable() const { return m_globalDragEnable; }
-		inline void SetGlobalDragEnable(bool enable) { m_globalDragEnable = enable; }
+		bool IsGlobalDragEnable() const { return m_globalDragEnable; }
+		void SetGlobalDragEnable(bool enable) { m_globalDragEnable = enable; }
 
-		inline bool IsClampRanageFollowParentContent() const { return m_isClampRangeFollowParent; }
-		inline void SetClampRangeFollowParentContent(bool enable) { m_isClampRangeFollowParent = enable; }
+		bool IsClampRangeFollowParentContent() const { return m_isClampRangeFollowParent; }
+		void SetClampRangeFollowParentContent(bool enable) { m_isClampRangeFollowParent = enable; }
 
-		virtual void SetFont(std::unique_ptr<Font> font) override;
-		virtual void SetFont(std::string_view path, int size) override;
+		void SetFont(std::unique_ptr<Font> font) override;
+		void SetFont(std::string_view path, int size) override;
 
 	protected:
-		virtual void EnteredComponentTree() override;
-		inline virtual Vec2 GetLocalCoordinateOriginOffset() const override;
-		inline virtual Vec2 GetContentSize() const override;
+		void EnteredComponentTree() override;
+		inline Vec2 GetLocalCoordinateOriginOffset() const override;
+		inline Vec2 GetContentSize() const override;
 
 	private:
 		struct DragData {
 			Rect dragGRect;
 			Vec2 startMousePos;
 			Vec2 startData;
-			bool dragging;
+			bool dragging{};
 		};
 
 		struct FoldData {
 			Rect toggleGRect;
 			Vec2 unfoldSize;
-			bool isFolded;
+			bool isFolded{};
 		};
 
 	private:
 		std::unique_ptr<Label> m_titleLbl;
 		UniqueCursorPtr m_resizeCursor;
-		float m_handleThickness;
+		float m_handleThickness{};
 		float m_resizeBlockWidth;
 		bool m_handleVisible;
 		bool m_resizable;

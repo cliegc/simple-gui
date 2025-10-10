@@ -68,7 +68,7 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::Border] = Color(0x7f8c8dff);
 		style->colors[ThemeColorFlags::Disabled] = Color(0x95a5a664);
 
-		style->colors[ThemeColorFlags::LabelBackgound] = Color::TRANSPARENT;
+		style->colors[ThemeColorFlags::LabelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::LabelForeground] = Color::BLACK;
 		style->colors[ThemeColorFlags::LabelBorder] = Color::TRANSPARENT;
 
@@ -78,13 +78,13 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ButtonForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::ButtonBorder] = Color(0x7f8c8dff);
 
-		style->colors[ThemeColorFlags::DraggablePanelBackround] = Color(0xffffff64);
+		style->colors[ThemeColorFlags::DraggablePanelBackground] = Color(0xffffff64);
 		style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x7f8c8dff);
 		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x3498dbff);
 		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
-		style->colors[ThemeColorFlags::TextureRectBackround] = Color(0xffffff64);
+		style->colors[ThemeColorFlags::TextureRectBackground] = Color(0xffffff64);
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x7f8c8dff);
 
 
@@ -97,7 +97,7 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::Foreground] = Color::WHITE;
 		style->colors[ThemeColorFlags::Border] = Color(0x3d444dff);
 
-		style->colors[ThemeColorFlags::LabelBackgound] = Color::TRANSPARENT;
+		style->colors[ThemeColorFlags::LabelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::LabelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::LabelBorder] = Color::TRANSPARENT;
 
@@ -107,13 +107,13 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ButtonForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::ButtonBorder] = Color(0x3d444dff);
 
-		style->colors[ThemeColorFlags::DraggablePanelBackround] = Color(47, 47, 47, 100);
+		style->colors[ThemeColorFlags::DraggablePanelBackground] = Color(47, 47, 47, 100);
 		style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x3d444dff);
 		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x34495eff);
 		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
-		style->colors[ThemeColorFlags::TextureRectBackround] = Color(47, 47, 47, 100);
+		style->colors[ThemeColorFlags::TextureRectBackground] = Color(47, 47, 47, 100);
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x3d444dff);
 
 		style->colors[ThemeColorFlags::ScrollbarSlot_H] = Color(47, 47, 47);

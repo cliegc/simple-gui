@@ -1,5 +1,5 @@
 #include "renderer.hpp"
-#include <SDL3/SDL_dialog.h>
+#include <SDL3_image/SDL_image.h>
 #include "deleter.hpp"
 
 

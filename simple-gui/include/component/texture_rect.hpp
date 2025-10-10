@@ -7,11 +7,11 @@
 namespace SimpleGui {
 	class TextureRect final : public BaseComponent {
 	public:
-		TextureRect(std::shared_ptr<Texture> texture = nullptr);
-		virtual ~TextureRect() = default;
+		explicit TextureRect(const std::shared_ptr<Texture> &texture = nullptr);
+		~TextureRect() override = default;
 
 		std::shared_ptr<Texture> GetTexture() const;
-		void SetTexture(std::shared_ptr<Texture> texture);
+		void SetTexture(const std::shared_ptr<Texture> &texture);
 
 		TextureStretchMode GetTextureStretchMode() const;
 		void SetTextureStretchMode(TextureStretchMode mode);
@@ -23,8 +23,8 @@ namespace SimpleGui {
 		bool IsFlipV() const;
 		void SetFlipV(bool flip);
 
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
 	private:
 		std::shared_ptr<Texture> m_texture;
@@ -35,8 +35,8 @@ namespace SimpleGui {
 		Rect m_textureGRect;
 
 	private:
-		void SetupTipLabel();
+		void SetupTipLabel() const;
 		void UpdateTextureStretchMode();
-		void RenderTexture(SDL_Renderer* renderer);
+		void RenderTexture(SDL_Renderer* renderer) const;
 	};
 }

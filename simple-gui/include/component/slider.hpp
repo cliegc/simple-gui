@@ -6,28 +6,28 @@
 namespace SimpleGui {
 	class Slider final : public BaseComponent, public Range {
 	public:
-		Slider(Direction direction = Direction::Horizontal, float value = 0, float minValue = 0, float maxValue = 100);
-		~Slider() = default;
+		explicit Slider(Direction direction = Direction::Horizontal, float value = 0, float minValue = 0, float maxValue = 100);
+		~Slider() override = default;
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
-		inline Direction GetDirection() const { return m_direction; }
+		Direction GetDirection() const { return m_direction; }
 		void SetDirection(Direction direction);
 
-		inline bool IsEditable() const { return m_editabel; }
-		inline void SetEditbale(bool value) { m_editabel = value; }
+		bool IsEditable() const { return m_editable; }
+		void SetEditable(bool value) { m_editable = value; }
 
-		inline bool IsScrollable() const { return m_scrollable; }
-		inline void SetScrollable(bool value) { m_scrollable = value; }
+		bool IsScrollable() const { return m_scrollable; }
+		void SetScrollable(bool value) { m_scrollable = value; }
 
 	private:
 		struct DragData {
 			Vec2 mouseStartPos;
 			Vec2 handleStartPos;
-			bool canDrag;
-			bool dragging;
+			bool canDrag{};
+			bool dragging{};
 		};
 
 	private:
@@ -37,7 +37,7 @@ namespace SimpleGui {
 		ComponentElementRect m_handlerRect{};
 		DragData m_dragData{};
 		MouseState m_mouseState{};
-		bool m_editabel{};
+		bool m_editable{};
 		bool m_scrollable{};
 
 	private:

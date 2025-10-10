@@ -6,8 +6,8 @@
 namespace SimpleGui {
 	class Label final : public BaseComponent {
 	public:
-		Label(std::string_view text);
-		~Label() = default;
+		explicit Label(std::string_view text);
+		~Label() override = default;
 
 		std::string GetText() const;
 		void SetText(std::string_view text);
@@ -19,19 +19,19 @@ namespace SimpleGui {
 		void SetTextAlignmentV(TextAlignment alignmentV);
 
 		TTF_Direction GetTextDirection() const;
-		void SetTextDirection(TTF_Direction direction);
+		void SetTextDirection(TTF_Direction direction) const;
 
-		inline bool IsWrapEnabled() const { return m_wrapEnabled; }
-		inline void SetWrapEnabled(bool enable) { m_wrapEnabled = enable; }
+		bool IsWrapEnabled() const { return m_wrapEnabled; }
+		void SetWrapEnabled(bool enable) { m_wrapEnabled = enable; }
 
-		inline bool IsSizeFollowText() const {return m_sizeFollowTextEnabled; }
-		inline void SetSizeFollowTextEnabled(bool enable) { m_sizeFollowTextEnabled = enable; }
+		bool IsSizeFollowText() const {return m_sizeFollowTextEnabled; }
+		void SetSizeFollowTextEnabled(bool enable) { m_sizeFollowTextEnabled = enable; }
 
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
 	protected:
-		virtual void EnteredComponentTree() override;
+		void EnteredComponentTree() override;
 
 	private:
 		std::string m_text;

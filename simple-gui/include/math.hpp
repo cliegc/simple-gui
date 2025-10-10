@@ -59,7 +59,7 @@ namespace SimpleGui {
         constexpr float LengthSquared() const;
         float Length() const;
 
-        float DistanceSquard(const Vec2&) const;
+        float DistanceSquared(const Vec2&) const;
         float Distance(const Vec2&) const;
 
         SDL_FPoint ToSDLFPoint() const;
@@ -106,7 +106,7 @@ namespace SimpleGui {
         inline constexpr float Left() const { return position.x; }
         inline constexpr float Top() const { return position.y; }
         inline constexpr float Right() const { return position.x + size.w; }
-        inline constexpr float Bottom() const { return position.y + size.h; }
+        [[nodiscard]] inline constexpr float Bottom() const { return position.y + size.h; }
 
         bool IsIntersect(const Rect& rect) const;
         Rect GetIntersection(const Rect& rect) const;

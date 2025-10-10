@@ -78,8 +78,8 @@ namespace SimpleGui {
 		m_vScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_vScrollBar->GetGlobalRect());
 		m_vScrollBar->UpdateVerticalSlider(boundaryGRect, contentGRect);
 
-		m_hScrollBar->m_visible = IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w) ? false : true;
-		m_vScrollBar->m_visible = IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h) ? false : true;
+		m_hScrollBar->m_visible = !(IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w));
+		m_vScrollBar->m_visible = !(IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h));
 
 		if (!m_hScrollBar->m_visible && m_hScrollBar->m_dragSliderData.canDragging) m_hScrollBar->m_dragSliderData.canDragging = false;
 		if (!m_vScrollBar->m_visible && m_vScrollBar->m_dragSliderData.canDragging) m_vScrollBar->m_dragSliderData.canDragging = false;

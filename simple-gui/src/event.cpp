@@ -16,25 +16,25 @@ namespace SimpleGui {
 	Event* EventManager::ConvertEvent(const SDL_Event& event) const {
 		switch (event.type) {
 		case SDL_EVENT_QUIT: {
-			auto ev = new ApplicationQuitEvent();
+			auto* ev = new ApplicationQuitEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_SHOWN: 
 		case SDL_EVENT_WINDOW_HIDDEN: {
-			auto ev = new WindowShowEvent();
+			auto* ev = new WindowShowEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
-			ev->m_hidden = event.window.type == SDL_EVENT_WINDOW_SHOWN ? false : true;
+			ev->m_hidden = event.window.type != SDL_EVENT_WINDOW_SHOWN;
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_MOVED: {
-			WindowMovedEvent* ev = new WindowMovedEvent();
+			auto* ev = new WindowMovedEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			ev->m_position = Vec2(event.window.data1, event.window.data2);
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_RESIZED: {
-			WindowResizedEvent* ev = new WindowResizedEvent();
+			auto* ev = new WindowResizedEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			ev->m_size = Vec2(event.window.data1, event.window.data2);
 			return ev;
@@ -44,7 +44,7 @@ namespace SimpleGui {
 		case SDL_EVENT_WINDOW_RESTORED:
 		case SDL_EVENT_WINDOW_ENTER_FULLSCREEN:
 		case SDL_EVENT_WINDOW_LEAVE_FULLSCREEN: {
-			WindowStateChangedEvent* ev = new WindowStateChangedEvent();
+			auto* ev = new WindowStateChangedEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			if (event.window.type == SDL_EVENT_WINDOW_MINIMIZED) {
 				ev->m_state = WindowState::Minimized;
@@ -66,31 +66,31 @@ namespace SimpleGui {
 		}
 		case SDL_EVENT_WINDOW_MOUSE_ENTER:
 		case SDL_EVENT_WINDOW_MOUSE_LEAVE: {
-			auto ev = new WindowMouseEvent();
+			auto* ev = new WindowMouseEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			ev->m_isEnter = event.window.type == SDL_EVENT_WINDOW_MOUSE_ENTER ? true : false;
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_FOCUS_GAINED:
 		case SDL_EVENT_WINDOW_FOCUS_LOST: {
-			auto ev = new WindowFocusEvent();
+			auto* ev = new WindowFocusEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			ev->m_isGained = event.window.type == SDL_EVENT_WINDOW_FOCUS_GAINED ? true : false;
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED: {
-			auto ev = new WindowCloseRequestedEvent();
+			auto* ev = new WindowCloseRequestedEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			return ev;
 		}
 		case SDL_EVENT_WINDOW_DESTROYED: {
-			auto ev = new WindowDestroyEvent();
+			auto* ev = new WindowDestroyEvent();
 			ev->Setup(event.window.windowID, event.window.timestamp);
 			return ev;
 		}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		case SDL_EVENT_MOUSE_BUTTON_UP: {
-			auto ev = new MouseButtonEvent();
+			auto* ev = new MouseButtonEvent();
 			ev->Setup(event, *m_window, Vec2(event.button.x, event.button.y));
 			ev->m_pressed = event.button.down;
 			ev->m_doubleClick = event.button.clicks == 2 ? true : false;
@@ -101,14 +101,14 @@ namespace SimpleGui {
 			return ev;
 		}
 		case SDL_EVENT_MOUSE_MOTION: {
-			auto ev = new MouseMotionEvent();
+			auto* ev = new MouseMotionEvent();
 			ev->Setup(event, *m_window, Vec2(event.motion.x, event.motion.y));
 			ev->m_direction.x = event.motion.xrel;
 			ev->m_direction.y = event.motion.yrel;
 			return ev;
 		}
 		case SDL_EVENT_MOUSE_WHEEL: {
-			auto ev = new MouseWheelEvent();
+			auto* ev = new MouseWheelEvent();
 			ev->Setup(event, *m_window, Vec2(event.wheel.mouse_x, event.wheel.mouse_y));
 			ev->m_direction.x = event.wheel.x;
 			ev->m_direction.y = event.wheel.y;
@@ -116,18 +116,18 @@ namespace SimpleGui {
 		}
 		case SDL_EVENT_KEY_DOWN:
 		case SDL_EVENT_KEY_UP: {
-			auto ev = new KeyBoardButtonEvent();
+			auto* ev = new KeyBoardButtonEvent();
 			ev->Setup(event);
 			return ev;
 		}
 		case SDL_EVENT_TEXT_INPUT: {
-			auto ev = new KeyBoardTextInputEvent();
+			auto* ev = new KeyBoardTextInputEvent();
 			ev->Setup(event.text.windowID, event.text.timestamp);
 			ev->m_text = event.text.text;
 			return ev;
 		}
 		case SDL_EVENT_TEXT_EDITING: {
-			auto ev = new KeyBoardTextEditingEvent();
+			auto* ev = new KeyBoardTextEditingEvent();
 			ev->Setup(event.edit.windowID, event.edit.timestamp);
 			ev->m_text = event.edit.text;
 			ev->m_start = event.edit.start;
@@ -137,7 +137,7 @@ namespace SimpleGui {
 		case SDL_EVENT_DROP_FILE:
 		case SDL_EVENT_DROP_TEXT:
 		case SDL_EVENT_DROP_POSITION:{
-			auto ev = new DropEvent();
+			auto* ev = new DropEvent();
 			ev->Setup(event.drop.windowID, event.drop.timestamp);
 			if (event.drop.type == SDL_EVENT_DROP_FILE || event.drop.type == SDL_EVENT_DROP_TEXT) {
 				ev->m_content = event.drop.data;
@@ -151,7 +151,7 @@ namespace SimpleGui {
 		return nullptr;
 	}
 
-	void EventManager::FreeEvent(Event* event) const {
+	void EventManager::FreeEvent(const Event* event) const {
 		delete event;
 	}
 }

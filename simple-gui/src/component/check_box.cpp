@@ -117,7 +117,7 @@ namespace SimpleGui {
 		checkStateChanged.Emit(m_checked);
 	}
 
-	void CheckBox::SetGoup(std::shared_ptr<CheckBoxGroup> group) {
+	void CheckBox::SetGroup(const std::shared_ptr<CheckBoxGroup>& group) {
 		if (group == m_group) return;
 
 		if (m_group) {

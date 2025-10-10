@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <vector>
 #include <array>
 #include <unordered_map>
 #include <optional>
@@ -16,7 +15,7 @@ namespace SimpleGui {
 		Border,
 		Disabled,
 
-		LabelBackgound,
+		LabelBackground,
 		LabelForeground,
 		LabelBorder,
 
@@ -26,10 +25,10 @@ namespace SimpleGui {
 		ButtonForeground,
 		ButtonBorder,
 
-		TextureRectBackround,
+		TextureRectBackground,
 		TextureRectBorder,
 
-		DraggablePanelBackround,
+		DraggablePanelBackground,
 		DraggablePanelForeground,
 		DraggablePanelHandle,
 		DraggablePanelSizeGrip,
@@ -86,10 +85,10 @@ namespace SimpleGui {
 
 
 	struct ThemeColors final {
-		std::array<Color, (size_t)ThemeColorFlags::FlagsTotal>  colors;
+		std::array<Color, static_cast<size_t>(ThemeColorFlags::FlagsTotal)>  colors;
 
 		Color& operator[](ThemeColorFlags index) {
-			return colors[(size_t)index];
+			return colors[static_cast<size_t>(index)];
 		}
 
 		Color& operator[](size_t index) {
@@ -97,7 +96,7 @@ namespace SimpleGui {
 		}
 
 		Color operator[](ThemeColorFlags index) const {
-			return colors[(size_t)index];
+			return colors[static_cast<size_t>(index)];
 		}
 
 		Color operator[](size_t index) const {
@@ -120,7 +119,6 @@ namespace SimpleGui {
 		static const std::string LightStyle;
 		static const std::string DarkStyle;
 
-	public:
 		StyleManager();
 		~StyleManager() = default;
 
@@ -143,7 +141,6 @@ namespace SimpleGui {
 		static std::unique_ptr<Style> CreateLightStyle();
 		static std::unique_ptr<Style> CreateDarkStyle();
 
-	private:
 		std::unordered_map<std::string, std::unique_ptr<Style>> m_styles;
 		Style* m_currStyle;
 	};

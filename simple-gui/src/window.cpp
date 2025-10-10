@@ -1,6 +1,8 @@
 #include "window.hpp"
 #include <SDL3/SDL_dialog.h>
 #include <SDL3_image/SDL_image.h>
+
+#include <memory>
 #include "event.hpp"
 
 
@@ -32,11 +34,11 @@ namespace SimpleGui {
 		return SDL_GetWindowTitle(m_window);
 	}
 
-	void Window::SetTitle(std::string_view title) {
+	void Window::SetTitle(std::string_view title) const {
 		SDL_SetWindowTitle(m_window, title.data());
 	}
 
-	void Window::SetIcon(std::string_view path) {
+	void Window::SetIcon(std::string_view path) const {
 		SDL_Surface* icon = IMG_Load(path.data());
 		SDL_SetWindowIcon(m_window, icon);
 	}
@@ -47,7 +49,7 @@ namespace SimpleGui {
 		return Vec2(x, y);
 	}
 
-	void Window::SetPosition(int x, int y) {
+	void Window::SetPosition(int x, int y) const {
 		SDL_SetWindowPosition(m_window, x, y);
 	}
 
@@ -57,7 +59,7 @@ namespace SimpleGui {
 		return Vec2(w, h);
 	}
 
-	void Window::SetSize(int w, int h) {
+	void Window::SetSize(int w, int h) const {
 		SDL_SetWindowSize(m_window, w, h);
 	}
 
@@ -65,7 +67,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_RESIZABLE) != 0;
 	}
 
-	void Window::SetResizable(bool resizable) {
+	void Window::SetResizable(bool resizable) const {
 		SDL_SetWindowResizable(m_window, resizable);
 	}
 
@@ -73,7 +75,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_ALWAYS_ON_TOP) != 0;
 	}
 
-	void Window::SetAllwaysOnTop(bool top) {
+	void Window::SetAllwaysOnTop(bool top) const {
 		SDL_SetWindowAlwaysOnTop(m_window, top);
 	}
 
@@ -81,7 +83,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN) != 0;
 	}
 
-	void Window::SetFullScreen(bool full) {
+	void Window::SetFullScreen(bool full) const {
 		SDL_SetWindowFullscreen(m_window, full);
 	}
 
@@ -89,7 +91,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MAXIMIZED) != 0;
 	}
 
-	void Window::ToggleMaximize() {
+	void Window::ToggleMaximize() const {
 		SDL_MaximizeWindow(m_window);
 	}
 
@@ -97,7 +99,7 @@ namespace SimpleGui {
 		return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED) != 0;
 	}
 
-	void Window::ToggleMinimize() {
+	void Window::ToggleMinimize() const {
 		SDL_MinimizeWindow(m_window);
 	}
 
@@ -135,7 +137,7 @@ namespace SimpleGui {
 		return vsync != SDL_RENDERER_VSYNC_DISABLED;
 	}
 
-	bool Window::EnableVsync(bool enable) {
+	bool Window::EnableVsync(bool enable) const {
 		auto vsync = enable ? 1 : SDL_RENDERER_VSYNC_DISABLED;
 		return SDL_SetRenderVSync(&m_renderer->GetSDLRenderer(), vsync);;
 	}
@@ -145,38 +147,38 @@ namespace SimpleGui {
 	}
 
 	void Window::SetFont(std::string_view path, float ptsize) {
-		m_font.reset(new Font(path, ptsize));
+		m_font = std::make_unique<Font>(path, ptsize);
 	}
 
 	Style& Window::GetCurrentStyle() const {
 		return m_styleManager->GetCurrentStyle();
 	}
 
-	std::optional<std::reference_wrapper<Style>> Window::GetStyle(const std::string& name) {
+	std::optional<std::reference_wrapper<Style>> Window::GetStyle(const std::string& name) const {
 		return m_styleManager->GetStyle(name);
 	}
 
-	bool Window::RegisterStyle(const std::string& name, std::unique_ptr<Style> style) {
+	bool Window::RegisterStyle(const std::string& name, std::unique_ptr<Style> style) const {
 		return m_styleManager->RegisterStyle(name, std::move(style));
 	}
 
-	bool Window::UnregisterStyle(const std::string& name) {
+	bool Window::UnregisterStyle(const std::string& name) const {
 		return m_styleManager->UnregisterStyle(name);
 	}
 
-	void Window::SwitchStyle(const std::string& name) {
+	void Window::SwitchStyle(const std::string& name) const {
 		m_styleManager->SwitchStyle(name);
 	}
 
-	void Window::SetStyleFollowSystem() {
+	void Window::SetStyleFollowSystem() const {
 		m_styleManager->SetStyleFollowSystem();
 	}
 
-	void Window::HandleEvent(Event* event) {
+	void Window::HandleEvent(Event* event) const {
 		m_rootCmp->HandleEvent(event);
 	}
 
-	void Window::UpdateAndRender() {
+	void Window::UpdateAndRender() const {
 		m_rootCmp->Update();
 		//m_renderer->Clear();
 		m_rootCmp->Render(*m_renderer);

@@ -4,7 +4,7 @@
 
 
 namespace SimpleGui {
-	BoxLayout::BoxLayout(Direction direction) : Layout() {
+	BoxLayout::BoxLayout(Direction direction) : Layout(), m_spacing(0) {
 		m_direction = direction;
 		m_alignment = Alignment::Begin;
 		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
@@ -36,15 +36,15 @@ namespace SimpleGui {
 	}
 
 	const std::vector<int>& BoxLayout::GetWeights() const {
-		return m_weigths;
+		return m_weights;
 	}
 
 	void BoxLayout::SetWeights(const std::vector<int>& weights) {
-		m_weigths.clear();
+		m_weights.clear();
 
 		for (int i = 0; i < weights.size(); ++i) {
 			int weight = weights[i] < 0 ? 1 : weights[i];
-			m_weigths.push_back(weight);
+			m_weights.push_back(weight);
 		}
 	}
 
@@ -62,7 +62,7 @@ namespace SimpleGui {
 		else UpdateVerticalDirection();
 	}
 
-	void BoxLayout::UpdateHorizontalDirection() {
+	void BoxLayout::UpdateHorizontalDirection() const {
 		int count = GetVisibleChildrenCount();
 		if (!count) return;
 
@@ -88,14 +88,14 @@ namespace SimpleGui {
 			}
 
 			// 若权重数组中的值的数量少于子组件的数量时，缺少指定权重值的组件的权重值设为1
-			totalWeight += (i < m_weigths.size() ? (!m_children[i]->IsVisible() ? 0 : m_weigths[i]) : 1);
+			totalWeight += (i < m_weights.size() ? (!m_children[i]->IsVisible() ? 0 : m_weights[i]) : 1);
 		}
 
 		// 更新子组件的位置和大小
 		// 所有子组件x轴方向上的sizeconfig皆为expanding时，权重数组生效
 		if (fixedSizeComponets.empty()) {
 			// 权重数组为空时，默认所有组件的权重都为1
-			if (m_weigths.empty() || (m_weigths.size() == 1 && m_weigths[0] == 1)) {
+			if (m_weights.empty() || (m_weights.size() == 1 && m_weights[0] == 1)) {
 				for (int i = 0; i < expandingSizeComponents.size(); ++i) {
 					auto child = expandingSizeComponents[i];
 					float x = i * (maxChildSize.w + m_spacing);
@@ -110,7 +110,7 @@ namespace SimpleGui {
 				float totalChildrenWidth = contentGRect.size.w - (count - 1) * m_spacing;
 				for (int i = 0; i < expandingSizeComponents.size(); ++i) {
 					auto child = expandingSizeComponents[i];
-					float w = static_cast<float>(m_weigths[i]) / totalWeight * totalChildrenWidth;
+					float w = static_cast<float>(m_weights[i]) / totalWeight * totalChildrenWidth;
 					child->SetPosition(offsetX, 0);
 					child->SetSize(w, maxChildSize.h);
 					offsetX += w + m_spacing;
@@ -158,7 +158,7 @@ namespace SimpleGui {
 		}
 	}
 
-	void BoxLayout::UpdateVerticalDirection() {
+	void BoxLayout::UpdateVerticalDirection() const {
 		int count = GetVisibleChildrenCount();
 		if (!count) return;
 
@@ -185,14 +185,14 @@ namespace SimpleGui {
 			}
 
 			// 若权重数组中的值的数量少于子组件的数量时，缺少指定权重值的组件的权重值设为1
-			totalWeight += (i < m_weigths.size() ? (!m_children[i]->IsVisible() ? 0 : m_weigths[i]) : 1);
+			totalWeight += (i < m_weights.size() ? (!m_children[i]->IsVisible() ? 0 : m_weights[i]) : 1);
 		}
 
 		// 更新子组件的位置和大小
 		// 所有子组件y轴方向上的sizeconfig皆为expanding时，权重数组生效
 		if (fixedSizeComponets.empty()) {
 			// 权重数组为空时，默认所有组件的权重都为1
-			if (m_weigths.empty() || (m_weigths.size() == 1 && m_weigths[0] == 1)) {
+			if (m_weights.empty() || (m_weights.size() == 1 && m_weights[0] == 1)) {
 				for (int i = 0; i < expandingSizeComponents.size(); ++i) {
 					auto child = expandingSizeComponents[i];
 					child->SetPosition(0, i * (maxChildSize.h + m_spacing));
@@ -206,7 +206,7 @@ namespace SimpleGui {
 				float totalChildrenHeight = contentGRect.size.h - (count - 1) * m_spacing;
 				for (int i = 0; i < expandingSizeComponents.size(); ++i) {
 					auto child = expandingSizeComponents[i];
-					float h = static_cast<float>(m_weigths[i]) / totalWeight * totalChildrenHeight;
+					float h = static_cast<float>(m_weights[i]) / totalWeight * totalChildrenHeight;
 					float y = offsetY;
 					child->SetPosition(0, y);
 					child->SetSize(maxChildSize.w, h);

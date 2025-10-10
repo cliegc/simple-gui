@@ -24,13 +24,13 @@ namespace SimpleGui {
 	}
 
 	std::unique_ptr<BaseComponent> AnchorPointLayout::RemoveChild(BaseComponent* cmp) {
-		m_anchorPoints.erase(cmp);
-		return std::unique_ptr<BaseComponent>();
+		if (m_anchorPoints.contains(cmp)) m_anchorPoints.erase(cmp);
+		return BaseComponent::RemoveChild(cmp);
 	}
 
 	std::unique_ptr<BaseComponent> AnchorPointLayout::RemoveChildDeferred(BaseComponent* cmp) {
-		m_anchorPoints.erase(cmp);
-		return std::unique_ptr<BaseComponent>();
+		if (m_anchorPoints.contains(cmp)) m_anchorPoints.erase(cmp);
+		return BaseComponent::RemoveChildDeferred(cmp);
 	}
 
 	void AnchorPointLayout::SetAnchorPoint(BaseComponent* cmp, const AnchorPoint& point) {
@@ -44,7 +44,7 @@ namespace SimpleGui {
 		SetAnchorPoint(cmp, point);
 	}
 
-	void AnchorPointLayout::UpdateAnchorPointLocation(BaseComponent* cmp, const AnchorPoint& point) {
+	void AnchorPointLayout::UpdateAnchorPointLocation(BaseComponent* cmp, const AnchorPoint& point) const {
 		//Rect cmpRect = cmp->GetRect();
 		Vec2 layoutAnchorPos;		// 局部坐标
 		Vec2 distance;

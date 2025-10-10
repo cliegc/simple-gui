@@ -7,14 +7,14 @@ namespace SimpleGui {
 		friend class Window;
 
 	public:
-		~RootComponent() = default;
+		~RootComponent() override = default;
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
 	private:
-		RootComponent(Window* window);
+		explicit RootComponent(Window* window);
 
 		void SetSizeToFillWindow();
 	};

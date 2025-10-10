@@ -1,6 +1,7 @@
 #pragma once
 #include "base_component.hpp"
 #include "label.hpp"
+#include "signal.hpp"
 
 
 namespace SimpleGui {

@@ -9,6 +9,9 @@ namespace SimpleGui {
 	class BaseComponent;
 
 	class ExtendedFunctions {
+	public:
+		virtual ~ExtendedFunctions() = default;
+
 	protected:
 		friend class ExtendedFunctionsManager;
 
@@ -22,7 +25,7 @@ namespace SimpleGui {
 	class ExtendedFunctionsManager final {
 		friend class BaseComponent;
 	public:
-		ExtendedFunctionsManager(BaseComponent* target);
+		explicit ExtendedFunctionsManager(BaseComponent* target);
 		~ExtendedFunctionsManager() = default;
 
 		ExtendedFunctionsManager(const ExtendedFunctionsManager&) = delete;
@@ -41,8 +44,7 @@ namespace SimpleGui {
 		void Render(Renderer& renderer);
 
 		void Clear();
-		// Î´ÊµÏÖ
-		void ClearDeferred();
+		void ClearDeferred(){};
 
 		template<typename T>
 		static int GetID() {
@@ -52,7 +54,7 @@ namespace SimpleGui {
 
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctions(Args&& ...args) {
-			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T ±ØÐë¼Ì³Ð×Ô ExtendedFunctions");
+			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ExtendedFunctions");
 			if (m_functions.contains(GetID<T>())) return (T*)m_functions[GetID<T>()].get();
 			auto functions = std::make_unique<T>(std::forward<Args>(args)...);
 			auto ptr = functions.get();
@@ -61,7 +63,6 @@ namespace SimpleGui {
 			return ptr;
 		}
 
-		// Î´ÊµÏÖ
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctionsDeferred(Args&& ...args) {
 
@@ -69,7 +70,7 @@ namespace SimpleGui {
 
 		template<typename T>
 		std::unique_ptr<ExtendedFunctions> RemoveExtendedFunctions() {
-			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T ±ØÐë¼Ì³Ð×Ô ExtendedFunctions");
+			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ExtendedFunctions");
 			auto it = m_functions.find(GetID<T>());
 			if (it != m_functions.end()) {
 				auto functions = std::move((*it).second);
@@ -81,7 +82,6 @@ namespace SimpleGui {
 			return nullptr;
 		}
 
-		// Î´ÊµÏÖ
 		template<typename T>
 		std::unique_ptr<ExtendedFunctions> RemoveExtendedFunctionsDeferred() {
 

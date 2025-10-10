@@ -13,15 +13,17 @@ namespace SimpleGui {
 	public:
 		~Texture();
 
-		inline SDL_Texture& GetSDLTexture() const { return *m_texture; }
+		SDL_Texture& GetSDLTexture() const { return *m_texture; }
 		
-		inline int GetWidth() const { return m_texture->w; }
-		inline int GetHeight() const { return m_texture->h; }
-		inline Rect GetRect() const { return Rect(0, 0, m_texture->w, m_texture->h); }
+		int GetWidth() const { return m_texture->w; }
+		int GetHeight() const { return m_texture->h; }
+		Rect GetRect() const {
+			return Rect{0.f, 0.f, static_cast<float>(m_texture->w), static_cast<float>(m_texture->h) };
+		}
 
-		inline std::string GetPath() const { return m_path; }
+		std::string GetPath() const { return m_path; }
 
-		inline bool IsNull() const { return m_texture == nullptr; }
+		bool IsNull() const { return m_texture == nullptr; }
 
 	private:
 		SDL_Texture* m_texture;

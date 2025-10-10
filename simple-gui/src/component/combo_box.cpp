@@ -5,7 +5,7 @@ namespace SimpleGui {
 	ComboBox::ComboBox(const std::vector<std::string>& items) {
 		m_currItemLbl = std::make_unique<Label>("");
 
-		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color::TRANSPARENT);
+		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
 	}
 
 	void ComboBox::EnteredComponentTree() {

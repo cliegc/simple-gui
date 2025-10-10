@@ -1,5 +1,4 @@
 #pragma once
-#include <SDL3/SDL.h>
 #include <string_view>
 #include <memory>
 #include "window.hpp"
@@ -18,8 +17,8 @@ namespace SimpleGui {
     public:
         ~CommandArgs() = default;
 
-        inline size_t count() const { return m_args.size(); }
-        inline const std::string& operator[](size_t index) const { return m_args[index]; }
+        size_t count() const { return m_args.size(); }
+        const std::string& operator[](const size_t index) const { return m_args[index]; }
         
     private:
         friend class GuiManager;
@@ -58,22 +57,22 @@ namespace SimpleGui {
 
         static GuiManager& GetInstance();
 
-        inline Window& GetWindow() const { return *m_window; }
-        Window& GetWindow(std::string_view title, int w, int h);
-        void Run();
+        Window& GetWindow() const { return *m_window; }
+        Window& GetWindow(std::string_view title, int w, int h) const;
+        void Run() const;
 
-        inline const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
-        inline const Font& GetDefaultFont() const { return *m_defaultResource.font; }
-        inline const Style& GetDefaultStyle() const { return *m_defaultResource.style; }
+        const CommandArgs& GetCommandArgs() const { return m_cmdArgs; }
+        const Font& GetDefaultFont() const { return *m_defaultResource.font; }
+        const Style& GetDefaultStyle() const { return *m_defaultResource.style; }
 
-        inline void SetUnlimitedFrameRate(bool value) { m_fpsController->SetUnlimitedFrameRate(value); }
-        inline double GetDelta() const { return m_fpsController->GetDelta(); }
-        inline double GetRealFrameRate() const { return m_fpsController->GetRealFrameRate(); }
-        inline uint32_t GetTargetFrameRate() const { return m_fpsController->GetTargetFrameRate(); }
-        inline void SetTargetFrameRate(uint32_t fps) { m_fpsController->SetTargetFrameRate(fps); };
+        void SetUnlimitedFrameRate(bool value) const { m_fpsController->SetUnlimitedFrameRate(value); }
+        void SetTargetFrameRate(uint32_t fps) const { m_fpsController->SetTargetFrameRate(fps); }
+        double GetDelta() const { return m_fpsController->GetDelta(); }
+        double GetRealFrameRate() const { return m_fpsController->GetRealFrameRate(); }
+        uint32_t GetTargetFrameRate() const { return m_fpsController->GetTargetFrameRate(); }
 
-        inline Timer* GetTimer(float interval) { return m_timerManager->GetTimer(interval); }
-        inline void KillTimer(Timer* timer) { m_timerManager->KillTimer(timer); }
+        Timer* GetTimer(float interval) const { return m_timerManager->GetTimer(interval); }
+        void KillTimer(Timer* timer) const { m_timerManager->KillTimer(timer); }
 
         Vec2 GetMousePosition() const;
 

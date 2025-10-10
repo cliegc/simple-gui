@@ -6,26 +6,26 @@
 
 
 namespace SimpleGui {
-	class Button final : public BaseComponent {
+	class Button  : public BaseComponent {
 	public:
 		explicit Button(std::string_view text);
-		virtual ~Button() = default;
+		~Button() override = default;
 
 		std::string GetText() const;
 		void SetText(std::string_view text);
 
-		virtual void SetFont(std::unique_ptr<Font> font) override;
-		virtual void SetFont(std::string_view path, int size) override;
+		void SetFont(std::unique_ptr<Font> font) override;
+		void SetFont(std::string_view path, int size) override;
 
-		virtual bool HandleEvent(Event*) override;
-		virtual void Update() override;
-		virtual void Render(Renderer&) override;
+		bool HandleEvent(Event*) override;
+		void Update() override;
+		void Render(Renderer&) override;
 
 	public:
 		Signal<> clicked;
 
 	protected:
-		virtual void EnteredComponentTree() override;
+		void EnteredComponentTree() override;
 
 	private:
 		MouseState m_mouseState = MouseState::Normal;

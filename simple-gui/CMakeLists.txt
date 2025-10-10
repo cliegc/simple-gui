@@ -55,10 +55,6 @@ target_compile_definitions(SimpleGui PRIVATE
         LIBRARY_A_BUILD
 )
 
-# 依赖项（如果需要）
-# find_package(SomeDependency REQUIRED)
-# target_link_libraries(LibraryA PUBLIC SomeDependency::SomeDependency)
-
 target_link_libraries(SimpleGui PUBLIC
         ${THIRD_LIB_DIR}/SDL3/lib/x64/SDL3.lib
         ${THIRD_LIB_DIR}/SDL3_ttf/lib/x64/SDL3_ttf.lib

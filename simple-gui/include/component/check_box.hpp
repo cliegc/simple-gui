@@ -13,14 +13,14 @@ namespace SimpleGui {
 		CheckBoxGroup() = default;
 		~CheckBoxGroup() = default;
 
-		inline static std::shared_ptr<CheckBoxGroup> Create() {
+		static std::shared_ptr<CheckBoxGroup> Create() {
 			return std::make_shared<CheckBoxGroup>();
 		}
 
-		inline bool IsUniqueCheck() const { return m_uniqueCheck; }
+		bool IsUniqueCheck() const { return m_uniqueCheck; }
 		void SetUniqueCheck(bool value);
 
-		inline const std::vector<CheckBox*>& GetCheckBoxes() const { return m_boxes; }
+		const std::vector<CheckBox*>& GetCheckBoxes() const { return m_boxes; }
 
 	public:
 		Signal<CheckBox*> checkStateChanged;
@@ -32,26 +32,26 @@ namespace SimpleGui {
 
 	class CheckBox final : public BaseComponent {
 	public:
-		CheckBox(std::string_view text);
-		~CheckBox() = default;
+		explicit CheckBox(std::string_view text);
+		~CheckBox() override = default;
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
-		inline bool IsChecked() const { return m_checked; }
+		bool IsChecked() const { return m_checked; }
 		inline void SetChecked(bool value);
 
-		inline std::string GetText() const { return m_textLbl->GetText(); }
-		inline void SetText(std::string_view text) { m_textLbl->SetText(text); }
+		std::string GetText() const { return m_textLbl->GetText(); }
+		void SetText(std::string_view text) const { m_textLbl->SetText(text); }
 
-		void SetGoup(std::shared_ptr<CheckBoxGroup> group);
+		void SetGroup(const std::shared_ptr<CheckBoxGroup>& group);
 
 	public:
 		Signal<bool> checkStateChanged;
 
 	protected:
-		virtual void EnteredComponentTree() override;
+		void EnteredComponentTree() override;
 
 	private:
 		bool m_checked;

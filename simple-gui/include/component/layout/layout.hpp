@@ -6,7 +6,7 @@ namespace SimpleGui {
 	class Layout : public BaseComponent {
 	public:
 		Layout() = default;
-		virtual ~Layout() = default;
+		~Layout() override = default;
 
 #ifdef SG_CMP_DEBUG_LAYOUT_BG
 		virtual void Render(Renderer& renderer) override {
@@ -14,6 +14,6 @@ namespace SimpleGui {
 			renderer.FillRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::Background));
 			BaseComponent::Render(renderer);
 		}
-#endif // SG_CMP_LAYOUT_BG
+#endif // SG_CMP_DEBUG_LAYOUT_BG
 	};
 }

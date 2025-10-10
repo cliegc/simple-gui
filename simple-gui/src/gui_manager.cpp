@@ -13,7 +13,7 @@ namespace SimpleGui {
 		}
 	}
 
-	const float DEFAULT_FONT_SIZE = 12.f;
+	constexpr float DEFAULT_FONT_SIZE = 12.f;
 
 	GuiManager::~GuiManager() {
 		m_fpsController.reset();
@@ -65,7 +65,7 @@ namespace SimpleGui {
 		return *s_guiManager;
 	}
 
-	Window& GuiManager::GetWindow(std::string_view title, int w, int h) {
+	Window& GuiManager::GetWindow(std::string_view title, int w, int h) const {
 		m_window->SetTitle(title);
 		m_window->SetSize(w, h);
 		return *m_window;
@@ -75,7 +75,7 @@ namespace SimpleGui {
 		return m_window->GetRenderer().GetRenderPositionFromMouse();
 	}
 
-	void GuiManager::Run() {
+	void GuiManager::Run() const {
 		Event* event = nullptr;
 		bool running = true;
 
@@ -83,11 +83,11 @@ namespace SimpleGui {
 			// control framerate
 			m_fpsController->Update();
 
-			// update tiemrs
+			// update timers
 			m_timerManager->Update();
 
 			// handle event
-			while (event = m_eventManager->PollEvent()) {
+			while ((event = m_eventManager->PollEvent())) {
 				if (event->IsApplicationQuitEvent()) {
 					running = false;
 				}

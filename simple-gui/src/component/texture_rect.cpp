@@ -4,7 +4,7 @@
 
 
 namespace SimpleGui {
-	TextureRect::TextureRect(std::shared_ptr<Texture> texture) : BaseComponent() {
+	TextureRect::TextureRect(const std::shared_ptr<Texture> &texture) : BaseComponent() {
 		m_texture = texture;
 		m_tipLbl = std::make_unique<Label>("");
 		m_scaleMode = SDL_SCALEMODE_LINEAR;
@@ -19,7 +19,7 @@ namespace SimpleGui {
 		}
 
 		m_tipLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
-		m_tipLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color::TRANSPARENT);
+		m_tipLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
 		m_tipLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::Foreground));
 		SetupTipLabel();
 	}
@@ -44,7 +44,7 @@ namespace SimpleGui {
 		SG_CMP_RENDER_CONDITIONS;
 
 		// draw bg
-		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackground), true);
 
 		renderer.SetRenderClipRect(m_visibleGRect);
 		if (m_texture && !m_texture->IsNull()) {
@@ -63,7 +63,7 @@ namespace SimpleGui {
 		return m_texture;
 	}
 
-	void TextureRect::SetTexture(std::shared_ptr<Texture> texture) {
+	void TextureRect::SetTexture(const std::shared_ptr<Texture> &texture) {
 		m_texture = texture;
 		SetScaleMode(m_scaleMode);
 		SetupTipLabel();
@@ -91,7 +91,7 @@ namespace SimpleGui {
 		bool isFlipV = IsFlipV();
 
 		m_flipMode = isFlipV ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-		if (flip) m_flipMode = (SDL_FlipMode)(m_flipMode | SDL_FLIP_HORIZONTAL);
+		if (flip) m_flipMode = static_cast<SDL_FlipMode>(m_flipMode | SDL_FLIP_HORIZONTAL);
 	}
 
 	bool TextureRect::IsFlipV() const {
@@ -102,10 +102,10 @@ namespace SimpleGui {
 		bool isFlipH = IsFlipH();
 
 		m_flipMode = isFlipH ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-		if (flip) m_flipMode = (SDL_FlipMode)(m_flipMode | SDL_FLIP_VERTICAL);
+		if (flip) m_flipMode = static_cast<SDL_FlipMode>(m_flipMode | SDL_FLIP_VERTICAL);
 	}
 
-	void TextureRect::SetupTipLabel() {
+	void TextureRect::SetupTipLabel() const {
 		if (m_texture && m_texture->IsNull()) {
 			m_tipLbl->SetText(std::format("can't open the file: {}", m_texture->GetPath()));
 			m_tipLbl->SetVisible(true);
@@ -171,13 +171,13 @@ namespace SimpleGui {
 		}
 	}
 
-	void TextureRect::RenderTexture(SDL_Renderer* renderer) {
+	void TextureRect::RenderTexture(SDL_Renderer* renderer) const {
 		SDL_FRect rect = m_textureGRect.ToSDLFRect();
 
 		if (m_textureStretchMode == TextureStretchMode::Tile) {
 			for (int i = 0; i < rect.w;) {
 				for (int j = 0; j < rect.h;) {
-					SDL_FRect tileRect = { i, j, m_texture->GetWidth(), m_texture->GetHeight() };
+					SDL_FRect tileRect = { static_cast<float>(i), static_cast<float>(j), m_texture->GetWidth(), m_texture->GetHeight() };
 					SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &tileRect, 0, NULL, m_flipMode);
 					j += m_texture->GetHeight();
 				}

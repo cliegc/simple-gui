@@ -3,7 +3,7 @@
 
 
 namespace SimpleGui {
-	DraggablePanel::DraggablePanel(std::string_view title) : BaseComponent() {
+	DraggablePanel::DraggablePanel(std::string_view title) {
 		m_titleLbl = std::make_unique<Label>(title);
 		m_handleVisible = true;
 		m_resizable = true;
@@ -16,7 +16,7 @@ namespace SimpleGui {
 		m_foldData.toggleGRect.size.h = 10;
 		m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
 		m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
-		m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color::TRANSPARENT);
+		m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
 	}
 
 	void DraggablePanel::EnteredComponentTree() {
@@ -73,13 +73,13 @@ namespace SimpleGui {
 		m_resizeData.dragGRect.size.h = size.h < 0 ? 0 : size.h;
 
 		// update fold btn rect
-		Vec2 globalePos = globalRect.position;
-		m_foldData.toggleGRect.position.x = globalePos.x + 5;
-		m_foldData.toggleGRect.position.y = globalePos.y + (m_handleThickness - m_foldData.toggleGRect.size.h) / 2;
+		Vec2 globalPos = globalRect.position;
+		m_foldData.toggleGRect.position.x = globalPos.x + 5;
+		m_foldData.toggleGRect.position.y = globalPos.y + (m_handleThickness - m_foldData.toggleGRect.size.h) / 2;
 
 		// update title label
 		m_titleLbl->SetGlobalPositionX(m_foldData.toggleGRect.Right());
-		m_titleLbl->SetGlobalPositionY(globalePos.y);
+		m_titleLbl->SetGlobalPositionY(globalPos.y);
 		m_titleLbl->Update();
 		Rect visibleRect = CalcVisibleGlobalRect(m_dragData.dragGRect, m_dragData.dragGRect, m_titleLbl->GetGlobalRect());
 		SetComponentVisibleGlobalRect(m_titleLbl.get(), visibleRect);
@@ -88,7 +88,7 @@ namespace SimpleGui {
 	void DraggablePanel::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackround), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackground), true);
 
 		BaseComponent::Render(renderer);
 
@@ -256,11 +256,10 @@ namespace SimpleGui {
 					m_size.h = m_handleThickness;
 					return true;
 				}
-				else {
-					m_foldData.isFolded = false;
-					m_size.h = m_foldData.unfoldSize.h;
-					return true;
-				}
+
+				m_foldData.isFolded = false;
+				m_size.h = m_foldData.unfoldSize.h;
+				return true;
 			}
 		}
 		return false;

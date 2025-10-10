@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <variant>
 #include <queue>
 #include "math.hpp"
@@ -76,13 +75,13 @@ namespace SimpleGui {
             RenderTextureCommandData,
             RenderTextCommandData,
             RenderClipCommandData> data;
-        SDL_Color color;
+        SDL_Color color{};
     };
 
 
     class Renderer final {
     public:
-        Renderer(SDL_Window* window);
+        explicit Renderer(SDL_Window* window);
         ~Renderer();
 
         Renderer(const Renderer&) = delete;
@@ -115,11 +114,11 @@ namespace SimpleGui {
         void DrawLine(const Vec2& p1, const Vec2& p2, const Color& color) const;
         void DrawRect(const Rect& rect, const Color& color) const;
         void DrawTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color) const;
-        void DrawCircle(const Vec2& center, float radius, const Color& color) const;                 //Ê¹ÓÃÖÐµãÔ²Ëã·¨
+        void DrawCircle(const Vec2& center, float radius, const Color& color) const;                 //Ê¹ï¿½ï¿½ï¿½Ðµï¿½Ô²ï¿½ã·¨
         void FillRect(const Rect& rect, const Color& color) const;
         void FillRect(const Rect& rect, const GradientColor& color) const;
         void FillTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color) const;
-        void FillCircle(const Vec2& center, float radius, const Color& color) const;                //É¨ÃèÏßËã·¨
+        void FillCircle(const Vec2& center, float radius, const Color& color) const;                //É¨ï¿½ï¿½ï¿½ï¿½ï¿½ã·¨
 
         //void DrawRoundRect();
         //void FillRoundRect();
@@ -141,11 +140,11 @@ namespace SimpleGui {
         SDL_Texture* CreateSDLTexture(std::string_view path);
         Texture* CreateTexture(std::string_view path);
 
-        inline SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
-        inline TTF_TextEngine& GetTTFTextEngine() const { return *m_textEngine; }
+        SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
+        TTF_TextEngine& GetTTFTextEngine() const { return *m_textEngine; }
 
-        inline bool IsTopRender() const { return m_topRender; }
-        inline void SetTopRender(bool top) { m_topRender = top; }
+        bool IsTopRender() const { return m_topRender; }
+        void SetTopRender(bool top) { m_topRender = top; }
 
         void Render();
 

@@ -6,20 +6,20 @@ namespace SimpleGui {
 	class ScrollBar final : public BaseComponent {
 		friend class ScrollPanel;
 	public:
-		ScrollBar(Direction direction);
-		~ScrollBar() = default;
+		explicit ScrollBar(Direction direction);
+		~ScrollBar() override = default;
 
-		inline BaseComponent* GetTarget() const { return m_target; }
-		inline void SetTarget(BaseComponent* target) { m_target = target; }
+		BaseComponent* GetTarget() const { return m_target; }
+		void SetTarget(BaseComponent* target) { m_target = target; }
 
 		void SetScroll(float scale);
 
-		inline float GetMouseWheelDelta() const { return m_mouseWheelDelta; }
-		inline void SetMouseWheelDelta(float delta) { m_mouseWheelDelta = delta; }
+		float GetMouseWheelDelta() const { return m_mouseWheelDelta; }
+		void SetMouseWheelDelta(float delta) { m_mouseWheelDelta = delta; }
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
 	private:
 		struct DragSliderData {

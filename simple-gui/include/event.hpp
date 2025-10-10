@@ -34,11 +34,11 @@ namespace SimpleGui {
 		DropEvent = 1 << 18,
 	};
 
-	inline constexpr EventType operator|(EventType type1, EventType type2) {
+	constexpr EventType operator|(EventType type1, EventType type2) {
 		return static_cast<EventType>(static_cast<int>(type1) | static_cast<int>(type2));
 	}
 
-	inline constexpr EventType operator&(EventType type1, EventType type2) {
+	constexpr EventType operator&(EventType type1, EventType type2) {
 		return static_cast<EventType>(static_cast<int>(type1) & static_cast<int>(type2));
 	}
 
@@ -51,11 +51,11 @@ namespace SimpleGui {
 
 	public:
 		Event() = default;
-		~Event() = default;
+		virtual ~Event() = default;
 
-		inline WindowID GetWindowID() const { return m_winID; }
-		inline Uint64 GetTimestamp() const { return m_timestamp; }
-		inline constexpr virtual EventType GetType() const { return EventType::Unknown; }
+		WindowID GetWindowID() const { return m_winID; }
+		Uint64 GetTimestamp() const { return m_timestamp; }
+		constexpr virtual EventType GetType() const { return EventType::Unknown; }
 
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::ApplicationQuitEvent, ApplicationQuitEvent)
 
@@ -83,7 +83,7 @@ namespace SimpleGui {
 
 		template<typename T>
 		T* Convert() {
-			static_assert(std::is_base_of<Event, T>::value, "T ±ØÐë¼Ì³Ð×ÔEvent");
+			static_assert(std::is_base_of<Event, T>::value, "T ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½Event");
 			if (GetType() == T::GetStaticType()) {
 				return static_cast<T*>(this);
 			}
@@ -91,11 +91,11 @@ namespace SimpleGui {
 		}
 
 	protected:
-		WindowID m_winID;
+		WindowID m_winID{};
 		Uint64 m_timestamp = 0;
 
 	protected:
-		inline void Setup(WindowID id, Uint64 timestamp) {
+		void Setup(WindowID id, Uint64 timestamp) {
 			m_winID = id;
 			m_timestamp = timestamp;
 		}
@@ -117,8 +117,8 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowShowEvent)
 	public:
 
-		inline bool IsShown() const { return !m_hidden; }
-		inline bool IsHidden() const { return m_hidden; }
+		bool IsShown() const { return !m_hidden; }
+		bool IsHidden() const { return m_hidden; }
 
 	private:
 		bool m_hidden = false;
@@ -129,7 +129,7 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowMovedEvent)
 	public:
 
-		inline Vec2 GetPosition() const { return m_position; }
+		Vec2 GetPosition() const { return m_position; }
 
 	private:
 		Vec2 m_position;
@@ -140,7 +140,7 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowResizedEvent)
 	public:
 
-		inline Vec2 GetSize() const { return m_size; }
+		Vec2 GetSize() const { return m_size; }
 
 	private:
 		Vec2 m_size;
@@ -151,11 +151,11 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowStateChangedEvent)
 	public:
 
-		inline WindowState GetState() const { return m_state; }
-		inline bool IsLeaveFullScreen() const { return m_isLeaveFullScreen; }
+		WindowState GetState() const { return m_state; }
+		bool IsLeaveFullScreen() const { return m_isLeaveFullScreen; }
 
 	private:
-		WindowState m_state;
+		WindowState m_state{};
 		bool m_isLeaveFullScreen = false;
 	};
 
@@ -164,8 +164,8 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowMouseEvent)
 	public:
 
-		inline bool IsEnter() const { return m_isEnter; }
-		inline bool IsLeave() const { return !m_isEnter; }
+		bool IsEnter() const { return m_isEnter; }
+		bool IsLeave() const { return !m_isEnter; }
 
 	private:
 		bool m_isEnter = false;
@@ -176,8 +176,8 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowFocusEvent)
 	public:
 
-		inline bool IsGained() const { return m_isGained; }
-		inline bool IsLost() const { return !m_isGained; }
+		bool IsGained() const { return m_isGained; }
+		bool IsLost() const { return !m_isGained; }
 
 	private:
 		bool m_isGained = false;
@@ -186,7 +186,6 @@ namespace SimpleGui {
 	class WindowCloseRequestedEvent final : public WindowEvent {
 		friend class EventManager;
 		SG_EVENT_GET_TYPE(EventType::WindowEvent | EventType::WindowCloseRequestedEvent)
-	public:
 	};
 
 	class WindowDestroyEvent final :public WindowEvent {
@@ -201,14 +200,14 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::MouseEvent)
 	public:
 
-		inline Vec2 GetPosition() const { return m_position; }
-		inline Vec2 GetGlobalPosition() const { return m_globalPosition; }
+		Vec2 GetPosition() const { return m_position; }
+		Vec2 GetGlobalPosition() const { return m_globalPosition; }
 
 	protected:
 		Vec2 m_position;
 		Vec2 m_globalPosition;
 
-		inline void Setup(const SDL_Event& event, const Window& win, const Vec2& pos) {
+		void Setup(const SDL_Event& event, const Window& win, const Vec2& pos) {
 			m_winID = event.button.windowID;
 			m_timestamp = event.button.timestamp;
 
@@ -232,18 +231,18 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseButtonEvent)
 	public:
 
-		inline MouseButton GetButtonIndex() const { return m_buttonIndex; }
-		inline bool IsPressed() const { return m_pressed; }
-		inline bool IsPressed(MouseButton btn) const { return m_pressed && btn == m_buttonIndex; }
-		inline bool IsReleased() const { return !m_pressed; }
-		inline bool IsReleased(MouseButton btn) const { return !m_pressed && btn == m_buttonIndex; }
-		inline bool IsDoubleClick() const { return m_doubleClick; }
-		inline bool IsDoubleClick(MouseButton btn) const { return m_doubleClick && btn == m_buttonIndex; }
-		inline uint8_t GetClickCount() const { return m_clicks; }
+		MouseButton GetButtonIndex() const { return m_buttonIndex; }
+		bool IsPressed() const { return m_pressed; }
+		bool IsPressed(MouseButton btn) const { return m_pressed && btn == m_buttonIndex; }
+		bool IsReleased() const { return !m_pressed; }
+		bool IsReleased(MouseButton btn) const { return !m_pressed && btn == m_buttonIndex; }
+		bool IsDoubleClick() const { return m_doubleClick; }
+		bool IsDoubleClick(MouseButton btn) const { return m_doubleClick && btn == m_buttonIndex; }
+		uint8_t GetClickCount() const { return m_clicks; }
 
 	private:
 		MouseButton m_buttonIndex = MouseButton::None;
-		uint8_t m_clicks;
+		uint8_t m_clicks{};
 		bool m_pressed = false;
 		bool m_doubleClick = false;
 	};
@@ -253,8 +252,8 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseMotionEvent)
 	public:
 
-		// ·µ»ØµÄÏòÁ¿Ã»ÓÐ¹éÒ»»¯
-		inline Vec2 GetDirection() const { return m_direction; }
+		// è¿”å›žå€¼å¹¶æ²¡æœ‰å½’ä¸€åŒ–
+		Vec2 GetDirection() const { return m_direction; }
 
 	private:
 		Vec2 m_direction;
@@ -265,7 +264,7 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::MouseEvent | EventType::MouseWheelEvent)
 	public:
 
-		inline Vec2 GetDirection() const { return m_direction; }
+		Vec2 GetDirection() const { return m_direction; }
 
 	private:
 		Vec2 m_direction;
@@ -287,26 +286,26 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardButtonEvent)
 
 	public:
-		inline ScanCode GetScanCode() const { return m_scanCode; }
-		inline KeyCode GetKeyCode() const { return m_key; }
-		inline KeyMod GetKeyMod() const { return m_mod; }
+		ScanCode GetScanCode() const { return m_scanCode; }
+		KeyCode GetKeyCode() const { return m_key; }
+		KeyMod GetKeyMod() const { return m_mod; }
 
-		inline bool IsPressed() const { return m_pressed; }
-		inline bool IsReleased() const { return !m_pressed; }
-		inline bool IsRepeat() const { return m_repeat; }
+		bool IsPressed() const { return m_pressed; }
+		bool IsReleased() const { return !m_pressed; }
+		bool IsRepeat() const { return m_repeat; }
 
-		inline bool IsCtrlAnd(KeyCode key) const {
+		bool IsCtrlAnd(KeyCode key) const {
 			return (m_mod == SDL_KMOD_LCTRL || m_mod == SDL_KMOD_RCTRL) && m_key == key;
 		}
 
 	private:
-		ScanCode m_scanCode;
-		KeyCode m_key;
-		KeyMod m_mod;
+		ScanCode m_scanCode{};
+		KeyCode m_key{};
+		KeyMod m_mod{};
 		bool m_pressed = false;
 		bool m_repeat = false;
 
-		inline void Setup(const SDL_Event& event) {
+		void Setup(const SDL_Event& event) {
 			m_winID = event.key.windowID;
 			m_timestamp = event.key.timestamp;
 			m_scanCode = event.key.scancode;
@@ -322,7 +321,7 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardTextInputEvent)
 
 	public:
-		inline std::string GetInputText() const { return m_text; }
+		std::string GetInputText() const { return m_text; }
 
 	private:
 		std::string m_text;
@@ -333,9 +332,9 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::KeyBoardEvent | EventType::KeyBoardTextEditingEvent)
 
 	public:
-		inline std::string GetEditingText() const { return m_text; }
-		inline Sint32 GetSelectedEditingTextStartCursorPos() const { return m_start; }
-		inline Sint32 GetSelectedEditingTextLength() const { return m_length; }
+		std::string GetEditingText() const { return m_text; }
+		Sint32 GetSelectedEditingTextStartCursorPos() const { return m_start; }
+		Sint32 GetSelectedEditingTextLength() const { return m_length; }
 
 	private:
 		std::string m_text;
@@ -350,10 +349,10 @@ namespace SimpleGui {
 		SG_EVENT_GET_TYPE(EventType::DropEvent)
 	public:
 
-		inline std::string GetContent() const { return m_content; }
-		inline bool IsDropFile() const { return m_itemType == DropItemType::File; }
-		inline bool IsDropText() const { return m_itemType == DropItemType::Text; }
-		inline Vec2 GetPosition() const { return m_position; }
+		std::string GetContent() const { return m_content; }
+		bool IsDropFile() const { return m_itemType == DropItemType::File; }
+		bool IsDropText() const { return m_itemType == DropItemType::Text; }
+		Vec2 GetPosition() const { return m_position; }
 
 	private:
 		enum class DropItemType {
@@ -361,7 +360,6 @@ namespace SimpleGui {
 			Text,
 		};
 
-	private:
 		std::string m_content;
 		DropItemType m_itemType = DropItemType::File;
 		Vec2 m_position;
@@ -397,7 +395,7 @@ namespace SimpleGui {
 	class EventManager final {
 		friend class GuiManager;
 	public:
-		EventManager(Window*);
+		explicit EventManager(Window*);
 		~EventManager() = default;
 
 		EventManager(const EventManager&) = delete;
@@ -411,6 +409,6 @@ namespace SimpleGui {
 
 		Event* PollEvent();
 		Event* ConvertEvent(const SDL_Event& event) const;
-		void FreeEvent(Event* event) const;
+		void FreeEvent(const Event* event) const;
 	};
 }

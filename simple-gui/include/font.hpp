@@ -21,28 +21,29 @@ namespace SimpleGui {
 		Font(std::string_view path, float ptsize);
 		~Font();
 
-		inline TTF_Font& GetTTFFont() const { return *m_font; }
-		inline std::string GetPath() const { return m_path; }
+		TTF_Font& GetTTFFont() const { return *m_font; }
+		std::string GetPath() const { return m_path; }
 
-		inline float GetSize() const { return TTF_GetFontSize(m_font); }
-		inline void SetSize(float ptsize) { TTF_SetFontSize(m_font, ptsize); }
+		float GetSize() const { return TTF_GetFontSize(m_font); }
+		void SetSize(float ptsize) const { TTF_SetFontSize(m_font, ptsize); }
 		
-		inline int GetHeight() const { return TTF_GetFontHeight(m_font); }
-		inline Vec2 GetTextSize(std::string_view text) {
+		int GetHeight() const { return TTF_GetFontHeight(m_font); }
+		Vec2 GetTextSize(std::string_view text) const {
 			return GetTextSize(text, text.length());
 		}
-		inline Vec2 GetTextSize(std::string_view text, size_t length) {
+
+		Vec2 GetTextSize(std::string_view text, size_t length) const {
 			int w, h;
 			TTF_GetStringSize(m_font, text.data(), length, &w, &h);
 			return Vec2(static_cast<float>(w), static_cast<float>(h));
 		}
 
-		inline std::string GetFamilyName() const { return TTF_GetFontFamilyName(m_font); }
+		std::string GetFamilyName() const { return TTF_GetFontFamilyName(m_font); }
 
-		inline FontStyle GetStyle() const { return static_cast<FontStyle>(TTF_GetFontStyle(m_font)); }
-		inline void SetStyle(FontStyle style) { TTF_SetFontStyle(m_font,  static_cast<TTF_FontStyleFlags>(style));  }
+		FontStyle GetStyle() const { return static_cast<FontStyle>(TTF_GetFontStyle(m_font)); }
+		void SetStyle(FontStyle style) const { TTF_SetFontStyle(m_font,  static_cast<TTF_FontStyleFlags>(style));  }
 
-		inline bool IsNull() const { return m_font == nullptr; }
+		bool IsNull() const { return m_font == nullptr; }
 
 	private:
 		TTF_Font* m_font;

@@ -16,29 +16,29 @@ namespace SimpleGui {
 
 	class ProgressBar final : public BaseComponent, public Range {
 	public:
-		ProgressBar(float value = 0.f, float minValue = 0.f, float maxValue = 100.f);
-		~ProgressBar() = default;
+		explicit ProgressBar(float value = 0.f, float minValue = 0.f, float maxValue = 100.f);
+		~ProgressBar() override = default;
 
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
-		virtual void SetValue(float value) override;
+		void SetValue(float value) override;
 
-		inline ProgressFillMode GetProgressFillMode() const { return m_fillMode; }
-		inline void SetProgressFillMode(ProgressFillMode mode) { m_fillMode = mode; }
+		ProgressFillMode GetProgressFillMode() const { return m_fillMode; }
+		void SetProgressFillMode(ProgressFillMode mode) { m_fillMode = mode; }
 
-		inline bool IsShowProgressText() const { return m_showProgress; }
-		inline void ShowProgressText(bool show) { m_showProgress = show; }
+		bool IsShowProgressText() const { return m_showProgress; }
+		void ShowProgressText(bool show) { m_showProgress = show; }
 
-		inline bool IsIndeterminate() const { return m_indeterminate; }
-		inline void SetIndeterminate(bool value) {
+		bool IsIndeterminate() const { return m_indeterminate; }
+		void SetIndeterminate(bool value) {
 			m_indeterminate = value;
 			m_indeterminateProgressData.delta = 0;
 			m_progressLbl->SetVisible(!m_indeterminate);
 		}
 
 	protected:
-		virtual void EnteredComponentTree() override;
+		void EnteredComponentTree() override;
 
 	private:
 		struct IndeterminateProgressData final {
@@ -54,7 +54,7 @@ namespace SimpleGui {
 		bool m_showProgress{};
 		bool m_indeterminate{};
 
-		IndeterminateProgressData m_indeterminateProgressData;
+		IndeterminateProgressData m_indeterminateProgressData{};
 
 		std::unique_ptr<Label> m_progressLbl;
 

@@ -5,7 +5,7 @@
 namespace SimpleGui {
 	class BoxLayout final : public Layout {
 	public:
-		BoxLayout(Direction direction);
+		explicit BoxLayout(Direction direction);
 
 		int GetSpacing() const;
 		void SetSpacing(int spacing);
@@ -19,16 +19,16 @@ namespace SimpleGui {
 		const std::vector<int>& GetWeights() const;
 		void SetWeights(const std::vector<int>& weights);
 
-		virtual void Update() override;
+		void Update() override;
 
 	private:
 		Direction m_direction;
 		Alignment m_alignment;
 		int m_spacing;
-		std::vector<int> m_weigths;
+		std::vector<int> m_weights;
 
-		void UpdateHorizontalDirection();
-		void UpdateVerticalDirection();
+		void UpdateHorizontalDirection() const;
+		void UpdateVerticalDirection() const;
 
 		int GetVisibleChildrenCount() const;
 

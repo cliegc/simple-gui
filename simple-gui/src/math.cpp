@@ -118,7 +118,7 @@ namespace SimpleGui {
         return std::sqrt(LengthSquared());
     }
 
-    float Vec2::DistanceSquard(const Vec2& other) const {
+    float Vec2::DistanceSquared(const Vec2& other) const {
         return (*this - other).LengthSquared();
     }
 

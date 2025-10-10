@@ -133,7 +133,7 @@ namespace SimpleGui {
 		// draw selected text
 		if (m_selectTextData.selecting) {
 			m_selectedTextLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::LineEditSelectedForeground));
-			m_selectedTextLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, GetThemeColor(ThemeColorFlags::LineEditSelectedBackground));
+			m_selectedTextLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, GetThemeColor(ThemeColorFlags::LineEditSelectedBackground));
 			m_selectedTextLbl->Render(renderer);
 		}
 
@@ -257,7 +257,7 @@ namespace SimpleGui {
 		return 0;
 	}
 
-	bool LineEdit::HandleMouseCursor(Event* event) {
+	bool LineEdit::HandleMouseCursor(Event* event) const {
 		if (auto ev = event->Convert<MouseMotionEvent>()) {
 			if (m_visibleGRect.ContainPoint(ev->GetPosition())) {
 				SDL_SetCursor(m_cursor.get());

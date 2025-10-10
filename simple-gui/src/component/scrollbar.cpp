@@ -256,10 +256,10 @@ namespace SimpleGui {
 
 		m_dragSliderData.dragging = true;
 		if (m_direction == Direction::Horizontal) {
-			m_slider.globalRect.position.x += delta * direction;
+			m_slider.globalRect.position.x += delta * static_cast<float>(direction);
 		}
 		else {
-			m_slider.globalRect.position.y += delta * direction;
+			m_slider.globalRect.position.y += delta * static_cast<float>(direction);
 		}
 	}
 
