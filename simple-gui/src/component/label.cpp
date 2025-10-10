@@ -38,16 +38,10 @@ namespace SimpleGui {
 	void Label::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.SetClipRect(m_visibleGRect);
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LabelBackgound));
-		//renderer.DrawText(m_ttfText.get(), m_textRect.position, GetThemeColor(ThemeColorFlags::LabelForeground));
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::LabelBorder));
-		//renderer.ClearClipRect();
-
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::LabelBackgound).ToSDLColor(), true);
-		renderer.RenderText(m_ttfText.get(), m_textRect.position.ToSDLFPoint(), GetThemeColor(ThemeColorFlags::LabelForeground).ToSDLColor());
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::LabelBorder).ToSDLColor(), false);
+		renderer.SetRenderClipRect(m_visibleGRect);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LabelBackgound), true);
+		renderer.RenderText(m_ttfText.get(), m_textRect.position, GetThemeColor(ThemeColorFlags::LabelForeground));
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::LabelBorder), false);
 		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);

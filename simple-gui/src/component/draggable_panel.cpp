@@ -88,39 +88,29 @@ namespace SimpleGui {
 	void DraggablePanel::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackround));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBackround).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackround), true);
 
 		BaseComponent::Render(renderer);
 
 		if (m_handleVisible) {
 			// draw handle
-			//renderer.FillRect(m_dragData.dragGRect, GetThemeColor(ThemeColorFlags::DraggablePanelHandle));
-			renderer.RenderRect(m_dragData.dragGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::DraggablePanelHandle).ToSDLColor(), true);
+			renderer.RenderRect(m_dragData.dragGRect, GetThemeColor(ThemeColorFlags::DraggablePanelHandle), true);
 			// draw title
 			m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::DraggablePanelForeground));
 			m_titleLbl->Render(renderer);
 
-			//renderer.SetClipRect(m_visibleGRect);
-			renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+			renderer.SetRenderClipRect(m_visibleGRect);
 			// draw fold btn
 			if (m_foldData.isFolded) {
 				Vec2 bottomCenter(
 					m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
 					m_foldData.toggleGRect.position.y + m_foldData.toggleGRect.size.y
 				);
-				//renderer.FillTriangle(
-				//	m_foldData.toggleGRect.TopLeft(),
-				//	m_foldData.toggleGRect.TopRight(),
-				//	bottomCenter,
-				//	GetThemeColor(ThemeColorFlags::DraggablePanelForeground)
-				//);
-
 				renderer.RenderTriangle(
-					m_foldData.toggleGRect.TopLeft().ToSDLFPoint(),
-					m_foldData.toggleGRect.TopRight().ToSDLFPoint(),
-					bottomCenter.ToSDLFPoint(),
-					GetThemeColor(ThemeColorFlags::DraggablePanelForeground).ToSDLColor(),
+					m_foldData.toggleGRect.TopLeft(),
+					m_foldData.toggleGRect.TopRight(),
+					bottomCenter,
+					GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
 					true
 				);
 			}
@@ -128,50 +118,32 @@ namespace SimpleGui {
 				Vec2 topCenter(
 					m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
 					m_foldData.toggleGRect.position.y
-				);
-				/*renderer.FillTriangle(
+				);	
+				renderer.RenderTriangle(
 					topCenter,
 					m_foldData.toggleGRect.BottomRight(),
 					m_foldData.toggleGRect.BottomLeft(),
-					GetThemeColor(ThemeColorFlags::DraggablePanelForeground)
-				);*/				
-				
-				renderer.RenderTriangle(
-					topCenter.ToSDLFPoint(),
-					m_foldData.toggleGRect.BottomRight().ToSDLFPoint(),
-					m_foldData.toggleGRect.BottomLeft().ToSDLFPoint(),
-					GetThemeColor(ThemeColorFlags::DraggablePanelForeground).ToSDLColor(),
+					GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
 					true
 				);
 			}
-			//renderer.ClearClipRect();
 			renderer.ClearRenderClipRect();
 		}
 
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+		renderer.SetRenderClipRect(m_visibleGRect);
 		// draw size grip handle
 		if (m_resizable && !m_foldData.isFolded) {
 			Rect rect(m_resizeData.dragGRect.position, Vec2(m_resizeBlockWidth, m_resizeBlockWidth));
-			/*renderer.FillTriangle(
+			renderer.RenderTriangle(
 				rect.BottomLeft(),
 				rect.TopRight(),
 				rect.BottomRight(),
-				GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip)
-			);*/			
-			
-			renderer.RenderTriangle(
-				rect.BottomLeft().ToSDLFPoint(),
-				rect.TopRight().ToSDLFPoint(),
-				rect.BottomRight().ToSDLFPoint(),
-				GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip).ToSDLColor(),
+				GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip),
 				true
 			);
 		}
 		// draw border
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder));
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder).ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder), false);
 		renderer.ClearRenderClipRect();
 
 		// TODO 重写绘制disabled

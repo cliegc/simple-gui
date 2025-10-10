@@ -88,16 +88,12 @@ namespace SimpleGui {
 	void ScrollPanel::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollPanelBackground));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBackground).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ScrollPanelBackground), true);
 		BaseComponent::Render(renderer);
 		m_hScrollBar->Render(renderer);
 		m_vScrollBar->Render(renderer);
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder));
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder).ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.SetRenderClipRect(m_visibleGRect);
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ScrollPanelBorder), false);
 		renderer.ClearRenderClipRect();
 
 		//debug

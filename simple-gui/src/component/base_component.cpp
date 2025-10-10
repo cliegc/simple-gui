@@ -336,10 +336,11 @@ namespace SimpleGui {
 	}
 
 	size_t BaseComponent::GetChildrenCount() const {
-		return std::count_if(m_children.begin(), m_children.end(),
+		auto count1 = std::count_if(m_children.begin(), m_children.end(),
 			[](auto& child) {
 				return child != nullptr;
 			});
+		return count1 + m_childCaches.size();
 	}
 
 	bool BaseComponent::HasChild(BaseComponent* cmp) {

@@ -48,16 +48,11 @@ namespace SimpleGui {
 	void ProgressBar::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ProgressBarSlot));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::ProgressBarSlot).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ProgressBarSlot), true);
 		
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
-		//renderer.FillRect(m_currProgressGRect, GetThemeColor(ThemeColorFlags::ProgressBarProgress));
-		renderer.RenderRect(m_currProgressGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::ProgressBarProgress).ToSDLColor(), true);
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ProgressBarBorder));
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::ProgressBarBorder).ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.SetRenderClipRect(m_visibleGRect);
+		renderer.RenderRect(m_currProgressGRect, GetThemeColor(ThemeColorFlags::ProgressBarProgress), true);
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ProgressBarBorder), false);
 		renderer.ClearRenderClipRect();
 
 		// draw current progress 

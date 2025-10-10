@@ -100,17 +100,17 @@ namespace SimpleGui {
         //void AddRenderClipCommand(const Rect& rect);
         //void AddRenderLineCommand()
 
-        void SetRenderClipRect(const SDL_Rect& rect);
+        void SetRenderClipRect(const Rect& rect);
         void ClearRenderClipRect();
 
-        void RenderLine(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_Color& color);
-        void RenderLines();
-        void RenderRect(const SDL_FRect& rect, const SDL_Color& color, bool fill);
-        void RenderRects();
-        void RenderTriangle(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_FPoint& p3, const SDL_Color& color, bool fill);
-        void RenderCircle(const SDL_FPoint& center, float radius, const SDL_Color& color, bool fill);
-        void RenderTexture(SDL_Texture* texture, const SDL_FRect& srcRect, const SDL_FRect& dstRect, float angle, const SDL_FPoint center, SDL_FlipMode mode);
-        void RenderText(TTF_Text* text, const SDL_FPoint& pos, const SDL_Color& color);
+        void RenderLine(const Vec2& p1, const Vec2& p2, const Color& color);
+        void RenderLines(const std::vector<SDL_FPoint> points, const Color& color);
+        void RenderRect(const Rect& rect, const Color& color, bool fill);
+        void RenderRects(const std::vector<SDL_FRect> rects, const Color& color, bool fill);
+        void RenderTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color, bool fill);
+        void RenderCircle(const Vec2& center, float radius, const Color& color, bool fill);
+        void RenderTexture(Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2& center, SDL_FlipMode mode);
+        void RenderText(TTF_Text* text, const Vec2& pos, const Color& color);
 
         void DrawLine(const Vec2& p1, const Vec2& p2, const Color& color) const;
         void DrawRect(const Rect& rect, const Color& color) const;

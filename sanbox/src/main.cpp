@@ -45,7 +45,7 @@ protected:
 	virtual void Render(Renderer& renderer) override {
 		//renderer.FillCircle(circlePos, 50, Color::GREEN);
 		renderer.SetTopRender(true);
-		renderer.RenderCircle(circlePos.ToSDLFPoint(), 50, Color::GREEN.ToSDLColor(), true);
+		renderer.RenderCircle(circlePos, 50, Color::GREEN, true);
 		renderer.SetTopRender(false);
 	}
 };
@@ -62,10 +62,10 @@ protected:
 	virtual void Render(Renderer& renderer) override {
 		Rect srcRect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
 		//renderer.DrawTexture(*m_texture.get(), srcRect, m_target->GetGlobalRect(), 0, srcRect.Center(), SDL_FLIP_NONE);
-		renderer.RenderTexture(&m_texture->GetSDLTexture(), srcRect.ToSDLFRect(),
-			m_target->GetGlobalRect().ToSDLFRect(), 0, srcRect.Center().ToSDLFPoint(), SDL_FLIP_NONE);
+		renderer.RenderTexture(m_texture.get(), srcRect,
+			m_target->GetGlobalRect(), 0, srcRect.Center(), SDL_FLIP_NONE);
 		//renderer.FillRect(m_target->GetGlobalRect(), Color(0, 0, 0, 200));
-		renderer.RenderRect(m_target->GetGlobalRect().ToSDLFRect(), { 0, 0, 0, 200 }, true);
+		renderer.RenderRect(m_target->GetGlobalRect(), Color(0, 0, 0, 200), true);
 	}
 
 private:
@@ -107,7 +107,7 @@ static void TestScrollPanel() {
 	auto draggablePanel = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test scroll panel");
 	draggablePanel->SetSize(400, 400);
 
-	auto dp2 = draggablePanel->AddChild<DraggablePanel>("test scroll panel");
+	auto dp2 = draggablePanel->AddChild<DraggablePanel>("button count: 0");
 	dp2->SetSize(200, 200);
 
 	auto scrollPanel = dp2->AddChild<ScrollPanel>();
@@ -115,12 +115,14 @@ static void TestScrollPanel() {
 
 	auto btn = draggablePanel->AddChild<Button>("add button");
 	btn->clicked.Connect("on_clicked",
-		[scrollPanel]() {
+		[dp2, scrollPanel]() {
 			auto btn = scrollPanel->AddChildDeferred<Button>(std::format("button {}", scrollPanel->GetChildrenCount()));
 			btn->SetPosition(
 				SDL_randf() * 800 - 300,
 				SDL_randf() * 800 - 300
 			);
+
+			dp2->SetTitle(std::format("button count: {}", scrollPanel->GetChildrenCount()));
 		});
 	
 	auto btn2 = draggablePanel->AddChild<Button>("clear all");
@@ -384,14 +386,14 @@ int main(int argc, char** argv) {
 	lbl2->SetPositionY(100);
 
 	//TestScrollBar();
-	//TestScrollPanel();
+	TestScrollPanel();
 	//TestLineEdit();
 	//TestTimer();
 	//TestProgressBar();
 	//TestSlider();
 	//TestCheckBox();
 	//TestDraggablePanel();
-	TestTextureRect();
+	//TestTextureRect();
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);

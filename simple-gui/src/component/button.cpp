@@ -75,32 +75,25 @@ namespace SimpleGui {
 	void Button::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::Background).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background), true);
 
 		Color color;
 		if (m_mouseState == MouseState::Normal) {
-			//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonNormal));
 			color = GetThemeColor(ThemeColorFlags::ButtonNormal);
 		}
 		else if (m_mouseState == MouseState::Hovering) {
-			//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonHovered));
 			color = GetThemeColor(ThemeColorFlags::ButtonHovered);
 		}
 		else {
-			//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ButtonPressed));
 			color = GetThemeColor(ThemeColorFlags::ButtonPressed);
 		}
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), color.ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, color, true);
 
 		m_lbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::ButtonForeground));
 		m_lbl->Render(renderer);
 
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ButtonBorder));
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::ButtonBorder).ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.SetRenderClipRect(m_visibleGRect);
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ButtonBorder), false);
 		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);

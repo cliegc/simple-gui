@@ -6,8 +6,9 @@
 namespace SimpleGui {
 	class RenderCommandDataVisitor final {
 	public:
-		RenderCommandDataVisitor(SDL_Renderer* renderer, const SDL_Color& color):
-			m_renderer(renderer), m_color(color) { }
+		RenderCommandDataVisitor(SDL_Renderer* renderer, const SDL_Color& color) :
+			m_renderer(renderer), m_color(color) {
+		}
 		~RenderCommandDataVisitor() = default;
 
 		void operator()(const RenderLineCommandData& data) {
@@ -47,7 +48,7 @@ namespace SimpleGui {
 					{ data.p2, fc, {0}},
 				};
 				SDL_RenderGeometry(m_renderer, nullptr, vertices, 3, nullptr, 0);
-				
+
 			}
 			else {
 				SDL_SetRenderDrawColor(m_renderer, m_color.r, m_color.g, m_color.b, m_color.a);
@@ -62,7 +63,7 @@ namespace SimpleGui {
 				std::vector<SDL_FPoint> points;
 				for (float y = -data.radius; y <= data.radius; y++) {
 					float x = (int)sqrt(data.radius * data.radius - y * y);
-					points.emplace_back(data.center.x - x, data.center.y + y );
+					points.emplace_back(data.center.x - x, data.center.y + y);
 					points.emplace_back(data.center.x + x, data.center.y + y);
 				}
 				SDL_RenderLines(m_renderer, points.data(), points.size());
@@ -138,6 +139,7 @@ namespace SimpleGui {
 			exit(-1);
 		}
 
+		m_topRender = false;
 		SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 	}
 
@@ -168,8 +170,8 @@ namespace SimpleGui {
 		SDL_SetRenderClipRect(m_renderer, NULL);
 	}
 
-	void Renderer::SetRenderClipRect(const SDL_Rect& rect) {
-		RenderCommand cmd{ .data = RenderClipCommandData{rect, false} };
+	void Renderer::SetRenderClipRect(const Rect& rect) {
+		RenderCommand cmd{ .data = RenderClipCommandData{rect.ToSDLRect(), false} };
 		AddRenderCommand(std::move(cmd));
 	}
 
@@ -178,39 +180,64 @@ namespace SimpleGui {
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderLine(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_Color& color) {
-		RenderCommand cmd{ .data = RenderLineCommandData{p1, p2}, .color = color };
+	void Renderer::RenderLine(const Vec2& p1, const Vec2& p2, const Color& color) {
+		RenderCommand cmd{
+			.data = RenderLineCommandData{p1.ToSDLFPoint(), p2.ToSDLFPoint()},
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderLines() {
-	}
-
-	void Renderer::RenderRect(const SDL_FRect& rect, const SDL_Color& color, bool fill) {
-		RenderCommand cmd{ .data = RenderRectCommandData{rect, fill}, .color = color };
+	void Renderer::RenderLines(const std::vector<SDL_FPoint> points, const Color& color) {
+		RenderCommand cmd{ 
+			.data = {RenderLinesCommandData{points}}, 
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderRects() {
-	}
-
-	void Renderer::RenderTriangle(const SDL_FPoint& p1, const SDL_FPoint& p2, const SDL_FPoint& p3, const SDL_Color& color, bool fill) {
-		RenderCommand cmd{ .data = RenderTriangleCommandData{p1, p2, p3, fill}, .color = color };
+	void Renderer::RenderRect(const Rect& rect, const Color& color, bool fill) {
+		RenderCommand cmd{
+			.data = RenderRectCommandData{rect.ToSDLFRect(), fill},
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderCircle(const SDL_FPoint& center, float radius, const SDL_Color& color, bool fill) {
-		RenderCommand cmd{ .data = RenderCircleCommandData{center, radius, fill}, .color = color };
+	void Renderer::RenderRects(const std::vector<SDL_FRect> rects, const Color& color, bool fill) {
+		RenderCommand cmd{ 
+			.data = RenderRectsCommandData{rects, fill}, 
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderTexture(SDL_Texture* texture, const SDL_FRect& srcRect, const SDL_FRect& dstRect, float angle, const SDL_FPoint center, SDL_FlipMode mode) {
-		RenderCommand cmd{ .data = RenderTextureCommandData{texture, srcRect, dstRect, angle, center, mode} };
+	void Renderer::RenderTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color, bool fill) {
+		RenderCommand cmd{
+			.data = RenderTriangleCommandData{p1.ToSDLFPoint(), p2.ToSDLFPoint(), p3.ToSDLFPoint(), fill},
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 
-	void Renderer::RenderText(TTF_Text* text, const SDL_FPoint& pos, const SDL_Color& color) {
-		RenderCommand cmd{ .data = {RenderTextCommandData{text, pos}}, .color = color };
+	void Renderer::RenderCircle(const Vec2& center, float radius, const Color& color, bool fill) {
+		RenderCommand cmd{
+			.data = RenderCircleCommandData{center.ToSDLFPoint(), radius, fill},
+			.color = color.ToSDLColor() };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderTexture(Texture* texture, const Rect& srcRect, const Rect& dstRect, float angle, const Vec2& center, SDL_FlipMode mode) {
+		RenderCommand cmd{
+			.data = RenderTextureCommandData{
+				&texture->GetSDLTexture(),
+				srcRect.ToSDLFRect(),
+				dstRect.ToSDLFRect(),
+				angle,
+				center.ToSDLFPoint(),
+				mode} };
+		AddRenderCommand(std::move(cmd));
+	}
+
+	void Renderer::RenderText(TTF_Text* text, const Vec2& pos, const Color& color) {
+		RenderCommand cmd{
+			.data = {RenderTextCommandData{text, pos.ToSDLFPoint()}},
+			.color = color.ToSDLColor() };
 		AddRenderCommand(std::move(cmd));
 	}
 

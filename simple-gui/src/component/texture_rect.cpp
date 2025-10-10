@@ -44,27 +44,16 @@ namespace SimpleGui {
 		SG_CMP_RENDER_CONDITIONS;
 
 		// draw bg
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::TextureRectBackround).ToSDLColor(), true);
-		
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::TextureRectBackround), true);
+
+		renderer.SetRenderClipRect(m_visibleGRect);
 		if (m_texture && !m_texture->IsNull()) {
 			Rect rect(0, 0, m_texture->GetWidth(), m_texture->GetHeight());
-			//renderer.DrawTexture(*m_texture, rect, m_textureGRect, 0, rect.Center(), m_flipMode);
-			renderer.RenderTexture(
-				&m_texture->GetSDLTexture(),
-				rect.ToSDLFRect(),
-				m_textureGRect.ToSDLFRect(),
-				0,
-				rect.Center().ToSDLFPoint(),
-				m_flipMode);
+			renderer.RenderTexture(m_texture.get(), rect, m_textureGRect, 0, rect.Center(), m_flipMode);
 		}
 		m_tipLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::Foreground));
 		m_tipLbl->Render(renderer);
-		//renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder));
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder).ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::TextureRectBorder), false);
 		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);
@@ -196,7 +185,7 @@ namespace SimpleGui {
 			}
 		}
 		else {
-			SDL_RenderTextureRotated(renderer,&m_texture->GetSDLTexture(), NULL, &rect, 0, NULL, m_flipMode);
+			SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &rect, 0, NULL, m_flipMode);
 		}
 	}
 }

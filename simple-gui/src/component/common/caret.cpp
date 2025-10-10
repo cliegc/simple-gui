@@ -27,8 +27,7 @@ namespace SimpleGui {
 
 	void Caret::Render(Renderer& renderer) const {
 		if (!m_visible || !m_blinkFlag) return;
-		//renderer.FillRect(m_gRect, m_color);
-		renderer.RenderRect(m_gRect.ToSDLFRect(), m_color.ToSDLColor(), true);
+		renderer.RenderRect(m_gRect, m_color, true);
 	}
 #pragma endregion
 

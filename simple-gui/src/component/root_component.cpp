@@ -30,8 +30,7 @@ namespace SimpleGui {
 
 	void RootComponent::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::Background).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::Background), true);
 		BaseComponent::Render(renderer);
 	}
 }

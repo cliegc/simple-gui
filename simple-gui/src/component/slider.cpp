@@ -39,17 +39,13 @@ namespace SimpleGui {
 	void Slider::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		//renderer.FillRect(m_slotRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderSlot));
-		//renderer.FillRect(m_valueRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderValue));
-		renderer.RenderRect(m_slotRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::SliderSlot).ToSDLColor(), true);
-		renderer.RenderRect(m_valueRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::SliderValue).ToSDLColor(), true);
+		renderer.RenderRect(m_slotRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderSlot), true);
+		renderer.RenderRect(m_valueRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderValue), true);
 		if (m_mouseState == MouseState::Hovering) {
-			//renderer.FillRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandlerHovered));
-			renderer.RenderRect(m_handlerRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::SliderHandlerHovered).ToSDLColor(), true);
+			renderer.RenderRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandlerHovered), true);
 		}
 		else {
-			//renderer.FillRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandler));
-			renderer.RenderRect(m_handlerRect.visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::SliderHandler).ToSDLColor(), true);
+			renderer.RenderRect(m_handlerRect.visibleGRect, GetThemeColor(ThemeColorFlags::SliderHandler), true);
 		}
 
 		BaseComponent::Render(renderer);

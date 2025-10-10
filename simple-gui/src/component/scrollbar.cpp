@@ -131,26 +131,19 @@ namespace SimpleGui {
 		}
 
 		// draw slot
-		//renderer.FillRect(m_visibleGRect, slotColor);
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), slotColor.ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, slotColor, true);
 
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+		renderer.SetRenderClipRect(m_visibleGRect);
 		// draw slider
 		if (m_mouseState == MouseState::Normal)
-			//renderer.FillRect(m_slider.visibleGRect, sliderColor);
-			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), sliderColor.ToSDLColor(), true);
+			renderer.RenderRect(m_slider.visibleGRect, sliderColor, true);
 		else if (m_mouseState == MouseState::Hovering)
-			//renderer.FillRect(m_slider.visibleGRect, hoveredColor);
-			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), hoveredColor.ToSDLColor(), true);
+			renderer.RenderRect(m_slider.visibleGRect, hoveredColor, true);
 		else if (m_mouseState == MouseState::Pressed)
-			//renderer.FillRect(m_slider.visibleGRect, pressedColor);
-			renderer.RenderRect(m_slider.visibleGRect.ToSDLFRect(), pressedColor.ToSDLColor(), true);
+			renderer.RenderRect(m_slider.visibleGRect, pressedColor, true);
 
 		//draw border
-		//renderer.DrawRect(GetGlobalRect(), borderColor);
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), borderColor.ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.RenderRect(GetGlobalRect(), borderColor, false);
 		renderer.ClearRenderClipRect();
 
 		// debug

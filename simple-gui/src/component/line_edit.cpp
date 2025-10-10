@@ -119,8 +119,7 @@ namespace SimpleGui {
 		SG_CMP_RENDER_CONDITIONS;
 
 		// draw bg
-		//renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LineEditBackground));
-		renderer.RenderRect(m_visibleGRect.ToSDLFRect(), GetThemeColor(ThemeColorFlags::LineEditBackground).ToSDLColor(), true);
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::LineEditBackground), true);
 
 		// draw text and placeholder text
 		if (IsShowPlaceholder()) {
@@ -143,12 +142,9 @@ namespace SimpleGui {
 		m_caret.Render(renderer);
 
 		// draw border
-		//renderer.SetClipRect(m_visibleGRect);
-		renderer.SetRenderClipRect(m_visibleGRect.ToSDLRect());
+		renderer.SetRenderClipRect(m_visibleGRect);
 		Color borderColor = m_active ? GetThemeColor(ThemeColorFlags::LineEditActivatedBorder) : GetThemeColor(ThemeColorFlags::LineEditBorder);
-		//renderer.DrawRect(GetGlobalRect(), borderColor);
-		renderer.RenderRect(GetGlobalRect().ToSDLFRect(), borderColor.ToSDLColor(), false);
-		//renderer.ClearClipRect();
+		renderer.RenderRect(GetGlobalRect(), borderColor, false);
 		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);
