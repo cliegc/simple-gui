@@ -42,7 +42,6 @@ namespace SimpleGui {
 					m_color.a / 255.f
 				};
 				SDL_Vertex vertices[3] = {
-					// 第一个三角形 (左上、右上、左下)
 					{ data.p3, fc, {0}},
 					{ data.p1, fc, {0}},
 					{ data.p2, fc, {0}},
@@ -329,12 +328,10 @@ namespace SimpleGui {
 		}
 
 		SDL_Vertex vertices[6] = {
-			// 第一个三角形 (左上、右上、左下)
 			{ rect.position.ToSDLFPoint(), topLeft, {0}},
 			{ rect.TopRight().ToSDLFPoint(), topRight, {0}},
 			{ rect.BottomLeft().ToSDLFPoint(), bottomLeft, {0}},
 
-			// 第二个三角形 (右上、右下、左下)
 			{ rect.TopRight().ToSDLFPoint(), topRight, { 0 } },
 			{ rect.BottomRight().ToSDLFPoint(), bottomRight, { 0 } },
 			{ rect.BottomLeft().ToSDLFPoint(), bottomLeft, {0}}
@@ -345,7 +342,6 @@ namespace SimpleGui {
 	void Renderer::FillTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color& color) const {
 		SDL_FColor fc = color.ToSDLFColor();
 		SDL_Vertex vertices[3] = {
-			// 第一个三角形 (左上、右上、左下)
 			{ p1.ToSDLFPoint(), fc, {0}},
 			{ p2.ToSDLFPoint(), fc, {0}},
 			{ p3.ToSDLFPoint(), fc, {0}},
@@ -413,11 +409,11 @@ namespace SimpleGui {
 
 	std::shared_ptr<SDL_Texture> Renderer::CreateSharedSDLTexture(std::string_view path) {
 		SDL_Texture* tt = IMG_LoadTexture(m_renderer, path.data());
-		return std::move(std::shared_ptr<SDL_Texture>(tt, TextureDeleter()));
+		return std::shared_ptr<SDL_Texture>(tt, TextureDeleter());
 	}
 
 	std::shared_ptr<Texture> Renderer::CreateSharedTexture(std::string_view path) {
-		return std::move(std::shared_ptr<Texture>(new Texture(*this, path)));
+		return std::shared_ptr<Texture>(new Texture(*this, path));
 	}
 
 	SDL_Texture* Renderer::CreateSDLTexture(std::string_view path) {

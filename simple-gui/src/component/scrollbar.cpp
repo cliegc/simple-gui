@@ -64,7 +64,6 @@ namespace SimpleGui {
 		if (m_visibleGRect.ContainPoint(renderPos)) {
 			if (auto ev = event->Convert<MouseButtonEvent>();
 				ev && ev->IsPressed(MouseButton::Left)) {
-				// 点击槽，滑块移动到点击位置, 
 				Rect contentGRect = GetContentGlobalRect();
 				if (m_direction == Direction::Horizontal &&
 					(renderPos.x < m_slider.visibleGRect.Left() ||
@@ -84,7 +83,6 @@ namespace SimpleGui {
 			}
 
 			if (auto ev = event->Convert<MouseWheelEvent>()) {
-				// 滚轮滚动滑块
 				UpdateSliderPositionByWheel(m_mouseWheelDelta, -ev->GetDirection().y);
 				return true;
 			}
@@ -154,8 +152,6 @@ namespace SimpleGui {
 	}
 
 	void ScrollBar::UpdateHorizontalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect) {
-		// CalcChildrenBoundaryGlobalRect无需一直计算，可缓存优化
-		// 在BaseComponent中添加m_childrenBoundaryGRect成员变量，在添加子组件和子组件大小改变时重新计算
 		if (IsZeroApprox(boundaryGRect.Area()) ||
 			(boundaryGRect.Left() > targetContentGRect.Left() ||
 				IsEqualApprox(boundaryGRect.Left(), targetContentGRect.Left())) &&
@@ -200,8 +196,6 @@ namespace SimpleGui {
 	}
 
 	void ScrollBar::UpdateVerticalSlider(const Rect& boundaryGRect, const Rect& targetContentGRect) {
-		// CalcChildrenBoundaryGlobalRect无需一直计算，可缓存优化
-		// 在BaseComponent中添加m_childrenBoundaryGRect成员变量，在添加子组件和子组件大小改变时重新计算
 		if (IsZeroApprox(boundaryGRect.Area()) ||
 			(boundaryGRect.Top() > targetContentGRect.Top() ||
 				IsEqualApprox(boundaryGRect.Top(), targetContentGRect.Top())) &&
@@ -302,7 +296,6 @@ namespace SimpleGui {
 		m_dragSliderData.dragging = true;
 		Rect contentGRect = GetContentGlobalRect();
 		if (m_direction == Direction::Horizontal) {
-			// bug, 未更新前m_slider.globalRect.size为0
 			float offset = scale * (contentGRect.size.w - m_slider.globalRect.size.w);
 			m_slider.globalRect.position.x = contentGRect.Left() + offset;
 		}

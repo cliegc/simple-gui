@@ -1,9 +1,9 @@
 ﻿#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_textengine.h>
-#include <SDL3_image/SDL_image.h>
+//#include <SDL3_ttf/SDL_textengine.h>
+//#include <SDL3_image/SDL_image.h>
 #include <format>
 #include <simple_gui.hpp>
-#include <style.hpp>
+//#include <style.hpp>
 
 
 
@@ -128,8 +128,9 @@ static void TestScrollPanel() {
 	auto btn2 = draggablePanel->AddChild<Button>("clear all");
 	btn2->SetPosition(0, 100);
 	btn2->clicked.Connect("on_clicked", 
-		[scrollPanel]() {
+		[dp2, scrollPanel]() {
 			scrollPanel->ClearAllChildrenDeferred();
+			dp2->SetTitle(std::format("button count: 0"));
 		});
 }
 
@@ -380,11 +381,6 @@ int main(int argc, char** argv) {
 	win.GetRootComponent().AddExtendedFunctions<DrawBackgroundFunctions>(win.GetRenderer().CreateSharedTexture("C:\\Users\\endif\\Desktop\\jinzi.png"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
-	win.AddComponent<Label>("")->AddExtendedFunctions<DisplayFPSForLabel>();
-	auto lbl2 = win.AddComponent<Label>("");
-	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
-	lbl2->SetPositionY(100);
-
 	//TestScrollBar();
 	TestScrollPanel();
 	//TestLineEdit();
@@ -394,6 +390,17 @@ int main(int argc, char** argv) {
 	//TestCheckBox();
 	//TestDraggablePanel();
 	//TestTextureRect();
+
+	auto fpsLbl = win.AddComponent<Label>("");
+	fpsLbl->AddExtendedFunctions<DisplayFPSForLabel>();
+	fpsLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::GREEN);
+	fpsLbl->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0,0,0,50));
+
+	auto lbl2 = win.AddComponent<Label>("");
+	lbl2->AddExtendedFunctions<DisplayDeltaForLabel>();
+	lbl2->CustomThemeColor(ThemeColorFlags::LabelForeground, Color::GREEN);
+	lbl2->CustomThemeColor(ThemeColorFlags::LabelBackgound, Color(0, 0, 0, 50));
+	lbl2->SetPositionY(100);
 
 	//win.EnableVsync(true);
 	SG_GuiManager.SetTargetFrameRate(60);

@@ -14,7 +14,7 @@ namespace SimpleGui {
 		~CheckBoxGroup() = default;
 
 		inline static std::shared_ptr<CheckBoxGroup> Create() {
-			return std::move(std::make_shared<CheckBoxGroup>());
+			return std::make_shared<CheckBoxGroup>();
 		}
 
 		inline bool IsUniqueCheck() const { return m_uniqueCheck; }

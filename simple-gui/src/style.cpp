@@ -88,7 +88,7 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x7f8c8dff);
 
 
-		return std::move(style);
+		return style;
 	}
 
 	std::unique_ptr<Style> StyleManager::CreateDarkStyle() {
@@ -156,7 +156,7 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::CheckBoxCheckedFlag] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::CheckBoxCheckRectBorder] = Color(0x3d444dff);
 
-		return std::move(style);
+		return style;
 	}
 
 }

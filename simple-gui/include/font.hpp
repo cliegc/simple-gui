@@ -37,7 +37,7 @@ namespace SimpleGui {
 			return Vec2(static_cast<float>(w), static_cast<float>(h));
 		}
 
-		inline std::string GetFamilyName() const { TTF_GetFontFamilyName(m_font); }
+		inline std::string GetFamilyName() const { return TTF_GetFontFamilyName(m_font); }
 
 		inline FontStyle GetStyle() const { return static_cast<FontStyle>(TTF_GetFontStyle(m_font)); }
 		inline void SetStyle(FontStyle style) { TTF_SetFontStyle(m_font,  static_cast<TTF_FontStyleFlags>(style));  }

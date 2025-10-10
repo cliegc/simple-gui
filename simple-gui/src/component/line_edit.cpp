@@ -337,7 +337,6 @@ namespace SimpleGui {
 		if (auto ev = event->Convert<KeyBoardButtonEvent>();
 			ev && ev->IsPressed()) {
 			switch (ev->GetKeyCode()) {
-				// backspace£¬delete char
 			case SDLK_BACKSPACE: {
 				if (m_string.empty() || !m_caretIndex) return false;
 

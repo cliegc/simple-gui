@@ -35,10 +35,9 @@ namespace SimpleGui {
 	void IMEUtils::SetIMECandidateWindowPosition(const Window& win, const Vec2& pos) {
 #ifdef _WIN32
 		SDL_PropertiesID props = SDL_GetWindowProperties(&win.GetSDLWindow());
-		// 获取 HWND 指针
 		HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
 		if (!hwnd) {
-			SDL_Log("无法获取 HWND: %s", SDL_GetError());
+			SDL_Log("锟睫凤拷锟斤拷取 HWND: %s", SDL_GetError());
 			return;
 		}
 
@@ -63,10 +62,9 @@ namespace SimpleGui {
 	void IMEUtils::SetIMECompositionWindowPosition(const Window& win, const Vec2& pos) {
 #ifdef _WIN32
 		SDL_PropertiesID props = SDL_GetWindowProperties(&win.GetSDLWindow());
-		// 获取 HWND 指针
 		HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
 		if (!hwnd) {
-			SDL_Log("无法获取 HWND: %s", SDL_GetError());
+			SDL_Log("锟睫凤拷锟斤拷取 HWND: %s", SDL_GetError());
 			return;
 		}
 

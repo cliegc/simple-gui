@@ -70,8 +70,8 @@ namespace SimpleGui {
 		struct SingleCharData final {
 			size_t index;
 			int bytes;
-			size_t totalBytes;			// 开始字符到该字符的字节数
-			Vec2 totalSize;				// 开始字符到该字符的矩形大小
+			size_t totalBytes;
+			Vec2 totalSize;
 		};
 
 		std::vector<SingleCharData> m_textCaches;
