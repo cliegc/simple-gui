@@ -4,7 +4,6 @@
 namespace SimpleGui {
 	ComboBox::ComboBox(const std::vector<std::string>& items) {
 		m_currItemLbl = std::make_unique<Label>("");
-
 		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
 	}
 
@@ -31,7 +30,8 @@ namespace SimpleGui {
 	void ComboBox::Render(Renderer& renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
-		renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground));
+		// renderer.FillRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground));
+		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground), true);
 
 		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::ComboBoxForeground));
 		m_currItemLbl->Render(renderer);
@@ -41,9 +41,9 @@ namespace SimpleGui {
 		//draw items list
 		RenderItemsList(renderer);
 
-		renderer.SetClipRect(m_visibleGRect);
-		renderer.DrawRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ComboBoxBorder));
-		renderer.ClearClipRect();
+		renderer.SetRenderClipRect(m_visibleGRect);
+		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::ComboBoxBorder), false);
+		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);
 	}
@@ -62,8 +62,9 @@ namespace SimpleGui {
 	void ComboBox::RenderItemsList(Renderer& renderer) {
 		if (!m_showItemsList) return;
 
-		renderer.FillRect(m_itemsRect.visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground));
-		for (auto& lbl : m_lbls) {
+		renderer.SetTopRender(true);
+		renderer.RenderRect(m_itemsRect.visibleGRect, GetThemeColor(ThemeColorFlags::ComboBoxBackground), true);
+		for (const auto& lbl : m_lbls) {
 			lbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::ComboBoxForeground));
 			lbl->Render(renderer);
 		}
@@ -72,8 +73,9 @@ namespace SimpleGui {
 
 		//draw selected
 		
-		renderer.SetClipRect(m_itemsRect.visibleGRect);
-		renderer.DrawRect(m_itemsRect.gRect, GetThemeColor(ThemeColorFlags::ComboBoxBorder));
-		renderer.ClearClipRect();
+		renderer.SetRenderClipRect(m_itemsRect.visibleGRect);
+		renderer.RenderRect(m_itemsRect.gRect, GetThemeColor(ThemeColorFlags::ComboBoxBorder), false);
+		renderer.ClearRenderClipRect();
+		renderer.SetTopRender(false);
 	}
 }

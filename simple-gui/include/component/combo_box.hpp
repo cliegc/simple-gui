@@ -7,17 +7,17 @@
 namespace SimpleGui {
 	class ComboBox final : public BaseComponent {
 	public:
-		ComboBox(const std::vector<std::string>& items);
-		~ComboBox() = default;
+		explicit ComboBox(const std::vector<std::string>& items = {});
+		~ComboBox() override = default;
 
-		virtual bool HandleEvent(Event* event) override;
-		virtual void Update() override;
-		virtual void Render(Renderer& renderer) override;
+		bool HandleEvent(Event* event) override;
+		void Update() override;
+		void Render(Renderer& renderer) override;
 
-		inline std::string GetCurrentItem() const { return m_currItemLbl->GetText(); }
+		std::string GetCurrentItem() const { return m_currItemLbl->GetText(); }
 		std::string GetItem(size_t index) const;
 		std::vector<std::string> GetItems() const;
-		
+
 		void SetCurrentItem(size_t index);
 		void SetCurrentItem(std::string_view item);
 
@@ -33,7 +33,7 @@ namespace SimpleGui {
 		Signal<size_t, const std::string&> currentItemChanged;
 
 	protected:
-		virtual void EnteredComponentTree() override;
+		void EnteredComponentTree() override;
 
 	private:
 		std::vector<std::unique_ptr<Label>> m_lbls;

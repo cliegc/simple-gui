@@ -15,7 +15,9 @@ namespace SimpleGui {
 
 		TextureStretchMode GetTextureStretchMode() const;
 		void SetTextureStretchMode(TextureStretchMode mode);
-		void SetScaleMode(SDL_ScaleMode mode);
+
+		TextureScaleMode GetTextureScaleMode() const { return m_scaleMode; }
+		void SetScaleMode(TextureScaleMode mode);
 
 		bool IsFlipH() const;
 		void SetFlipH(bool flip);
@@ -29,8 +31,8 @@ namespace SimpleGui {
 	private:
 		std::shared_ptr<Texture> m_texture;
 		std::unique_ptr<Label> m_tipLbl;
-		TextureStretchMode m_textureStretchMode = TextureStretchMode::Scale;
-		SDL_ScaleMode m_scaleMode;
+		TextureStretchMode m_textureStretchMode{};
+		TextureScaleMode m_scaleMode{};
 		SDL_FlipMode m_flipMode;
 		Rect m_textureGRect;
 

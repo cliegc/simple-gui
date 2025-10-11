@@ -7,7 +7,6 @@ namespace SimpleGui {
 	TextureRect::TextureRect(const std::shared_ptr<Texture> &texture) : BaseComponent() {
 		m_texture = texture;
 		m_tipLbl = std::make_unique<Label>("");
-		m_scaleMode = SDL_SCALEMODE_LINEAR;
 		m_flipMode = SDL_FLIP_NONE;
 		//m_padding = SG_GuiManager.GetCurrentStyle().componentPadding;
 
@@ -15,7 +14,8 @@ namespace SimpleGui {
 			m_size.w = m_texture->GetWidth();
 			m_size.h = m_texture->GetHeight();
 			m_textureGRect = GetContentGlobalRect();
-			SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), m_scaleMode);
+			// SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), m_scaleMode);
+			SetScaleMode(TextureScaleMode::Linear);
 		}
 
 		m_tipLbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
@@ -40,7 +40,7 @@ namespace SimpleGui {
 		CalcVisibleGlobalRect(this, m_tipLbl.get());
 	}
 
-	void TextureRect::Render(Renderer& renderer) {
+	void TextureRect::Render(Renderer &renderer) {
 		SG_CMP_RENDER_CONDITIONS;
 
 		// draw bg
@@ -77,9 +77,10 @@ namespace SimpleGui {
 		m_textureStretchMode = mode;
 	}
 
-	void TextureRect::SetScaleMode(SDL_ScaleMode mode) {
+	void TextureRect::SetScaleMode(TextureScaleMode mode) {
 		if (!m_texture || m_texture->IsNull()) return;
-		SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), mode);
+		const auto sdlMode = mode == TextureScaleMode::Linear ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST;
+		SDL_SetTextureScaleMode(&m_texture->GetSDLTexture(), sdlMode);
 		m_scaleMode = mode;
 	}
 
@@ -109,82 +110,79 @@ namespace SimpleGui {
 		if (m_texture && m_texture->IsNull()) {
 			m_tipLbl->SetText(std::format("can't open the file: {}", m_texture->GetPath()));
 			m_tipLbl->SetVisible(true);
-		}
-		else {
+		} else {
 			m_tipLbl->SetVisible(false);
 		}
 	}
 
 	void TextureRect::UpdateTextureStretchMode() {
 		//Scale,							// 图片大小跟随组件大小（不超过组件大小），不保证图片的宽高比
-		//Tile,							// 图片平铺整个控件
-		//Keep,							// 保持图片的大小，并在组件的左上角显示
-		//KeepCentered,					// 保持图片的大小，并在组件中心位置显示
+		//Tile,								// 图片平铺整个控件
+		//Keep,								// 保持图片的大小，并在组件的左上角显示
+		//KeepCentered,						// 保持图片的大小，并在组件中心位置显示
 		//KeepAspect,						// 图片大小跟随组件大小（不超过组件大小），保证图片的宽高比，并在组件的左上角显示
 		//KeepAspectCentered,				// 图片大小跟随组件大小（不超过组件大小），保证图片的宽高比，并在组件中心位置显示
 		//KeepAspectCovered,				// 图片大小跟随组件大小（超过组件大小），保证图片的宽高比，并在组件中心位置显示
 
-		Rect globaleRect = GetGlobalRect();
+		Rect globalRect = GetGlobalRect();
 		Rect contentRect = GetContentGlobalRect();
 
 		switch (m_textureStretchMode) {
-		case TextureStretchMode::Scale:
-		case TextureStretchMode::Tile:
-		{
-			m_textureGRect = contentRect;
-			break;
-		}
-		case TextureStretchMode::Keep:
-		{
-			m_textureGRect.position = globaleRect.position + Vec2(m_padding.left, m_padding.top);
-			m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
-			break;
-		}
-		case TextureStretchMode::KeepCentered:
-		{
-			m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
-			m_textureGRect.position.x = (globaleRect.size.w - m_padding.left - m_padding.right - m_textureGRect.size.w) / 2 + globaleRect.position.x;
-			m_textureGRect.position.y = (globaleRect.size.h - m_padding.top - m_padding.bottom - m_textureGRect.size.h) / 2 + globaleRect.position.y;
-			break;
-		}
-		case TextureStretchMode::KeepAspect:
-		{
-			m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
-			m_textureGRect.AdjustSizeToFitOtherRect(contentRect);
-			m_textureGRect.position = contentRect.position;
-			break;
-		}
-		case TextureStretchMode::KeepAspectCentered:
-		{
-			m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
-			m_textureGRect.AdjustSizeToFitOtherRect(contentRect);
-			break;
-		}
-		case TextureStretchMode::KeepAspectCovered:
-		{
-			m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
-			m_textureGRect.AdjustSizeToCoverOtherRect(contentRect);
-			break;
-		}
-		default:
-			break;
+			case TextureStretchMode::Scale:
+			case TextureStretchMode::Tile: {
+				m_textureGRect = contentRect;
+				break;
+			}
+			case TextureStretchMode::Keep: {
+				m_textureGRect.position = globalRect.position + Vec2(m_padding.left, m_padding.top);
+				m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
+				break;
+			}
+			case TextureStretchMode::KeepCentered: {
+				m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
+				m_textureGRect.position.x = (globalRect.size.w - m_padding.left - m_padding.right - m_textureGRect.size
+				                             .w) / 2 + globalRect.position.x;
+				m_textureGRect.position.y = (globalRect.size.h - m_padding.top - m_padding.bottom - m_textureGRect.size
+				                             .h) / 2 + globalRect.position.y;
+				break;
+			}
+			case TextureStretchMode::KeepAspect: {
+				m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
+				m_textureGRect.AdjustSizeToFitOtherRect(contentRect);
+				m_textureGRect.position = contentRect.position;
+				break;
+			}
+			case TextureStretchMode::KeepAspectCentered: {
+				m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
+				m_textureGRect.AdjustSizeToFitOtherRect(contentRect);
+				break;
+			}
+			case TextureStretchMode::KeepAspectCovered: {
+				m_textureGRect.size = Vec2(m_texture->GetWidth(), m_texture->GetHeight());
+				m_textureGRect.AdjustSizeToCoverOtherRect(contentRect);
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
-	void TextureRect::RenderTexture(SDL_Renderer* renderer) const {
+	void TextureRect::RenderTexture(SDL_Renderer *renderer) const {
 		SDL_FRect rect = m_textureGRect.ToSDLFRect();
 
 		if (m_textureStretchMode == TextureStretchMode::Tile) {
 			for (int i = 0; i < rect.w;) {
 				for (int j = 0; j < rect.h;) {
-					SDL_FRect tileRect = { static_cast<float>(i), static_cast<float>(j), m_texture->GetWidth(), m_texture->GetHeight() };
-					SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &tileRect, 0, NULL, m_flipMode);
+					SDL_FRect tileRect = {
+						static_cast<float>(i), static_cast<float>(j), m_texture->GetWidth(), m_texture->GetHeight()
+					};
+					SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &tileRect, 0, NULL,
+					                         m_flipMode);
 					j += m_texture->GetHeight();
 				}
 				i += m_texture->GetWidth();
 			}
-		}
-		else {
+		} else {
 			SDL_RenderTextureRotated(renderer, &m_texture->GetSDLTexture(), NULL, &rect, 0, NULL, m_flipMode);
 		}
 	}

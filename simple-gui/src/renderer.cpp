@@ -298,7 +298,7 @@ namespace SimpleGui {
 		SDL_FColor bottomRight = color.end.ToSDLFColor();
 		SDL_FColor bottomLeft = color.start.ToSDLFColor();
 
-		if (color.type == GradientColor::Type::Vertival) {
+		if (color.type == GradientColor::Type::Vertical) {
 			topRight = color.start.ToSDLFColor();
 			bottomLeft = color.end.ToSDLFColor();
 		}
@@ -407,20 +407,20 @@ namespace SimpleGui {
 		return Vec2(w, h);
 	}
 
-	std::shared_ptr<SDL_Texture> Renderer::CreateSharedSDLTexture(std::string_view path) {
+	std::shared_ptr<SDL_Texture> Renderer::CreateSharedSDLTexture(std::string_view path) const {
 		SDL_Texture* tt = IMG_LoadTexture(m_renderer, path.data());
-		return std::shared_ptr<SDL_Texture>(tt, TextureDeleter());
+		return {tt, TextureDeleter()};
 	}
 
-	std::shared_ptr<Texture> Renderer::CreateSharedTexture(std::string_view path) {
+	std::shared_ptr<Texture> Renderer::CreateSharedTexture(std::string_view path) const {
 		return std::shared_ptr<Texture>(new Texture(*this, path));
 	}
 
-	SDL_Texture* Renderer::CreateSDLTexture(std::string_view path) {
+	SDL_Texture* Renderer::CreateSDLTexture(std::string_view path) const {
 		return IMG_LoadTexture(m_renderer, path.data());
 	}
 
-	Texture* Renderer::CreateTexture(std::string_view path) {
+	Texture* Renderer::CreateTexture(std::string_view path) const {
 		return new Texture(*this, path);
 	}
 

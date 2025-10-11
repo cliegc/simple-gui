@@ -1,6 +1,5 @@
 #pragma once
 #include <utility>
-#include "math.h"
 
 
 namespace SimpleGui {
@@ -52,13 +51,18 @@ namespace SimpleGui {
 		Release,
 	};
 
-	enum class TextureStretchMode {		// �����ڵ��������СʱͼƬ��ʾ��ʽ 
-		Scale,							// ͼƬ��С���������С�������������С��������֤ͼƬ�Ŀ��߱�
-		Tile,							// ͼƬƽ�������ؼ�
-		Keep,							// ����ͼƬ�Ĵ�С��������������Ͻ���ʾ
-		KeepCentered,					// ����ͼƬ�Ĵ�С�������������λ����ʾ
-		KeepAspect,						// ͼƬ��С���������С�������������С������֤ͼƬ�Ŀ��߱ȣ�������������Ͻ���ʾ
-		KeepAspectCentered,				// ͼƬ��С���������С�������������С������֤ͼƬ�Ŀ��߱ȣ������������λ����ʾ
-		KeepAspectCovered,				// ͼƬ��С���������С�����������С������֤ͼƬ�Ŀ��߱ȣ������������λ����ʾ
+	enum class TextureStretchMode {
+		Scale,							// 图片大小跟随组件大小（不超过组件大小），不保证图片的宽高比
+		Tile,							// 图片平铺整个控件
+		Keep,							// 保持图片的大小，并在组件的左上角显示
+		KeepCentered,					// 保持图片的大小，并在组件中心位置显示
+		KeepAspect,						// 图片大小跟随组件大小（不超过组件大小），保证图片的宽高比，并在组件的左上角显示
+		KeepAspectCentered,				// 图片大小跟随组件大小（不超过组件大小），保证图片的宽高比，并在组件中心位置显示
+		KeepAspectCovered,				// 图片大小跟随组件大小（超过组件大小），保证图片的宽高比，并在组件中心位置显示
+	};
+
+	enum class TextureScaleMode {
+		Nearest,
+		Linear,
 	};
 }

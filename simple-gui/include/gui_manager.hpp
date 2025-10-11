@@ -5,7 +5,6 @@
 #include "event.hpp"
 #include "framerate.hpp"
 #include "timer.hpp"
-#include "deleter.hpp"
 #include "font.hpp"
 
 

@@ -11,7 +11,7 @@ struct SDL_FColor;
 
 namespace SimpleGui {
 
-    constexpr const float CMP_EPSILON = 0.00001f;
+    constexpr float CMP_EPSILON = 0.00001f;
 
     bool IsEqualApprox(float left, float right);
     bool IsZeroApprox(double value);
@@ -98,15 +98,15 @@ namespace SimpleGui {
         void AdjustSizeToCoverOtherRect(const Rect& other);
         Rect Grow(float left, float top, float right, float bottom) const;
 
-        inline Vec2 TopLeft() const { return position; };
-        inline Vec2 TopRight() const { return Vec2(position.x + size.w, position.y); };
-        inline Vec2 BottomLeft() const { return Vec2(position.x, position.y + size.h); };
-        inline Vec2 BottomRight() const { return Vec2(position.x + size.w, position.y + size.h); };
-        inline Vec2 Center() const { return Vec2(position.x + size.w / 2, position.y + size.h / 2); };
-        inline constexpr float Left() const { return position.x; }
-        inline constexpr float Top() const { return position.y; }
-        inline constexpr float Right() const { return position.x + size.w; }
-        [[nodiscard]] inline constexpr float Bottom() const { return position.y + size.h; }
+        Vec2 TopLeft() const { return position; };
+        Vec2 TopRight() const { return Vec2(position.x + size.w, position.y); };
+        Vec2 BottomLeft() const { return Vec2(position.x, position.y + size.h); };
+        Vec2 BottomRight() const { return Vec2(position.x + size.w, position.y + size.h); };
+        Vec2 Center() const { return Vec2(position.x + size.w / 2, position.y + size.h / 2); };
+        constexpr float Left() const { return position.x; }
+        constexpr float Top() const { return position.y; }
+        constexpr float Right() const { return position.x + size.w; }
+        [[nodiscard]] constexpr float Bottom() const { return position.y + size.h; }
 
         bool IsIntersect(const Rect& rect) const;
         Rect GetIntersection(const Rect& rect) const;
@@ -157,7 +157,7 @@ namespace SimpleGui {
     struct GradientColor final {
         enum class Type {
             Horizontal,
-            Vertival,
+            Vertical,
             MainDiagonal,
             SecondaryDiagonal,
         };

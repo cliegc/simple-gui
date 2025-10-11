@@ -1,5 +1,6 @@
 #pragma once
-#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_rect.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <variant>
 #include <queue>
@@ -135,10 +136,10 @@ namespace SimpleGui {
         Vec2 GetRenderPositionFromMouse() const;
         Vec2 GetRenderOutputSize() const;
 
-        std::shared_ptr<SDL_Texture> CreateSharedSDLTexture(std::string_view path);
-        std::shared_ptr<Texture> CreateSharedTexture(std::string_view path);
-        SDL_Texture* CreateSDLTexture(std::string_view path);
-        Texture* CreateTexture(std::string_view path);
+        std::shared_ptr<SDL_Texture> CreateSharedSDLTexture(std::string_view path) const;
+        std::shared_ptr<Texture> CreateSharedTexture(std::string_view path) const;
+        SDL_Texture* CreateSDLTexture(std::string_view path) const;
+        Texture* CreateTexture(std::string_view path) const;
 
         SDL_Renderer& GetSDLRenderer() const { return *m_renderer; }
         TTF_TextEngine& GetTTFTextEngine() const { return *m_textEngine; }

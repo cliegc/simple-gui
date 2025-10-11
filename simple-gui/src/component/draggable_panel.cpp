@@ -8,7 +8,7 @@ namespace SimpleGui {
 		m_handleVisible = true;
 		m_resizable = true;
 		m_globalDragEnable = false;
-		m_isClampRangeFollowParent = false;
+		m_isClampRangeFollowParent = true;
 		m_resizeBlockWidth = 10;
 		m_resizeData.dragGRect.size.w = m_resizeBlockWidth;
 		m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
@@ -39,9 +39,9 @@ namespace SimpleGui {
 
 		if (BaseComponent::HandleEvent(event)) return true;
 
-		//// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
+		// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
 		if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
-		if (GetGlobalRect().ContainPoint(renderPos)) return true;
+		if (m_visibleGRect.ContainPoint(renderPos)) return true;
 
 		return false;
 	}
@@ -147,6 +147,9 @@ namespace SimpleGui {
 		renderer.ClearRenderClipRect();
 
 		// TODO 重写绘制disabled
+
+		// debug
+		// renderer.RenderRect(GetGlobalRect(), Color::GREEN, false);
 	}
 
 	void DraggablePanel::SetFont(std::unique_ptr<Font> font) {

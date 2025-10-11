@@ -1,5 +1,6 @@
 #include "gui_manager.hpp"
-#include "SDL3/SDL_dialog.h"
+#include <SDL3/SDL_dialog.h>
+#include "logger.hpp"
 
 
 namespace SimpleGui {
@@ -17,13 +18,9 @@ namespace SimpleGui {
 
 	GuiManager::~GuiManager() {
 		m_fpsController.reset();
-		SDL_Log("delete fps controller");
 		m_eventManager.reset();
-		SDL_Log("delete event manager");
 		m_window.reset();
-		SDL_Log("delete window");
 		m_timerManager.reset();
-		SDL_Log("delete tiemr manager");
 	}
 
 	void GuiManager::Init(int argc, char** argv, std::string_view fontPath) {
@@ -52,11 +49,12 @@ namespace SimpleGui {
 		s_guiManager->m_timerManager = std::make_unique<TimerManager>();
 
 		//SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "composition");
+		SG_INFO("SimpleGui: gui manager initialization successful.");
 	}
 
 	void GuiManager::Quit() {
+		SG_INFO("SimpleGui: exiting gui manager.");
 		s_guiManager.reset();
-
 		TTF_Quit();
 		SDL_Quit();
 	}

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <memory>
 #include "gui_manager.hpp"
+#include "logger.hpp"
 
 
 namespace SimpleGui {
@@ -247,11 +248,11 @@ namespace SimpleGui {
 
 	void BaseComponent::AddChild(std::unique_ptr<BaseComponent> child) {
 		if (!child || child->GetParent() == this) {
-			SDL_Log("AddChild: this child is null or parent of child already is this.\n");
+			SG_WARN("AddChild: this child is null or parent of child already is this.");
 			return;
 		}
 		if (child->GetParent()) {
-			SDL_Log("AddChild: this child already has a parent node.\n");
+			SG_WARN("AddChild: this child already has a parent node.");
 			return;
 		}
 
@@ -262,13 +263,14 @@ namespace SimpleGui {
 		auto temp = child.get();
 		m_children.push_back(std::move(child));
 		temp->EnteredComponentTree();
-		SDL_Log("AddChild: child entered component tree.\n");
+		// SDL_Log("AddChild: child entered component tree.\n");
+		SG_INFO("AddChild: child entered component tree");
 	}
 
 	void BaseComponent::AddChildDeferred(std::unique_ptr<BaseComponent> child) {
 		if (!child || child->GetParent() == this) return;
 		if (child->GetParent()) {
-			SDL_Log("AddChild: this child already has a parent node.");
+			SG_WARN("AddChild: this child already has a parent node.");
 			return;
 		}
 
