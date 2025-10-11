@@ -51,6 +51,6 @@ namespace SimpleGui {
 
     void Logger::RetainLogs(LogLevel level, const std::string &message) {
         if (!m_retainLogs) return;
-        m_logEntries.emplace_back(level, message);
+        m_logQueue.emplace(level, message);
     }
 }

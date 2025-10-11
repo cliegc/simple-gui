@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <source_location>
-#include <vector>
+#include <queue>
 #include <format>
 
 
@@ -37,6 +37,7 @@ namespace SimpleGui {
         static Logger& GetInstance();
 
         void Setup(bool consoleLog, bool retainLog);
+        std::queue<LogAEntry>& GetLogQueue() { return m_logQueue; }
 
         template<typename... Args>
         void Info(const std::string &message, Args &&... args) {
@@ -74,8 +75,7 @@ namespace SimpleGui {
         }
 
     private:
-        std::vector<LogAEntry> m_logEntries{};
-        bool m_logAdded{false};
+        std::queue<LogAEntry> m_logQueue{};
         bool m_consoleLog{true};
         bool m_retainLogs{false};
 
