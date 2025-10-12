@@ -88,7 +88,7 @@ namespace SimpleGui {
 
 		template<typename T, typename...Args>
 		T* AddChild(Args&& ...args) {
-			static_assert(std::is_base_of<BaseComponent, T>::value, "T 必须继承自 BaseComponent");
+			static_assert(std::is_base_of_v<BaseComponent, T>, "T 必须继承自 BaseComponent");
 			auto cmp = std::make_unique<T>(std::forward<Args>(args)...);
 			auto cmp_ptr = cmp.get();
 			AddChild(std::move(cmp));
@@ -97,7 +97,7 @@ namespace SimpleGui {
 
 		template<typename T, typename...Args>
 		T* AddChildDeferred(Args&& ...args) {
-			static_assert(std::is_base_of<BaseComponent, T>::value, "T 必须继承自 BaseComponent");
+			static_assert(std::is_base_of_v<BaseComponent, T>, "T 必须继承自 BaseComponent");
 			auto cmp = std::make_unique<T>(std::forward<Args>(args)...);
 			auto cmp_ptr = cmp.get();
 			AddChildDeferred(std::move(cmp));

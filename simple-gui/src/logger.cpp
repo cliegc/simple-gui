@@ -1,6 +1,7 @@
 #include "logger.hpp"
 #include <chrono>
 #include <ctime>
+#include <fstream>
 
 
 #ifdef _WIN32
@@ -21,6 +22,21 @@ namespace SimpleGui {
     void Logger::Setup(bool consoleLog, bool retainLog) {
         m_consoleLog = consoleLog;
         m_retainLogs = retainLog;
+    }
+
+    bool Logger::SaveToFile(const std::string &filePath) const {
+        if (std::ofstream file(filePath); file.is_open()) {
+            for (const auto&[_, message]: m_logEntries) {
+                file << message;
+            }
+            file.close();
+            return true;
+        }
+        return false;
+    }
+
+    void Logger::Clear() {
+        m_logEntries.clear();
     }
 
     Logger::LogTime::LogTime(const std::string &date)
@@ -51,6 +67,6 @@ namespace SimpleGui {
 
     void Logger::RetainLogs(LogLevel level, const std::string &message) {
         if (!m_retainLogs) return;
-        m_logQueue.emplace(level, message);
+        m_logEntries.emplace_back(level, message);
     }
 }

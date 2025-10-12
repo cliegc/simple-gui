@@ -2,9 +2,9 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <source_location>
-#include <queue>
+#include <vector>
 #include <format>
+#include <source_location>
 
 
 #define SG_INFO(x, ...) SimpleGui::Logger::GetInstance().Info(x, __VA_ARGS__);
@@ -37,7 +37,9 @@ namespace SimpleGui {
         static Logger& GetInstance();
 
         void Setup(bool consoleLog, bool retainLog);
-        std::queue<LogAEntry>& GetLogQueue() { return m_logQueue; }
+        const std::vector<LogAEntry>& GetLogEntries() const { return m_logEntries; }
+        bool SaveToFile(const std::string& filePath) const;
+        void Clear();
 
         template<typename... Args>
         void Info(const std::string &message, Args &&... args) {
@@ -75,7 +77,7 @@ namespace SimpleGui {
         }
 
     private:
-        std::queue<LogAEntry> m_logQueue{};
+        std::vector<LogAEntry> m_logEntries {};
         bool m_consoleLog{true};
         bool m_retainLogs{false};
 

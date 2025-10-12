@@ -283,7 +283,7 @@ static void TestSlider() {
 	                               });
 
 	//slider->SetScrollable(false);
-	//v_slider->SetEditbale(false);
+	// v_slider->SetEditable(false);
 }
 
 
@@ -309,8 +309,9 @@ static void TestCheckBox() {
 
 	group->checkStateChanged.Connect("on_check_state_changed",
 	                                 [](CheckBox *box) {
-		                                 SDL_Log("%s,checked = %s", box->GetText().c_str(),
-		                                         box->IsChecked() ? "true" : "false");
+	                                 	std::string boxText = box->GetText();
+	                                 	std::string checked =  box->IsChecked() ? "true" : "false";
+	                                 	SG_INFO("{0}, checked = {1}", boxText, checked);
 	                                 });
 
 	auto btn = vBoxLayout->AddChild<Button>("switch unique: on");
@@ -385,13 +386,13 @@ int main(int argc, char **argv) {
 		win.GetRenderer().CreateSharedTexture(R"(C:\Users\endif\Desktop\xiang_cheng.png)"));
 	//win.GetRootComponent().AddExtendedFunctions<TestFrameRateControllerFunctions>();
 
-	TestScrollBar();
+	// TestScrollBar();
 	// TestScrollPanel();
 	// TestLineEdit();
 	// TestTimer();
 	// TestProgressBar();
 	// TestSlider();
-	// TestCheckBox();
+	TestCheckBox();
 	TestTextureRect();
 	// TestDraggablePanel();
 
