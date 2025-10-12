@@ -382,6 +382,10 @@ namespace SimpleGui {
 		}
 	}
 
+	size_t BaseComponent::GetIndex() const {
+
+	}
+
 	Font& BaseComponent::GetFont() {
 		if (!m_font || m_font->IsNull()) {
 			const Font& font = m_window ? m_window->GetFont() : SG_GuiManager.GetDefaultFont();

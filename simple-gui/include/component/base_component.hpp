@@ -121,6 +121,9 @@ namespace SimpleGui {
 		void ClearAllChildrenDeferred() const;
 		void ForEachChild(const std::function<void(BaseComponent*)>& fn);
 
+		// size_t GetIndex() const { return m_index; };
+		// void SetIndex(size_t idx);
+
 		virtual void SetFont(std::unique_ptr<Font> font) { m_font = std::move(font); };
 		virtual void SetFont(std::string_view path, int size);
 		virtual Font& GetFont();
@@ -165,6 +168,8 @@ namespace SimpleGui {
 		bool m_visible = true;
 		bool m_disabled = false;
 		bool m_needRemove = false;
+
+		// size_t m_index = 0;
 
 		std::unique_ptr<Font> m_font;
 		std::unordered_map<ThemeColorFlags, Color> m_themeColorCaches;
