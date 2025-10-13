@@ -3,268 +3,290 @@
 
 
 namespace SimpleGui {
-	DraggablePanel::DraggablePanel(std::string_view title) {
-		m_titleLbl = std::make_unique<Label>(title);
-		m_handleVisible = true;
-		m_resizable = true;
-		m_globalDragEnable = false;
-		m_isClampRangeFollowParent = true;
-		m_resizeBlockWidth = 10;
-		m_resizeData.dragGRect.size.w = m_resizeBlockWidth;
-		m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
-		m_foldData.toggleGRect.size.w = 10;
-		m_foldData.toggleGRect.size.h = 10;
-		m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
-		m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
-		m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
-	}
+    DraggablePanel::DraggablePanel(std::string_view title) {
+        m_titleLbl = std::make_unique<Label>(title);
+        m_handleVisible = true;
+        m_resizable = true;
+        m_globalDragEnable = false;
+        m_isClampRangeFollowParent = true;
+        m_resizeBlockWidth = 10;
+        m_resizeData.dragGRect.size.w = m_resizeBlockWidth;
+        m_resizeData.dragGRect.size.h = m_resizeBlockWidth;
+        m_foldData.toggleGRect.size.w = 10;
+        m_foldData.toggleGRect.size.h = 10;
+        m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
+        m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
+        m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
+    }
 
-	void DraggablePanel::EnteredComponentTree() {
-		m_padding = m_window->GetCurrentStyle().componentPadding;
-		SetComponentOwner(m_titleLbl.get(), m_window, this);
-		BaseComponent::EnteredComponentTree(m_titleLbl.get());
-		m_handleThickness = m_titleLbl->GetSize().h;
-		SetMinSize(m_titleLbl->GetSize().w + m_foldData.toggleGRect.size.w + 5,
-			m_titleLbl->GetSize().h + m_dragData.dragGRect.size.h);
-	}
+    void DraggablePanel::EnteredComponentTree() {
+        m_padding = m_window->GetCurrentStyle().componentPadding;
+        SetComponentOwner(m_titleLbl.get(), m_window, this);
+        BaseComponent::EnteredComponentTree(m_titleLbl.get());
+        m_handleThickness = m_titleLbl->GetSize().h;
+        SetMinSize(m_titleLbl->GetSize().w + m_foldData.toggleGRect.size.w + 5,
+                   m_titleLbl->GetSize().h + m_dragData.dragGRect.size.h);
+    }
 
-	bool DraggablePanel::HandleEvent(Event* event) {
-		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
+    bool DraggablePanel::HandleEvent(Event *event) {
+        SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
-		Vec2 renderPos = SG_GuiManager.GetMousePosition();
+        Vec2 renderPos = SG_GuiManager.GetMousePosition();
 
-		if (HandleToggleFold(event, renderPos)) return true;
-		if (HandleDragResize(event, renderPos)) return true;
-		if (HandleDragMotion(event, renderPos)) return true;
+        // if (HandleClickToMoveToTop(event)) return true;
+        if (HandleToggleFold(event, renderPos)) return true;
+        if (HandleDragResize(event, renderPos)) return true;
+        if (HandleDragMotion(event, renderPos)) return true;
 
-		if (BaseComponent::HandleEvent(event)) return true;
+        if (BaseComponent::HandleEvent(event)) return true;
 
-		// 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
-		if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
-		if (m_visibleGRect.ContainPoint(renderPos)) return true;
+        // 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
+        if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
+        if (m_visibleGRect.ContainPoint(renderPos)) return true;
 
-		return false;
-	}
+        return false;
+    }
 
-	void DraggablePanel::Update() {
-		SG_CMP_UPDATE_CONDITIONS;
+    void DraggablePanel::Update() {
+        SG_CMP_UPDATE_CONDITIONS;
 
-		if (m_isClampRangeFollowParent) ClampPosition();
-		BaseComponent::Update();
+        if (m_isClampRangeFollowParent) ClampPosition();
+        BaseComponent::Update();
 
-		// update handle_rect
-		Rect globalRect = GetGlobalRect();
-		// 必须放在计算可见矩形之后，否则更新的handle_rect的位置是上一帧可见矩形的位置
-		m_handleThickness = m_titleLbl->GetSize().h;
-		m_dragData.dragGRect.position = m_visibleGRect.position;
-		m_dragData.dragGRect.size.w = m_visibleGRect.size.w;
-		m_dragData.dragGRect.size.h = m_handleThickness;
-		if (m_position.y < 0) {
-			m_dragData.dragGRect.size.h = m_handleThickness + m_position.y;
-			if (m_dragData.dragGRect.size.h < 0) m_dragData.dragGRect.size.h = 0;
-		}
-		m_dragData.dragGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_dragData.dragGRect);
+        // update handle_rect
+        Rect globalRect = GetGlobalRect();
+        // 必须放在计算可见矩形之后，否则更新的handle_rect的位置是上一帧可见矩形的位置
+        m_handleThickness = m_titleLbl->GetSize().h;
+        m_dragData.dragGRect.position = m_visibleGRect.position;
+        m_dragData.dragGRect.size.w = m_visibleGRect.size.w;
+        m_dragData.dragGRect.size.h = m_handleThickness;
+        if (m_position.y < 0) {
+            m_dragData.dragGRect.size.h = m_handleThickness + m_position.y;
+            if (m_dragData.dragGRect.size.h < 0) m_dragData.dragGRect.size.h = 0;
+        }
+        m_dragData.dragGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_dragData.dragGRect);
 
-		// update size_grip_rect
-		Vec2 bottomRight = globalRect.BottomRight();
-		m_resizeData.dragGRect.position = bottomRight - Vec2(m_resizeBlockWidth, m_resizeBlockWidth);
-		Vec2 size = m_visibleGRect.BottomRight() - m_resizeData.dragGRect.position;
-		m_resizeData.dragGRect.size.w = size.w < 0 ? 0 : size.w;
-		m_resizeData.dragGRect.size.h = size.h < 0 ? 0 : size.h;
+        // update size_grip_rect
+        Vec2 bottomRight = globalRect.BottomRight();
+        m_resizeData.dragGRect.position = bottomRight - Vec2(m_resizeBlockWidth, m_resizeBlockWidth);
+        Vec2 size = m_visibleGRect.BottomRight() - m_resizeData.dragGRect.position;
+        m_resizeData.dragGRect.size.w = size.w < 0 ? 0 : size.w;
+        m_resizeData.dragGRect.size.h = size.h < 0 ? 0 : size.h;
 
-		// update fold btn rect
-		Vec2 globalPos = globalRect.position;
-		m_foldData.toggleGRect.position.x = globalPos.x + 5;
-		m_foldData.toggleGRect.position.y = globalPos.y + (m_handleThickness - m_foldData.toggleGRect.size.h) / 2;
+        // update fold btn rect
+        Vec2 globalPos = globalRect.position;
+        m_foldData.toggleGRect.position.x = globalPos.x + 5;
+        m_foldData.toggleGRect.position.y = globalPos.y + (m_handleThickness - m_foldData.toggleGRect.size.h) / 2;
 
-		// update title label
-		m_titleLbl->SetGlobalPositionX(m_foldData.toggleGRect.Right());
-		m_titleLbl->SetGlobalPositionY(globalPos.y);
-		m_titleLbl->Update();
-		Rect visibleRect = CalcVisibleGlobalRect(m_dragData.dragGRect, m_dragData.dragGRect, m_titleLbl->GetGlobalRect());
-		SetComponentVisibleGlobalRect(m_titleLbl.get(), visibleRect);
-	}
+        // update title label
+        m_titleLbl->SetGlobalPositionX(m_foldData.toggleGRect.Right());
+        m_titleLbl->SetGlobalPositionY(globalPos.y);
+        m_titleLbl->Update();
+        Rect visibleRect = CalcVisibleGlobalRect(m_dragData.dragGRect, m_dragData.dragGRect,
+                                                 m_titleLbl->GetGlobalRect());
+        SetComponentVisibleGlobalRect(m_titleLbl.get(), visibleRect);
+    }
 
-	void DraggablePanel::Render(Renderer& renderer) {
-		SG_CMP_RENDER_CONDITIONS;
+    void DraggablePanel::Render(Renderer &renderer) {
+        SG_CMP_RENDER_CONDITIONS;
 
-		renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackground), true);
+        renderer.RenderRect(m_visibleGRect, GetThemeColor(ThemeColorFlags::DraggablePanelBackground), true);
 
-		BaseComponent::Render(renderer);
+        BaseComponent::Render(renderer);
 
-		if (m_handleVisible) {
-			// draw handle
-			renderer.RenderRect(m_dragData.dragGRect, GetThemeColor(ThemeColorFlags::DraggablePanelHandle), true);
-			// draw title
-			m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelForeground, GetThemeColor(ThemeColorFlags::DraggablePanelForeground));
-			m_titleLbl->Render(renderer);
+        if (m_handleVisible) {
+            // draw handle
+            renderer.RenderRect(m_dragData.dragGRect, GetThemeColor(ThemeColorFlags::DraggablePanelHandle), true);
+            // draw title
+            m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelForeground,
+                                         GetThemeColor(ThemeColorFlags::DraggablePanelForeground));
+            m_titleLbl->Render(renderer);
 
-			renderer.SetRenderClipRect(m_visibleGRect);
-			// draw fold btn
-			if (m_foldData.isFolded) {
-				Vec2 bottomCenter(
-					m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
-					m_foldData.toggleGRect.position.y + m_foldData.toggleGRect.size.y
-				);
-				renderer.RenderTriangle(
-					m_foldData.toggleGRect.TopLeft(),
-					m_foldData.toggleGRect.TopRight(),
-					bottomCenter,
-					GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
-					true
-				);
-			}
-			else {
-				Vec2 topCenter(
-					m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
-					m_foldData.toggleGRect.position.y
-				);	
-				renderer.RenderTriangle(
-					topCenter,
-					m_foldData.toggleGRect.BottomRight(),
-					m_foldData.toggleGRect.BottomLeft(),
-					GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
-					true
-				);
-			}
-			renderer.ClearRenderClipRect();
-		}
+            renderer.SetRenderClipRect(m_visibleGRect);
+            // draw fold btn
+            if (m_foldData.isFolded) {
+                Vec2 bottomCenter(
+                    m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
+                    m_foldData.toggleGRect.position.y + m_foldData.toggleGRect.size.y
+                );
+                renderer.RenderTriangle(
+                    m_foldData.toggleGRect.TopLeft(),
+                    m_foldData.toggleGRect.TopRight(),
+                    bottomCenter,
+                    GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
+                    true
+                );
+            } else {
+                Vec2 topCenter(
+                    m_foldData.toggleGRect.position.x + m_foldData.toggleGRect.size.x / 2,
+                    m_foldData.toggleGRect.position.y
+                );
+                renderer.RenderTriangle(
+                    topCenter,
+                    m_foldData.toggleGRect.BottomRight(),
+                    m_foldData.toggleGRect.BottomLeft(),
+                    GetThemeColor(ThemeColorFlags::DraggablePanelForeground),
+                    true
+                );
+            }
+            renderer.ClearRenderClipRect();
+        }
 
-		renderer.SetRenderClipRect(m_visibleGRect);
-		// draw size grip handle
-		if (m_resizable && !m_foldData.isFolded) {
-			Rect rect(m_resizeData.dragGRect.position, Vec2(m_resizeBlockWidth, m_resizeBlockWidth));
-			renderer.RenderTriangle(
-				rect.BottomLeft(),
-				rect.TopRight(),
-				rect.BottomRight(),
-				GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip),
-				true
-			);
-		}
-		// draw border
-		renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder), false);
-		renderer.ClearRenderClipRect();
+        renderer.SetRenderClipRect(m_visibleGRect);
+        // draw size grip handle
+        if (m_resizable && !m_foldData.isFolded) {
+            Rect rect(m_resizeData.dragGRect.position, Vec2(m_resizeBlockWidth, m_resizeBlockWidth));
+            renderer.RenderTriangle(
+                rect.BottomLeft(),
+                rect.TopRight(),
+                rect.BottomRight(),
+                GetThemeColor(ThemeColorFlags::DraggablePanelSizeGrip),
+                true
+            );
+        }
+        // draw border
+        renderer.RenderRect(GetGlobalRect(), GetThemeColor(ThemeColorFlags::DraggablePanelBorder), false);
+        renderer.ClearRenderClipRect();
 
-		// TODO 重写绘制disabled
+        // TODO 重写绘制disabled
 
-		// debug
-		// renderer.RenderRect(GetGlobalRect(), Color::GREEN, false);
-	}
+        // debug
+        // renderer.RenderRect(GetGlobalRect(), Color::GREEN, false);
+    }
 
-	void DraggablePanel::SetFont(std::unique_ptr<Font> font) {
-		m_titleLbl->SetFont(std::move(font));
-	}
+    void DraggablePanel::SetFont(std::unique_ptr<Font> font) {
+        m_titleLbl->SetFont(std::move(font));
+    }
 
-	void DraggablePanel::SetFont(std::string_view path, int size) {
-		m_titleLbl->SetFont(path, size);
-	}
+    void DraggablePanel::SetFont(std::string_view path, int size) {
+        m_titleLbl->SetFont(path, size);
+    }
 
-	inline Vec2 DraggablePanel::GetLocalCoordinateOriginOffset() const {
-		float t = m_handleThickness;
-		if (!m_handleVisible) t = 0;
-		return Vec2(m_padding.left, m_padding.top + t);
-	}
+    inline Vec2 DraggablePanel::GetLocalCoordinateOriginOffset() const {
+        float t = m_handleThickness;
+        if (!m_handleVisible) t = 0;
+        return Vec2(m_padding.left, m_padding.top + t);
+    }
 
-	inline Vec2 DraggablePanel::GetContentSize() const {
-		float t = m_handleThickness;
-		if (!m_handleVisible) t = 0;
-		return Vec2(
-			m_size.w - m_padding.left - m_padding.right,
-			m_size.h - m_padding.top - m_padding.bottom - t
-		);
-	}
+    inline Vec2 DraggablePanel::GetContentSize() const {
+        float t = m_handleThickness;
+        if (!m_handleVisible) t = 0;
+        return Vec2(
+            m_size.w - m_padding.left - m_padding.right,
+            m_size.h - m_padding.top - m_padding.bottom - t
+        );
+    }
 
-	void DraggablePanel::ClampPosition() {
-		int w = 0, h = 0;
-		//SDL_GetWindowSizeInPixels(&SG_GuiManager.GetWindow(), &w, &h);
+    void DraggablePanel::ClampPosition() {
+        int w = 0, h = 0;
+        //SDL_GetWindowSizeInPixels(&SG_GuiManager.GetWindow(), &w, &h);
 
-		float t = m_handleThickness;
-		if (!m_handleVisible) t = 0;
+        float t = m_handleThickness;
+        if (!m_handleVisible) t = 0;
 
-		Vec2 min{ m_handleThickness - m_size.w , 0 };
-		Vec2 max{ w - m_handleThickness, h - t };
-		if (m_parent) {
-			Vec2 contentSize = m_parent->GetContentGlobalRect().size;
-			max.x = contentSize.w - m_handleThickness;
-			max.y = contentSize.h - t;
-		}
+        Vec2 min{m_handleThickness - m_size.w, 0};
+        Vec2 max{w - m_handleThickness, h - t};
+        if (m_parent) {
+            Vec2 contentSize = m_parent->GetContentGlobalRect().size;
+            max.x = contentSize.w - m_handleThickness;
+            max.y = contentSize.h - t;
+        }
 
-		if (max.x < 0) max.x = min.x;
-		if (max.y < 0) max.y = min.y;
+        if (max.x < 0) max.x = min.x;
+        if (max.y < 0) max.y = min.y;
 
-		m_position.Clamp(min, max);
-	}
+        m_position.Clamp(min, max);
+    }
 
-	bool DraggablePanel::HandleDragMotion(Event* event, const Vec2& mousePos, bool globalDragEnable) {
-		if ((m_handleVisible && !globalDragEnable && m_dragData.dragGRect.ContainPoint(mousePos)) ||
-			(globalDragEnable && m_visibleGRect.ContainPoint(mousePos))) {
-			if (auto ev = event->Convert<MouseButtonEvent>();
-				ev && ev->IsPressed(MouseButton::Left)) {
-				m_dragData.startMousePos = mousePos;
-				m_dragData.startData = m_position;
-				m_dragData.dragging = true;
-				return true;
-			}
-		}
+    // TODO 使用焦点系统解决
+    bool DraggablePanel::HandleClickToMoveToTop(Event *event) {
+        if (auto ev = event->Convert<MouseButtonEvent>();
+            ev && m_visibleGRect.ContainPoint(ev->GetPosition()) && ev->IsPressed(MouseButton::Left)) {
+            if (!m_parent) return false;
 
-		if (m_dragData.dragging) {
-			if (auto ev = event->Convert<MouseButtonEvent>();
-				ev && ev->IsReleased(MouseButton::Left)) {
-				m_dragData.dragging = false;
-			}
-			else if (event->IsMouseMotionEvent()) {
-				m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
-			}
-			return true;
-		}
-		return false;
-	}
+            auto &children = GetComponentChildren(m_parent);
+            if (children[children.size() - 1].get() == this) return false;
 
-	bool DraggablePanel::HandleDragResize(Event* event, const Vec2& mousePos) {
-		if (m_resizable && m_resizeData.dragGRect.ContainPoint(mousePos)) {
-			if (auto ev = event->Convert<MouseButtonEvent>();
-				ev && ev->IsPressed(MouseButton::Left)) {
-				m_resizeData.startMousePos = mousePos;
-				m_resizeData.startData = m_size;
-				m_resizeData.dragging = true;
-				SDL_SetCursor(m_resizeCursor.get());
-				return true;
-			}
-		}
+            auto rit = std::find_if(children.rbegin(), children.rend(),
+                                           [this](auto &child) {
+                                               return child.get() == this;
+                                           });
+            if (rit == children.rend()) return false;
+            auto it = rit.base() - 1;
+            std::rotate(it, it + 1, children.end());
+            return true;
+        }
 
-		if (m_resizeData.dragging) {
-			if (auto ev = event->Convert<MouseButtonEvent>();
-				ev && ev->IsReleased(MouseButton::Left)) {
-				m_resizeData.dragging = false;
-				SDL_SetCursor(SDL_GetDefaultCursor());
-			}
-			else if (event->IsMouseMotionEvent()) {
-				Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
-				SetSize(size);
-			}
-			return true;
-		}
-		return false;
-	}
+        return false;
+    }
 
-	bool DraggablePanel::HandleToggleFold(Event* event, const Vec2& mousePos) {
-		if (!m_handleVisible) return false;
-		if (m_dragData.dragGRect.ContainPoint(mousePos) && m_foldData.toggleGRect.ContainPoint(mousePos)) {
-			if (auto ev = event->Convert<MouseButtonEvent>();
-				ev && ev->IsPressed(MouseButton::Left)) {
-				if (!m_foldData.isFolded) {
-					m_foldData.unfoldSize = m_size;
-					m_foldData.isFolded = true;
-					m_size.h = m_handleThickness;
-					return true;
-				}
+    bool DraggablePanel::HandleDragMotion(Event *event, const Vec2 &mousePos, bool globalDragEnable) {
+        if ((m_handleVisible && !globalDragEnable && m_dragData.dragGRect.ContainPoint(mousePos)) ||
+            (globalDragEnable && m_visibleGRect.ContainPoint(mousePos))) {
+            if (auto ev = event->Convert<MouseButtonEvent>();
+                ev && ev->IsPressed(MouseButton::Left)) {
+                m_dragData.startMousePos = mousePos;
+                m_dragData.startData = m_position;
+                m_dragData.dragging = true;
+                return true;
+            }
+        }
 
-				m_foldData.isFolded = false;
-				m_size.h = m_foldData.unfoldSize.h;
-				return true;
-			}
-		}
-		return false;
-	}
+        if (m_dragData.dragging) {
+            if (auto ev = event->Convert<MouseButtonEvent>();
+                ev && ev->IsReleased(MouseButton::Left)) {
+                m_dragData.dragging = false;
+            } else if (event->IsMouseMotionEvent()) {
+                m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    bool DraggablePanel::HandleDragResize(Event *event, const Vec2 &mousePos) {
+        if (m_resizable && m_resizeData.dragGRect.ContainPoint(mousePos)) {
+            if (auto ev = event->Convert<MouseButtonEvent>();
+                ev && ev->IsPressed(MouseButton::Left)) {
+                m_resizeData.startMousePos = mousePos;
+                m_resizeData.startData = m_size;
+                m_resizeData.dragging = true;
+                SDL_SetCursor(m_resizeCursor.get());
+                return true;
+            }
+        }
+
+        if (m_resizeData.dragging) {
+            if (auto ev = event->Convert<MouseButtonEvent>();
+                ev && ev->IsReleased(MouseButton::Left)) {
+                m_resizeData.dragging = false;
+                SDL_SetCursor(SDL_GetDefaultCursor());
+            } else if (event->IsMouseMotionEvent()) {
+                Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
+                SetSize(size);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    bool DraggablePanel::HandleToggleFold(Event *event, const Vec2 &mousePos) {
+        if (!m_handleVisible) return false;
+        if (m_dragData.dragGRect.ContainPoint(mousePos) && m_foldData.toggleGRect.ContainPoint(mousePos)) {
+            if (auto ev = event->Convert<MouseButtonEvent>();
+                ev && ev->IsPressed(MouseButton::Left)) {
+                if (!m_foldData.isFolded) {
+                    m_foldData.unfoldSize = m_size;
+                    m_foldData.isFolded = true;
+                    m_size.h = m_handleThickness;
+                    return true;
+                }
+
+                m_foldData.isFolded = false;
+                m_size.h = m_foldData.unfoldSize.h;
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -66,6 +66,7 @@ namespace SimpleGui {
 
 	private:
 		void ClampPosition();
+		bool HandleClickToMoveToTop(Event* event);
 		bool HandleDragMotion(Event* event, const Vec2& mousePos, bool globalDragEnable = false);
 		bool HandleDragResize(Event* event, const Vec2& mousePos);
 		bool HandleToggleFold(Event* event, const Vec2& mousePos);

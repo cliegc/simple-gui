@@ -196,7 +196,7 @@ namespace SimpleGui {
 		inline virtual Vec2 GetContentSize() const;
 
 		// 方便在该组件内获取获取其他组件的所有子组件
-		const std::vector<std::unique_ptr<BaseComponent>>& GetComponentChildren(BaseComponent* cmp) const { return cmp->m_children; }
+		std::vector<std::unique_ptr<BaseComponent>>& GetComponentChildren(BaseComponent* cmp) const { return cmp->m_children; }
 
 		// 方便在该组件内获取/设置其他组件的受保护数据，获取内容矩形的大小
 		Vec2 GetComponentContentSize(BaseComponent* cmp) const { return cmp->GetContentSize(); }

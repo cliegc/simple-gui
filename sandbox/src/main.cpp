@@ -394,7 +394,7 @@ int main(int argc, char **argv) {
 	// TestSlider();
 	TestCheckBox();
 	TestTextureRect();
-	// TestDraggablePanel();
+	TestDraggablePanel();
 
 	auto fpsLbl = win.AddComponent<Label>("");
 	fpsLbl->AddExtendedFunctions<DisplayFPSForLabel>();
