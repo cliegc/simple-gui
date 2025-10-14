@@ -238,6 +238,7 @@ namespace SimpleGui {
                 m_dragData.dragging = false;
             } else if (event->IsMouseMotionEvent()) {
                 m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
+                dragging.Emit();
             }
             return true;
         }
@@ -264,6 +265,7 @@ namespace SimpleGui {
             } else if (event->IsMouseMotionEvent()) {
                 Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
                 SetSize(size);
+                resizing.Emit(m_size);
             }
             return true;
         }
@@ -279,11 +281,13 @@ namespace SimpleGui {
                     m_foldData.unfoldSize = m_size;
                     m_foldData.isFolded = true;
                     m_size.h = m_handleThickness;
+                    folded.Emit(true);
                     return true;
                 }
 
                 m_foldData.isFolded = false;
                 m_size.h = m_foldData.unfoldSize.h;
+                folded.Emit(false);
                 return true;
             }
         }

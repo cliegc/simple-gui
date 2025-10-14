@@ -367,6 +367,21 @@ static void TestTextureRect() {
 	textureRect->SetTextureStretchMode(TextureStretchMode::KeepAspectCentered);
 
 	dp->SetTitle(texture->GetPath());
+
+	dp->folded.Connect("on_folded",
+		[](bool value) {
+			SG_INFO("on_folded: {}", value);
+		});
+
+	dp->resizing.Connect("on_resizing",
+		[](const Vec2& size) {
+			SG_INFO("on_resizing: {}, {}", size.x, size.y);
+		});
+
+	dp->dragging.Connect("on_dragging",
+		[]() {
+			SG_INFO("on_dragging");
+		});
 }
 
 
@@ -394,7 +409,7 @@ int main(int argc, char **argv) {
 	// TestSlider();
 	TestCheckBox();
 	TestTextureRect();
-	TestDraggablePanel();
+	// TestDraggablePanel();
 
 	auto fpsLbl = win.AddComponent<Label>("");
 	fpsLbl->AddExtendedFunctions<DisplayFPSForLabel>();

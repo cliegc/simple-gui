@@ -1,6 +1,7 @@
 #pragma once
 #include "base_component.hpp"
 #include "label.hpp"
+#include "signal.hpp"
 
 
 namespace SimpleGui {
@@ -30,6 +31,11 @@ namespace SimpleGui {
 
 		void SetFont(std::unique_ptr<Font> font) override;
 		void SetFont(std::string_view path, int size) override;
+
+	public:
+		Signal<bool> folded;
+		Signal<const Vec2&> resizing;
+		Signal<> dragging;
 
 	protected:
 		void EnteredComponentTree() override;

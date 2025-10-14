@@ -107,10 +107,10 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::ButtonForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::ButtonBorder] = Color(0x3d444dff);
 
-		style->colors[ThemeColorFlags::DraggablePanelBackground] = Color(47, 47, 47, 100);
+		style->colors[ThemeColorFlags::DraggablePanelBackground] = Color(47, 47, 47, 200);
 		style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::DraggablePanelBorder] = Color(0x3d444dff);
-		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x34495eff);
+		style->colors[ThemeColorFlags::DraggablePanelHandle] = Color(0x3574f0ff);
 		style->colors[ThemeColorFlags::DraggablePanelSizeGrip] = Color(0x9badb7ff);
 
 		style->colors[ThemeColorFlags::TextureRectBackground] = Color(47, 47, 47, 100);
