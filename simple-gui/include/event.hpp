@@ -81,6 +81,7 @@ namespace SimpleGui {
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::KeyBoardTextEditingEvent, KeyBoardTextEditingEvent)
 
 		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropEvent, DropEvent)
+		SG_EVENT_DETERMINE_TYPE_FUNC(EventType::DropMotionEvent, DropMotionEvent)
 
 		template<typename T>
 		T* Convert() {
