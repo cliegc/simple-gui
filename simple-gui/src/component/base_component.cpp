@@ -451,11 +451,11 @@ namespace SimpleGui {
         if (auto ev = event->Convert<MouseMotionEvent>()) {
             if (!target->GetVisibleGlobalRect().ContainPoint(ev->GetPosition())) {
                 m_timer->SetPaused(true);
-                if (cmp && cmp->IsVisible()) cmp->SetVisible(false);
+                if (cmp->IsVisible()) cmp->SetVisible(false);
                 return;
             }
 
-            if (cmp && cmp->IsVisible()) cmp->SetVisible(false);
+            if (cmp->IsVisible()) cmp->SetVisible(false);
             m_timer->Start();
         }
     }

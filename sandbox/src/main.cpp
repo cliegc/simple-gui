@@ -487,23 +487,23 @@ int main(int argc, char **argv) {
     Window &win = SG_GuiManager.GetWindow("sandbox", 640, 480);
     win.GetFont().SetSize(14);
 
-    // TestScrollBar();
-    // TestScrollPanel();
+    TestScrollBar();
+    TestScrollPanel();
     // TestLineEdit();
     // TestTimer();
-    // TestProgressBar();
-    // TestSlider();
-    // TestCheckBox();
-    // TestTextureRect();
+    TestProgressBar();
+    TestSlider();
+    TestCheckBox();
+    TestTextureRect();
     // TestDraggablePanel();
-    ViewImage();
+    // ViewImage();
 
     // ShowFrameRate();
 
-    // if (!win.EnableVsync(true)) {
-    //     SG_GuiManager.SetTargetFrameRate(60);
-    // }
-    SG_GuiManager.SetTargetFrameRate(60);
+    if (!win.EnableVsync(true)) {
+        SG_GuiManager.SetTargetFrameRate(60);
+    }
+    // SG_GuiManager.SetTargetFrameRate(60);
     //SG_GuiManager.SetUnlimitedFrameRate(true);
     SG_GuiManager.Run();
     GuiManager::Quit();
