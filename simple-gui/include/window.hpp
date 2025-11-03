@@ -81,6 +81,11 @@ namespace SimpleGui {
 			return m_rootCmp->AddChild<T>(std::forward<Args>(args)...);
 		}
 
+		template<typename T, typename... Args>
+		T* AddComponentDeferred(Args&&... args) {
+			return m_rootCmp->AddChildDeferred<T>(std::forward<Args>(args)...);
+		}
+
 		RootComponent& GetRootComponent() const { return *m_rootCmp; }
 
 		SDL_Window& GetSDLWindow() const { return *m_window; }

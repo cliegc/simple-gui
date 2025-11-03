@@ -8,18 +8,18 @@ namespace SimpleGui {
 		Range(float value, float minValue, float maxValue);
 		virtual ~Range() = default;
 
-		inline float GetValue() const { return m_value; }
+		float GetValue() const { return m_value; }
 		virtual void SetValue(float value);
 
-		inline float GetMinValue() const { return m_minValue; }
+		float GetMinValue() const { return m_minValue; }
 		virtual void SetMinValue(float value);
 
-		inline float GetMaxValue() const { return m_maxValue; }
+		float GetMaxValue() const { return m_maxValue; }
 		virtual void SetMaxValue(float value);
 
-		inline float GetInterval() const { return m_maxValue - m_minValue; }
-		inline float GetValueToMinValueInterval() const { return m_value - m_minValue; }
-		inline float GetMaxValueToValueInterval() const { return m_maxValue - m_value; }
+		float GetInterval() const { return m_maxValue - m_minValue; }
+		float GetValueToMinValueInterval() const { return m_value - m_minValue; }
+		float GetMaxValueToValueInterval() const { return m_maxValue - m_value; }
 
 	public:
 		Signal<float> valueChanged;

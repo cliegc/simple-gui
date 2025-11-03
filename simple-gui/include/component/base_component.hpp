@@ -6,6 +6,7 @@
 #include "renderer.hpp"
 #include "style.hpp"
 #include "math.hpp"
+#include "timer.hpp"
 #include "extended_functions.hpp"
 #include "common/types.hpp"
 
@@ -35,7 +36,7 @@ namespace SimpleGui {
 
 		Rect GetRect() const { return Rect{ m_position, m_size}; }
 		Rect GetGlobalRect() const { return Rect{ GetGlobalPosition(), m_size}; }
-
+		Rect GetVisibleGlobalRect() const { return m_visibleGRect; }
 		Rect GetContentGlobalRect() const;
 
 		// 基于global_position的坐标系统，无法在组件被添加到父组件之前有效设置position(局部)
@@ -114,7 +115,8 @@ namespace SimpleGui {
 		BaseComponent* GetChildAt(size_t idx) const;
 		virtual std::unique_ptr<BaseComponent> RemoveChild(BaseComponent* cmp);
 		virtual std::unique_ptr<BaseComponent> RemoveChildDeferred(BaseComponent* cmp);
-		
+
+		std::vector<std::unique_ptr<BaseComponent>>& GetChildren() { return m_children; };
 		size_t GetChildrenCount() const;
 		bool HasChild(BaseComponent* cmp);
 		void ClearAllChildren();
@@ -132,6 +134,20 @@ namespace SimpleGui {
 		virtual void CustomThemeColor(ThemeColorFlags flag, const Color& color);
 		virtual void ClearCustomThemeColor(ThemeColorFlags flag);
 		virtual void ClearCustomThemeColors();
+
+		bool ToolTipEnabled() const { return m_toolTip->enabled; };
+		void SetToolTipEnabled(bool enabled) const { m_toolTip->enabled = enabled; };
+
+		template<typename T, typename...Args>
+		T* SetToolTip(Args&& ...args) {
+			static_assert(std::is_base_of_v<BaseComponent, T>, "T 必须继承自 BaseComponent");
+			auto cmp = std::make_unique<T>(std::forward<Args>(args)...);
+			auto ptr = cmp.get();
+			m_toolTip->cmp = std::move(cmp);
+			return ptr;
+		}
+
+		BaseComponent* GetToolTipComponent() const { return m_toolTip->cmp.get(); }
 
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctions(Args&& ...args) {
@@ -157,6 +173,24 @@ namespace SimpleGui {
 		void ClearAllExtendedFunctionsDeferred() const { m_extFunctionsManager->ClearDeferred(); }
 
 	protected:
+		class ToolTip final {
+		public:
+			BaseComponent *target{};
+			std::unique_ptr<BaseComponent> cmp{};
+			std::unique_ptr<Timer> m_timer{};
+			bool enabled{};
+			bool isFirstShown{};
+
+			explicit ToolTip(BaseComponent *target);
+			~ToolTip() = default;
+
+			void HandleEvent(Event *event) const;
+			void Update() const;
+			void Render(Renderer &renderer) const;
+			void SetSafePositionForComponent() const;
+		};
+
+	protected:
 		Vec2 m_position;			// 局部坐标
 		Vec2 m_size;
 		Vec2 m_minSize;
@@ -169,13 +203,12 @@ namespace SimpleGui {
 		bool m_disabled = false;
 		bool m_needRemove = false;
 
-		// size_t m_index = 0;
-
 		std::unique_ptr<Font> m_font;
 		std::unordered_map<ThemeColorFlags, Color> m_themeColorCaches;
 
 		Window* m_window = nullptr;
 		BaseComponent* m_parent = nullptr;
+		std::unique_ptr<ToolTip> m_toolTip{};
 		std::vector<std::unique_ptr<BaseComponent>> m_children;
 		std::vector<std::unique_ptr<BaseComponent>> m_childCaches;
 		std::unique_ptr<ExtendedFunctionsManager> m_extFunctionsManager;

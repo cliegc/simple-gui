@@ -5,9 +5,13 @@ namespace SimpleGui {
 	ComboBox::ComboBox(const std::vector<std::string>& items) {
 		m_currItemLbl = std::make_unique<Label>("");
 		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
+		m_currItemLbl->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
 	}
 
 	void ComboBox::EnteredComponentTree() {
+		BaseComponent::EnteredComponentTree();
+		SetComponentOwner(m_currItemLbl.get(), m_window, this);
+		BaseComponent::EnteredComponentTree(m_currItemLbl.get());
 	}
 
 	bool ComboBox::HandleEvent(Event* event) {
@@ -46,6 +50,13 @@ namespace SimpleGui {
 		renderer.ClearRenderClipRect();
 
 		BaseComponent::Render(renderer);
+	}
+
+	void ComboBox::CreateItemLabel(std::string_view item) {
+		auto lbl = std::make_unique<Label>(item);
+		m_currItemLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
+		SetComponentOwner(m_currItemLbl.get(), m_window, this);
+		BaseComponent::EnteredComponentTree(m_currItemLbl.get());
 	}
 
 	bool ComboBox::HandleToggleItemsList(Event* event) {

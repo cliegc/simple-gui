@@ -302,7 +302,7 @@ namespace SimpleGui {
         Rect newRect = rect;
 
         if (!IsIntersect(newRect)) {
-            return Rect();
+            return {};
         }
 
         newRect.position = newRect.position.Max(position);

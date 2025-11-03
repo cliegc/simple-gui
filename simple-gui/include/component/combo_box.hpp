@@ -42,7 +42,9 @@ namespace SimpleGui {
 		ComponentElementRect m_itemsRect;
 		bool m_showItemsList{};
 
-	private:
+		// constexpr float m_maxItemsWidth =
+
+		void CreateItemLabel(std::string_view item);
 		bool HandleToggleItemsList(Event* event);
 		bool HandleSelectItem(Event* event);
 		void UpdateItemsList();

@@ -31,6 +31,11 @@ namespace SimpleGui {
     bool DraggablePanel::HandleEvent(Event *event) {
         SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
 
+        if (BaseComponent::HandleEvent(event)) return true;
+
+        auto handlingCmp = m_window->GetRootComponent().GetHandlingComponent();
+        if (handlingCmp && handlingCmp != this) return false;
+
         Vec2 renderPos = SG_GuiManager.GetMousePosition();
 
         // if (HandleClickToMoveToTop(event)) return true;
@@ -38,7 +43,7 @@ namespace SimpleGui {
         if (HandleDragResize(event, renderPos)) return true;
         if (HandleDragMotion(event, renderPos)) return true;
 
-        if (BaseComponent::HandleEvent(event)) return true;
+        // if (BaseComponent::HandleEvent(event)) return true;
 
         // 启用全局拖拽必须放在子组件的事件处理之后，否则不会处理子组件的事件
         if (HandleDragMotion(event, renderPos, m_globalDragEnable)) return true;
@@ -228,6 +233,7 @@ namespace SimpleGui {
                 m_dragData.startMousePos = mousePos;
                 m_dragData.startData = m_position;
                 m_dragData.dragging = true;
+                m_window->GetRootComponent().SetHandlingComponent(this);
                 return true;
             }
         }
@@ -236,6 +242,7 @@ namespace SimpleGui {
             if (auto ev = event->Convert<MouseButtonEvent>();
                 ev && ev->IsReleased(MouseButton::Left)) {
                 m_dragData.dragging = false;
+                m_window->GetRootComponent().SetHandlingComponent(nullptr);
             } else if (event->IsMouseMotionEvent()) {
                 m_position = m_dragData.startData + mousePos - m_dragData.startMousePos;
                 dragging.Emit();
@@ -253,6 +260,7 @@ namespace SimpleGui {
                 m_resizeData.startData = m_size;
                 m_resizeData.dragging = true;
                 SDL_SetCursor(m_resizeCursor.get());
+                m_window->GetRootComponent().SetHandlingComponent(this);
                 return true;
             }
         }
@@ -262,6 +270,7 @@ namespace SimpleGui {
                 ev && ev->IsReleased(MouseButton::Left)) {
                 m_resizeData.dragging = false;
                 SDL_SetCursor(SDL_GetDefaultCursor());
+                m_window->GetRootComponent().SetHandlingComponent(nullptr);
             } else if (event->IsMouseMotionEvent()) {
                 Vec2 size = m_resizeData.startData + mousePos - m_resizeData.startMousePos;
                 SetSize(size);

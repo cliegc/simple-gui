@@ -22,7 +22,7 @@ namespace SimpleGui {
 		void SetHandlingComponent(BaseComponent* cmp) { m_handlingCmp = cmp; }
 
 	private:
-		BaseComponent* m_handlingCmp;
+		BaseComponent* m_handlingCmp{};
 
 		explicit RootComponent(Window* window);
 		void SetSizeToFillWindow();

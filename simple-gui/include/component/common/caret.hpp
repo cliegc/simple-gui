@@ -1,8 +1,6 @@
 #pragma once
-#include <SDL3/SDL_time.h>
 #include "math.hpp"
 #include "timer.hpp"
-#include "component/common/utils.hpp"
 
 
 namespace SimpleGui {
@@ -16,24 +14,24 @@ namespace SimpleGui {
 		void Update() const;
 		void Render(Renderer& renderer) const;
 
-		inline Rect& GetGlobalRect() { return m_gRect; }
+		Rect& GetGlobalRect() { return m_gRect; }
 
-		inline Color GetColor() const { return m_color; }
-		inline void SetColor(const Color& color) { m_color = color; }
+		Color GetColor() const { return m_color; }
+		void SetColor(const Color& color) { m_color = color; }
 
-		inline bool IsBlink() const { return m_blink; }
-		inline void SetBlink(bool blink) {
+		bool IsBlink() const { return m_blink; }
+		void SetBlink(bool blink) {
 			m_blink = blink;
 			if (m_blink) m_timer->Start();
 			else m_timer->SetPaused(true);
 			m_blinkFlag = true;
 		}
 
-		inline float GetBlinkInterval() const { return m_timer->GetInterval(); }
-		inline void SetBlinkInterval(float interval) { m_timer->SetInterval(interval); }
+		float GetBlinkInterval() const { return m_timer->GetInterval(); }
+		void SetBlinkInterval(float interval) const { m_timer->SetInterval(interval); }
 
-		inline bool IsVisible() const { return m_visible; }
-		inline void SetVisible(bool visible) {
+		bool IsVisible() const { return m_visible; }
+		void SetVisible(bool visible) {
 			m_visible = visible;
 			if (m_blink) {
 				m_visible ? m_timer->Start() : m_timer->SetPaused(true);

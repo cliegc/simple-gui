@@ -32,6 +32,7 @@ namespace SimpleGui {
 		KeyBoardTextEditingEvent = 1 << 17,
 
 		DropEvent = 1 << 18,
+		DropMotionEvent = 1 << 19,
 	};
 
 	constexpr EventType operator|(EventType type1, EventType type2) {
@@ -83,7 +84,7 @@ namespace SimpleGui {
 
 		template<typename T>
 		T* Convert() {
-			static_assert(std::is_base_of<Event, T>::value, "T ����̳���Event");
+			static_assert(std::is_base_of_v<Event, T>, "T 的基类必须是Event");
 			if (GetType() == T::GetStaticType()) {
 				return static_cast<T*>(this);
 			}
@@ -362,6 +363,16 @@ namespace SimpleGui {
 
 		std::string m_content;
 		DropItemType m_itemType = DropItemType::File;
+		Vec2 m_position;
+	};
+
+	class DropMotionEvent final : public Event {
+		friend class EventManager;
+		SG_EVENT_GET_TYPE(EventType::DropMotionEvent)
+	public:
+		Vec2 GetPosition() const { return m_position; }
+
+	private:
 		Vec2 m_position;
 	};
 #pragma endregion

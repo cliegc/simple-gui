@@ -1,6 +1,7 @@
 #include <utf8.h>
 #include <SDL3/SDL_clipboard.h>
 #include "component/line_edit.hpp"
+#include "component/common/utils.hpp"
 #include "gui_manager.hpp"
 
 

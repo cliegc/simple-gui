@@ -35,12 +35,23 @@ namespace SimpleGui {
 
 	bool Button::HandleEvent(Event* event) {
 		SG_CMP_HANDLE_EVENT_CONDITIONS_FALSE;
+		auto handlingCmp = m_window->GetRootComponent().GetHandlingComponent();
+		if (handlingCmp && handlingCmp != this) {
+			if (m_mouseState != MouseState::Normal) {
+				m_mouseState = MouseState::Normal;
+			}
+			return false;
+		}
 
 		if (BaseComponent::HandleEvent(event)) return true;
 		if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) {
 			m_mouseState = MouseState::Normal;
+			if (m_window->GetRootComponent().GetHandlingComponent() == this) {
+				m_window->GetRootComponent().SetHandlingComponent(nullptr);
+			}
 		}
 		else {
+			m_window->GetRootComponent().SetHandlingComponent(this);
 			if (auto ev = event->Convert<MouseButtonEvent>()) {
 				if (ev->IsPressed(MouseButton::Left)) {
 					m_mouseState = MouseState::Pressed;

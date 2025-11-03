@@ -28,6 +28,7 @@ namespace SimpleGui {
 
 	void Timer::Start() {
 		m_paused = false;
+		m_count = 0;
 		m_lastTime = SDL_GetTicksNS();
 	}
 
