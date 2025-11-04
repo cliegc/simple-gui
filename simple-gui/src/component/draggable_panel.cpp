@@ -20,7 +20,7 @@ namespace SimpleGui {
     }
 
     void DraggablePanel::EnteredComponentTree() {
-        m_padding = m_window->GetCurrentStyle().componentPadding;
+        m_padding = m_window->GetCurrentStyle()->componentPadding;
         SetComponentOwner(m_titleLbl.get(), m_window, this);
         BaseComponent::EnteredComponentTree(m_titleLbl.get());
         m_handleThickness = m_titleLbl->GetSize().h;

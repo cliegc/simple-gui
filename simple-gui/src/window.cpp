@@ -150,24 +150,36 @@ namespace SimpleGui {
 		m_font = std::make_unique<Font>(path, ptsize);
 	}
 
-	Style& Window::GetCurrentStyle() const {
+	std::string Window::GetCurrentStyleName() const {
+		return m_styleManager->GetCurrentStyleName();
+	}
+
+	std::vector<std::string> Window::GetStyleNames() const {
+		return m_styleManager->GetStyleNames();
+	}
+
+	Style* Window::GetCurrentStyle() const {
 		return m_styleManager->GetCurrentStyle();
 	}
 
-	std::optional<std::reference_wrapper<Style>> Window::GetStyle(const std::string& name) const {
+	Style* Window::GetStyle(const std::string& name) const {
 		return m_styleManager->GetStyle(name);
 	}
 
-	bool Window::RegisterStyle(const std::string& name, std::unique_ptr<Style> style) const {
-		return m_styleManager->RegisterStyle(name, std::move(style));
+	Style * Window::CreateBlankStyle(const std::string &name) const {
+		return m_styleManager->CreateBlankStyle(name);
 	}
 
-	bool Window::UnregisterStyle(const std::string& name) const {
-		return m_styleManager->UnregisterStyle(name);
+	Style * Window::CopyStyle(const std::string &name, const std::string &target) {
+		return m_styleManager->CopyStyle(name, target);
 	}
 
-	void Window::SwitchStyle(const std::string& name) const {
-		m_styleManager->SwitchStyle(name);
+	bool Window::RemoveStyle(const std::string &name) const {
+		return m_styleManager->RemoveStyle(name);
+	}
+
+	bool Window::SwitchStyle(const std::string& name) const {
+		return m_styleManager->SwitchStyle(name);
 	}
 
 	void Window::SetStyleFollowSystem() const {

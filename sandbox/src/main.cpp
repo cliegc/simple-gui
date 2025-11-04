@@ -488,16 +488,36 @@ int main(int argc, char **argv) {
     win.GetFont().SetSize(14);
     // win.SwitchStyle(StyleManager::LightStyle);
 
-    TestScrollBar();
-    TestScrollPanel();
+    // TestScrollBar();
+    // TestScrollPanel();
     // TestLineEdit();
     // TestTimer();
-    TestProgressBar();
-    TestSlider();
+    // TestProgressBar();
+    // TestSlider();
     TestCheckBox();
-    TestTextureRect();
+    // TestTextureRect();
     // TestDraggablePanel();
     // ViewImage();
+
+    auto style = win.CopyStyle("new style", StyleManager::DarkStyle);
+    style->colors[ThemeColorFlags::DraggablePanelHandle] = Color::GREEN;
+    style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::RED;
+    style->colors[ThemeColorFlags::CheckBoxForeground] = Color::RED;
+    win.SwitchStyle("new style");
+
+    for (auto& name : win.GetStyleNames()) {
+        SG_INFO("style name: {}", name);
+    }
+
+    win.AddComponent<Button>("switch style")->clicked.Connect("on_clicked",
+                                                              [&win]() {
+                                                                  if (win.GetCurrentStyleName() !=
+                                                                      StyleManager::DarkStyle) {
+                                                                      win.SwitchStyle(StyleManager::DarkStyle);
+                                                                      return;
+                                                                  }
+                                                                  win.SwitchStyle("new style");
+                                                              });
 
     // ShowFrameRate();
 

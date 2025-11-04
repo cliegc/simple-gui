@@ -69,11 +69,14 @@ namespace SimpleGui {
 		Font& GetFont() const;
 		void SetFont(std::string_view path, float ptsize);
 
-		Style& GetCurrentStyle() const;
-		std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name) const;
-		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style) const;
-		bool UnregisterStyle(const std::string& name) const;
-		void SwitchStyle(const std::string& name) const;
+		std::string GetCurrentStyleName() const;
+		std::vector<std::string> GetStyleNames() const;
+		Style* GetCurrentStyle() const;
+		Style* GetStyle(const std::string& name) const;
+		Style* CreateBlankStyle(const std::string& name) const;
+		Style* CopyStyle(const std::string& name, const std::string& target);
+		bool RemoveStyle(const std::string& name) const;
+		bool SwitchStyle(const std::string& name) const;
 		void SetStyleFollowSystem() const;
 
 		template<typename T, typename... Args>

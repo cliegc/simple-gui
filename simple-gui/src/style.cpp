@@ -1,54 +1,69 @@
 #include "style.hpp"
 #include <SDL3/SDL_video.h>
-#include <SDL3/SDL_log.h>
+#include <ranges>
 
 
 namespace SimpleGui {
 
-	const std::string StyleManager::LightStyle = "light_style";
-	const std::string StyleManager::DarkStyle = "dark_style";
+	const std::string StyleManager::LightStyle = "--#SG_LIGHT_STYLE#--";
+	const std::string StyleManager::DarkStyle = "--#SG_DARK_STYLE#--";
 
 	StyleManager::StyleManager() {
-		auto lightStyle = CreateLightStyle();
-		auto darkStyle = CreateDarkStyle();
-
-		m_currStyle = lightStyle.get();
-		m_styles.emplace(LightStyle, std::move(lightStyle));
-		m_styles.emplace(DarkStyle, std::move(darkStyle));
+		m_styles.emplace(LightStyle, std::move(CreateLightStyle()));
+		m_styles.emplace(DarkStyle, std::move(CreateDarkStyle()));
+		m_currStyleName = DarkStyle;
+		m_currStyle = m_styles[m_currStyleName].get();
 	}
 
-	bool StyleManager::RegisterStyle(const std::string& name, std::unique_ptr<Style> style) {
-		auto r = m_styles.emplace(name, std::move(style));
-		return r.second;
+	Style* StyleManager::CreateBlankStyle(const std::string& name) {
+		if (name == LightStyle || name == DarkStyle) return nullptr;
+
+		m_styles.emplace(name, std::move(std::make_unique<Style>()));
+		return m_styles[name].get();
 	}
 
-	bool StyleManager::UnregisterStyle(const std::string& name) {
+	Style * StyleManager::CopyStyle(const std::string &name, const std::string &target) {
+		if (name == target) return nullptr;
+		if (!m_styles.contains(target)) return nullptr;
+
+		const auto targetStyle = m_styles[target].get();
+		m_styles.emplace(name, std::move(std::make_unique<Style>(*targetStyle)));
+		return m_styles[name].get();
+	}
+
+	bool StyleManager::RemoveStyle(const std::string& name) {
 		if (name == LightStyle || name == DarkStyle) return false;
 
 		auto it = m_styles.find(name);
 		if (it != m_styles.end()) {
+			if (name == m_currStyleName) {
+				SetStyleFollowSystem();
+			}
+
 			m_styles.erase(name);
 			return true;
 		}
 		return false;
 	}
 
-	std::optional<std::reference_wrapper<Style>> StyleManager::GetStyle(const std::string& name) {
+	Style* StyleManager::GetStyle(const std::string& name) {
 		if (m_styles.contains(name)) {
-			return *m_styles[name];
+			return m_styles[name].get();
 		}
-		return std::nullopt;
+		return nullptr;
 	}
 
-	void StyleManager::SwitchStyle(const std::string& name) {
-		if (!m_styles.contains(name)) return;
+	bool StyleManager::SwitchStyle(const std::string& name) {
+		if (!m_styles.contains(name)) return false;
 		auto style = m_styles[name].get();
-		if (style == m_currStyle) return;
+		if (style == m_currStyle) return false;
 		m_currStyle = style;
+		m_currStyleName = name;
+		return true;
 	}
 
 	void StyleManager::SetStyleFollowSystem() {
-		SDL_SystemTheme theme = SDL_GetSystemTheme();
+		const SDL_SystemTheme theme = SDL_GetSystemTheme();
 		if (theme == SDL_SYSTEM_THEME_LIGHT) {
 			SwitchStyle(LightStyle);
 		}
@@ -57,8 +72,18 @@ namespace SimpleGui {
 		}
 	}
 
-	Style& StyleManager::GetCurrentStyle() const {
-		return *m_currStyle;
+	Style* StyleManager::GetCurrentStyle() const {
+		return m_currStyle;
+	}
+
+	std::string StyleManager::GetCurrentStyleName() const {
+		return m_currStyleName;
+	}
+
+	std::vector<std::string> StyleManager::GetStyleNames() {
+		auto keysView = std::views::keys(m_styles);
+		std::vector names(keysView.begin(), keysView.end());
+		return std::move(names);
 	}
 
 	std::unique_ptr<Style> StyleManager::CreateLightStyle() {

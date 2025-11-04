@@ -40,7 +40,7 @@ namespace SimpleGui {
 		BaseComponent::EnteredComponentTree(m_textLbl.get());
 		BaseComponent::EnteredComponentTree(m_selectedTextLbl.get());
 
-		m_padding = m_window->GetCurrentStyle().componentPadding;
+		m_padding = m_window->GetCurrentStyle()->componentPadding;
 		m_textLbl->SetPadding(0, 0, 0, 0);
 		m_selectedTextLbl->SetPadding(0, 0, 0, 0);
 		SetMinSize(GetFont().GetSize() + m_padding.left + m_padding.right,

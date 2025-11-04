@@ -405,7 +405,7 @@ namespace SimpleGui {
     Color BaseComponent::GetThemeColor(ThemeColorFlags flag) {
         if (m_themeColorCaches.contains(flag)) return m_themeColorCaches[flag];
         if (m_parent) return m_parent->GetThemeColor(flag);
-        if (m_window) return m_window->GetCurrentStyle().colors[flag];
+        if (m_window) return m_window->GetCurrentStyle()->colors[flag];
         return SG_GuiManager.GetDefaultStyle().colors[flag];
     }
 

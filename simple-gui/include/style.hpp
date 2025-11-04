@@ -131,17 +131,22 @@ namespace SimpleGui {
 		friend class GuiManager;
 		friend class Window;
 
-		bool RegisterStyle(const std::string& name, std::unique_ptr<Style> style);
-		bool UnregisterStyle(const std::string& name);
-		Style& GetCurrentStyle() const;
-		std::optional<std::reference_wrapper<Style>> GetStyle(const std::string& name);
-		void SwitchStyle(const std::string& name);
+		Style* CreateBlankStyle(const std::string& name);
+		Style* CopyStyle(const std::string& name, const std::string& target);
+		Style* GetCurrentStyle() const;
+		Style* GetStyle(const std::string& name);
+		bool RemoveStyle(const std::string& name);
+		bool SwitchStyle(const std::string& name);
+		std::string GetCurrentStyleName() const;
+		std::vector<std::string> GetStyleNames();
+
 		void SetStyleFollowSystem();
 
 		static std::unique_ptr<Style> CreateLightStyle();
 		static std::unique_ptr<Style> CreateDarkStyle();
 
-		std::unordered_map<std::string, std::unique_ptr<Style>> m_styles;
-		Style* m_currStyle;
+		std::unordered_map<std::string, std::unique_ptr<Style>> m_styles{};
+		Style* m_currStyle{};
+		std::string m_currStyleName{};
 	};
 }

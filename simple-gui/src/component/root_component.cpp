@@ -5,7 +5,7 @@
 namespace SimpleGui {
 	RootComponent::RootComponent(Window* window) {
 		m_window = window;
-		m_padding = m_window->GetCurrentStyle().componentPadding;
+		m_padding = m_window->GetCurrentStyle()->componentPadding;
 		SetSizeToFillWindow();
 	}
 

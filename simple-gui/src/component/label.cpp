@@ -18,7 +18,7 @@ namespace SimpleGui {
 		auto ttf_text = TTF_CreateText(&m_window->GetTTFTextEngine(), &GetFont().GetTTFFont(), m_text.c_str(), m_text.size());
 		m_ttfText = UniqueTextPtr(ttf_text);
 
-		m_padding = m_window->GetCurrentStyle().componentPadding;
+		m_padding = m_window->GetCurrentStyle()->componentPadding;
 
 		AdjustSize(m_ttfText.get());
 	}
