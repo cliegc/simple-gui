@@ -15,10 +15,6 @@ namespace SimpleGui {
 		Border,
 		Disabled,
 
-		ToolTipBackground,
-		ToolTipForeground,
-		ToolTipBorder,
-
 		LabelBackground,
 		LabelForeground,
 		LabelBorder,

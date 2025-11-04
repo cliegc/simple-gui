@@ -486,6 +486,7 @@ int main(int argc, char **argv) {
     GuiManager::Init(argc, argv, R"(C:\WINDOWS\Fonts\simhei.ttf)");
     Window &win = SG_GuiManager.GetWindow("sandbox", 640, 480);
     win.GetFont().SetSize(14);
+    // win.SwitchStyle(StyleManager::LightStyle);
 
     TestScrollBar();
     TestScrollPanel();

@@ -87,6 +87,45 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::TextureRectBackground] = Color(0xffffff64);
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x7f8c8dff);
 
+		style->colors[ThemeColorFlags::ScrollbarSlot_H] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::ScrollbarSlider_H] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::ScrollbarBorder_H] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::ScrollbarSliderHovered_H] = Color(0x3498db64);
+		style->colors[ThemeColorFlags::ScrollbarSliderPressed_H] = Color(0x3498db32);
+
+		style->colors[ThemeColorFlags::ScrollbarSlot_V] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::ScrollbarSlider_V] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::ScrollbarBorder_V] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::ScrollbarSliderHovered_V] = Color(0x3498db64);
+		style->colors[ThemeColorFlags::ScrollbarSliderPressed_V] = Color(0x3498db32);
+
+		style->colors[ThemeColorFlags::ScrollPanelBackground] = Color::TRANSPARENT;
+		style->colors[ThemeColorFlags::ScrollPanelBorder] = Color(0x3d444dff);
+
+		style->colors[ThemeColorFlags::LineEditBackground] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::LineEditForeground] = Color::BLACK;
+		style->colors[ThemeColorFlags::LineEditPlaceholder] = Color(100, 100, 100);
+		style->colors[ThemeColorFlags::LineEditBorder] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::LineEditActivatedBorder] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::LineEditCaret] = Color::BLACK;
+		style->colors[ThemeColorFlags::LineEditSelectedBackground] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::LineEditSelectedForeground] = Color::BLACK;
+
+		style->colors[ThemeColorFlags::ProgressBarSlot] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::ProgressBarProgress] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::ProgressBarForeground] = Color::BLACK;
+		style->colors[ThemeColorFlags::ProgressBarBorder] = Color(0x3d444dff);
+
+		style->colors[ThemeColorFlags::SliderSlot] = Color(200, 200, 200);
+		style->colors[ThemeColorFlags::SliderValue] = Color(0x3498db64);
+		style->colors[ThemeColorFlags::SliderHandler] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::SliderHandlerHovered] = Color(0x3498dbff);
+
+		style->colors[ThemeColorFlags::CheckBoxBackground] = Color::TRANSPARENT;
+		style->colors[ThemeColorFlags::CheckBoxForeground] = Color::BLACK;
+		style->colors[ThemeColorFlags::CheckBoxCheckRectBackground] = Color(200, 200, 200, 200);
+		style->colors[ThemeColorFlags::CheckBoxCheckedFlag] = Color(0x3498dbff);
+		style->colors[ThemeColorFlags::CheckBoxCheckRectBorder] = Color(0x3498dbff);
 
 		return style;
 	}
@@ -96,10 +135,6 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::Background] = Color(0x0d1117ff);
 		style->colors[ThemeColorFlags::Foreground] = Color::WHITE;
 		style->colors[ThemeColorFlags::Border] = Color(0x3d444dff);
-
-		style->colors[ThemeColorFlags::ToolTipBackground] = Color(0x0d1117ff);
-		style->colors[ThemeColorFlags::ToolTipForeground] = Color::WHITE;
-		style->colors[ThemeColorFlags::ToolTipBorder] = Color(0x3d444dff);
 
 		style->colors[ThemeColorFlags::LabelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::LabelForeground] = Color::WHITE;
@@ -121,16 +156,16 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::TextureRectBorder] = Color(0x3d444dff);
 
 		style->colors[ThemeColorFlags::ScrollbarSlot_H] = Color(47, 47, 47);
-		style->colors[ThemeColorFlags::ScrollbarSlider_H] = Color(255, 0, 0);
+		style->colors[ThemeColorFlags::ScrollbarSlider_H] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::ScrollbarBorder_H] = Color(0x3d444dff);
-		style->colors[ThemeColorFlags::ScrollbarSliderHovered_H] = Color(255, 0, 0, 200);
-		style->colors[ThemeColorFlags::ScrollbarSliderPressed_H] = Color(255,0 ,0, 150);
+		style->colors[ThemeColorFlags::ScrollbarSliderHovered_H] = Color(0x8250df64);
+		style->colors[ThemeColorFlags::ScrollbarSliderPressed_H] = Color(0x8250df32);
 
 		style->colors[ThemeColorFlags::ScrollbarSlot_V] = Color(47, 47, 47);
-		style->colors[ThemeColorFlags::ScrollbarSlider_V] = Color(255, 0, 0);
+		style->colors[ThemeColorFlags::ScrollbarSlider_V] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::ScrollbarBorder_V] = Color(0x3d444dff);
-		style->colors[ThemeColorFlags::ScrollbarSliderHovered_V] = Color(255, 0, 0, 200);
-		style->colors[ThemeColorFlags::ScrollbarSliderPressed_V] = Color(255, 0, 0, 150);
+		style->colors[ThemeColorFlags::ScrollbarSliderHovered_V] = Color(0x8250df64);
+		style->colors[ThemeColorFlags::ScrollbarSliderPressed_V] = Color(0x8250df32);
 
 		style->colors[ThemeColorFlags::ScrollPanelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::ScrollPanelBorder] = Color(0x3d444dff);
