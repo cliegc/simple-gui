@@ -162,7 +162,7 @@ namespace SimpleGui {
 
     void BaseComponent::SetGlobalPosition(const Vec2 &pos) {
         if (m_parent) {
-            m_position = pos - m_parent->GetGlobalPosition();
+            m_position = pos - m_parent->GetGlobalPosition() - m_parent->GetLocalCoordinateOriginOffset();
             return;
         }
 

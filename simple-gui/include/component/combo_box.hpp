@@ -34,6 +34,9 @@ namespace SimpleGui {
 		float GetMaxItemsListHeight() const { return m_maxItemsListHeight; }
 		void SetMaxItemsListHeight(float height) { m_maxItemsListHeight = height; }
 
+		bool IsAutoHideItemsList() const { return m_autoHideItemsList; }
+		void SetAutoHideItemsList(bool hide) { m_autoHideItemsList = hide; }
+
 	public:
 		// size_t index, const std::string& item
 		Signal<size_t, const std::string&> currentItemChanged;
@@ -50,6 +53,7 @@ namespace SimpleGui {
 		size_t m_currIndex{};
 		float m_maxItemsListHeight{};
 		float m_maxItemsListWidth{};
+		bool m_autoHideItemsList{ true };
 
 		BaseComponent* m_lastHoveredLbl{};
 		BaseComponent* m_hoveringLbl{};
@@ -60,8 +64,9 @@ namespace SimpleGui {
 
 		bool HandleToggleItemsList(Event* event) const;
 		bool HandleSelectItem(Event* event);
-		void UpdateItemsList(const Rect& gRect) const;
 		void RenderToggleRect(Renderer& renderer);
 		void RenderItemsList(Renderer& renderer);
+
+		void SetSafePositionForItemList() const;
 	};
 }

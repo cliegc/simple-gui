@@ -67,7 +67,7 @@ namespace SimpleGui {
 		m_toggleRect.gRect.size.h = m_size.h;
 		m_toggleRect.visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_toggleRect.gRect);
 
-		UpdateItemsList(gRect);
+		m_itemsPanel->Update();
 	}
 
 	void ComboBox::Render(Renderer& renderer) {
@@ -114,8 +114,12 @@ namespace SimpleGui {
 	bool ComboBox::HandleToggleItemsList(Event* event) const {
 		if (auto ev = event->Convert<MouseButtonEvent>();
 			ev && ev->IsPressed(MouseButton::Left) &&
-			m_toggleRect.visibleGRect.ContainPoint(ev->GetPosition())) {
+			(m_toggleRect.visibleGRect.ContainPoint(ev->GetPosition()) ||
+			m_visibleGRect.ContainPoint(ev->GetPosition()))) {
 			m_itemsPanel->SetVisible(!m_itemsPanel->IsVisible());
+			if (m_itemsPanel->IsVisible()) {
+				SetSafePositionForItemList();
+			}
 			return true;
 		}
 		return false;
@@ -134,6 +138,10 @@ namespace SimpleGui {
 			for (int i = 0; i < m_itemLbls.size(); ++i) {
 				if (!m_itemLbls[i]->GetGlobalRect().ContainPoint(ev->GetPosition())) continue;
 				SetCurrentItem(i);
+				if (m_autoHideItemsList) {
+					m_itemsPanel->SetVisible(false);
+				}
+				break;
 			}
 
 			return true;
@@ -154,22 +162,11 @@ namespace SimpleGui {
 				if (!lbl->GetGlobalRect().ContainPoint(ev->GetPosition())) continue;
 				if (lbl != m_hoveringLbl) m_lastHoveredLbl = m_hoveringLbl;
 				m_hoveringLbl = lbl;
-				// m_hoveringIndex = index;
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	void ComboBox::UpdateItemsList(const Rect& gRect) const {
-		if (!m_itemsPanel->IsVisible()) return;
-
-		m_itemsPanel->SetGlobalPosition(
-			gRect.position.x,
-			gRect.Bottom() + 3
-		);
-		m_itemsPanel->Update();
 	}
 
 	void ComboBox::RenderToggleRect(Renderer &renderer) {
@@ -235,6 +232,20 @@ namespace SimpleGui {
 		m_itemsPanel->Render(renderer);
 
 		renderer.SetTopRender(false);
+	}
+
+	void ComboBox::SetSafePositionForItemList() const {
+		const Rect rootContentGRect = m_window->GetRootComponent().GetContentGlobalRect();
+		const Rect gRect = GetGlobalRect();
+		Rect panelGRect = m_itemsPanel->GetGlobalRect();
+		panelGRect.position.x = gRect.position.x;
+		panelGRect.position.y = gRect.Bottom() + 3;
+
+		if (panelGRect.Left() < rootContentGRect.Left()) panelGRect.position.x = rootContentGRect.Left();
+		if (panelGRect.Right() > rootContentGRect.Right()) panelGRect.position.x = rootContentGRect.Right() - panelGRect.size.w;
+		if (panelGRect.Bottom() > rootContentGRect.Bottom()) panelGRect.position.y = gRect.Top() - panelGRect.size.h - 3;
+
+		m_itemsPanel->SetGlobalPosition(panelGRect.position);
 	}
 
 	std::string ComboBox::GetItem(size_t index) const {

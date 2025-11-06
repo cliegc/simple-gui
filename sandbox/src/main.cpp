@@ -422,8 +422,8 @@ static void TestComboBox() {
         cbb->AddItem(std::format("test combobox: item {}", i));
     }
 
-    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxToggleBackground, Color::GREEN);
-    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxForeground, Color::RED);
+    // cbb->CustomThemeColor(ThemeColorFlags::ComboBoxToggleBackground, Color::GREEN);
+    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxForeground, Color::GREEN);
 
     cbb->SetSize(200, 30);
     cbb->SetToolTipEnabled(true);
@@ -433,7 +433,7 @@ static void TestComboBox() {
         });
 
     // cbb->SetCurrentItem("test combobox: item 15");
-    cbb->SetCurrentItem(1);
+    // cbb->SetCurrentItem(1);
 
     auto tipLbl = cbb->SetToolTip<Label>("");
     tipLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color(0, 0, 0, 180));
