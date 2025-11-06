@@ -17,6 +17,8 @@ namespace SimpleGui {
         m_resizeCursor = UniqueCursorPtr(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE));
         m_titleLbl->SetTextAlignments(TextAlignment::Left, TextAlignment::Center);
         m_titleLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color::TRANSPARENT);
+
+        SetSize(100, 100);
     }
 
     void DraggablePanel::EnteredComponentTree() {

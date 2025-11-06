@@ -408,7 +408,92 @@ static void TestTextureRect() {
 
 
 static void TestComboBox() {
-    auto ccb = SG_GuiManager.GetWindow().AddComponent<ComboBox>();
+    auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test combobox");
+    dp->SetSize(300, 300);
+
+    // std::vector<std::string> items;
+    // for (int i = 0; i < 30; ++i) {
+    //     items.push_back(std::format("test combobox: item {}", i));
+    // }
+    // auto cbb = dp->AddChild<ComboBox>(items);
+
+    auto cbb = dp->AddChild<ComboBox>();
+    for (int i = 0; i < 3; ++i) {
+        cbb->AddItem(std::format("test combobox: item {}", i));
+    }
+
+    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxToggleBackground, Color::GREEN);
+    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxForeground, Color::RED);
+
+    cbb->SetSize(200, 30);
+    cbb->SetToolTipEnabled(true);
+    cbb->currentItemChanged.Connect("on_current_item_changed",
+        [](int index, const std::string& item) {
+            SG_INFO("on_current_item_changed: index = {}, item = {}", index, item);
+        });
+
+    // cbb->SetCurrentItem("test combobox: item 15");
+    cbb->SetCurrentItem(1);
+
+    auto tipLbl = cbb->SetToolTip<Label>("");
+    tipLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color(0, 0, 0, 180));
+    tipLbl->visibleChanged.Connect("on_tip_changed",
+        [tipLbl, cbb](bool visible) {
+           if (!visible) return;
+            tipLbl->SetText(cbb->GetCurrentItem());
+        });
+
+    auto layout = dp->AddChild<BoxLayout>(Direction::Vertical);
+    layout->SetWidth(240);
+    layout->SetSpacing(3);
+    layout->SetSizeConfigH(ComponentSizeConfig::Expanding);
+    layout->SetPosition(240, 0);
+
+    auto btn1 = layout->AddChild<Button>("remove cbb item: front");
+    btn1->clicked.Connect("on_clicked",
+        [cbb]() {
+            cbb->RemoveItem(0);
+        });
+
+    auto btn2 = layout->AddChild<Button>("remove cbb item: selected");
+    btn2->clicked.Connect("on_clicked",
+        [cbb]() {
+            cbb->RemoveItem(cbb->GetCurrentItemIndex());
+        });
+
+    auto btn3 = layout->AddChild<Button>("remove cbb item: back");
+    btn3->clicked.Connect("on_clicked",
+        [cbb]() {
+            cbb->RemoveItem(cbb->GetItemCount() - 1);
+        });
+
+    auto btn4 = layout->AddChild<Button>("clear cbb items");
+    btn4->clicked.Connect("on_clicked",
+        [cbb]() {
+            cbb->ClearItems();
+        });
+
+    auto btn5 = layout->AddChild<Button>("add cbb item");
+    btn5->clicked.Connect("on_clicked",
+        [cbb]() {
+           cbb->AddItem(std::format("new item: {}", cbb->GetItemCount()));
+        });
+}
+
+static void TestBoxLayout() {
+    auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test box layout");
+    auto scrollbar = dp->AddChild<ScrollBar>(Direction::Vertical);
+    scrollbar->SetSize(15, 100);
+
+    auto layout = dp->AddChild<BoxLayout>(Direction::Vertical);
+    layout->SetSizeConfigs(ComponentSizeConfig::Expanding, ComponentSizeConfig::Expanding);
+
+    scrollbar->SetTarget(layout);
+
+    for (int i = 0; i < 20; ++i) {
+        auto lbl = layout->AddChild<Label>("label" + std::to_string(i));
+        // lbl->SetSizeConfigH(ComponentSizeConfig::Expanding);
+    }
 }
 
 static void ViewImage() {
@@ -494,30 +579,34 @@ int main(int argc, char **argv) {
     // TestTimer();
     // TestProgressBar();
     // TestSlider();
-    TestCheckBox();
+    // TestCheckBox();
     // TestTextureRect();
     // TestDraggablePanel();
     // ViewImage();
+    TestComboBox();
+    // TestBoxLayout();
 
-    auto style = win.CopyStyle("new style", StyleManager::DarkStyle);
-    style->colors[ThemeColorFlags::DraggablePanelHandle] = Color::GREEN;
-    style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::RED;
-    style->colors[ThemeColorFlags::CheckBoxForeground] = Color::RED;
-    win.SwitchStyle("new style");
-
-    for (auto& name : win.GetStyleNames()) {
-        SG_INFO("style name: {}", name);
-    }
-
-    win.AddComponent<Button>("switch style")->clicked.Connect("on_clicked",
-                                                              [&win]() {
-                                                                  if (win.GetCurrentStyleName() !=
-                                                                      StyleManager::DarkStyle) {
-                                                                      win.SwitchStyle(StyleManager::DarkStyle);
-                                                                      return;
-                                                                  }
-                                                                  win.SwitchStyle("new style");
-                                                              });
+    // auto style = win.CopyStyle("new style", StyleManager::DarkStyle);
+    // style->colors[ThemeColorFlags::DraggablePanelHandle] = Color::GREEN;
+    // style->colors[ThemeColorFlags::DraggablePanelForeground] = Color::RED;
+    // style->colors[ThemeColorFlags::CheckBoxForeground] = Color::RED;
+    // if (!win.SwitchStyle("new style")) {
+    //     SG_WARN("无法切换主题。主题\"new style\"不存在。");
+    // }
+    //
+    // for (auto& name : win.GetStyleNames()) {
+    //     SG_INFO("style name: {}", name);
+    // }
+    //
+    // win.AddComponent<Button>("switch style")->clicked.Connect("on_clicked",
+    //                                                           [&win]() {
+    //                                                               if (win.GetCurrentStyleName() !=
+    //                                                                   StyleManager::DarkStyle) {
+    //                                                                   win.SwitchStyle(StyleManager::DarkStyle);
+    //                                                                   return;
+    //                                                               }
+    //                                                               win.SwitchStyle("new style");
+    //                                                           });
 
     // ShowFrameRate();
 

@@ -1,5 +1,6 @@
 #include "component/label.hpp"
 #include "gui_manager.hpp"
+#include "logger.hpp"
 
 
 namespace SimpleGui {
@@ -17,10 +18,9 @@ namespace SimpleGui {
 		//Init()
 		auto ttf_text = TTF_CreateText(&m_window->GetTTFTextEngine(), &GetFont().GetTTFFont(), m_text.c_str(), m_text.size());
 		m_ttfText = UniqueTextPtr(ttf_text);
-
 		m_padding = m_window->GetCurrentStyle()->componentPadding;
-
 		AdjustSize(m_ttfText.get());
+		m_text = "";
 	}
 
 	void Label::Update() {
@@ -108,11 +108,13 @@ namespace SimpleGui {
 	}
 
 	std::string Label::GetText() const {
-		return m_text;
+		if (m_ttfText->text == nullptr) {
+			return "";
+		}
+		return m_ttfText->text;
 	}
 
 	void Label::SetText(std::string_view text) {
-		m_text = text;
 		TTF_SetTextString(m_ttfText.get(), text.data(), text.size());
 		AdjustSize(m_ttfText.get());
 	}

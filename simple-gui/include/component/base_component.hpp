@@ -82,7 +82,7 @@ namespace SimpleGui {
 		void SetSizeConfigH(ComponentSizeConfig config) { m_sizeConfigs.second = config; }
 
 		bool IsVisible() const { return m_visible; }
-		void SetVisible(bool visible) { m_visible = visible; }
+		void SetVisible(bool visible);
 
 		bool IsDisabled() const { return m_disabled; }
 		void SetDisabled(bool disabled) { m_disabled = disabled; }
@@ -172,9 +172,14 @@ namespace SimpleGui {
 		void ClearAllExtendedFunctions() const { m_extFunctionsManager->Clear(); }
 		void ClearAllExtendedFunctionsDeferred() const { m_extFunctionsManager->ClearDeferred(); }
 
+	public:
+		Signal<bool> visibleChanged;
+
 	protected:
 		class ToolTip final {
 		public:
+			const float MOUSE_SATY_DURATION = 1.0f;
+
 			BaseComponent *target{};
 			std::unique_ptr<BaseComponent> cmp{};
 			std::unique_ptr<Timer> m_timer{};

@@ -1,5 +1,6 @@
 #include "component/scroll_panel.hpp"
 #include "gui_manager.hpp"
+#include "logger.hpp"
 
 
 namespace SimpleGui {
@@ -37,7 +38,7 @@ namespace SimpleGui {
 		//if (!m_visibleGRect.ContainPoint(SG_GuiManager.GetMousePosition())) return false;
 
 		// mouse wheel to h scroll
-		// shift-mouse_wheel to v scroll 
+		// shift-mouse_wheel to h scroll
 		if (auto ev = event->Convert<KeyBoardButtonEvent>()) {
 			m_shiftPressed = (ev->IsPressed() && ev->GetKeyMod() == SDL_KMOD_LSHIFT) ? true : false;
 		}
@@ -65,21 +66,40 @@ namespace SimpleGui {
 		Rect contentGRect = GetContentGlobalRect();
 		Rect boundaryGRect = CalcChildrenBoundaryGlobalRect(this);
 		boundaryGRect = ScrollBar::AdjustTargetChildrenBoundaryGlobalRect(boundaryGRect, contentGRect);
+
+		m_hScrollBar->m_visible = !IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w);
+		m_vScrollBar->m_visible = !IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h);
 		
 		// update hScrollBar
-		m_hScrollBar->SetGlobalPosition(globalRect.Left(), globalRect.Bottom() - m_hScrollBar->m_size.h);
-		m_hScrollBar->SetWidth(m_size.w - m_vScrollBar->m_size.w);
-		m_hScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_hScrollBar->GetGlobalRect());
-		m_hScrollBar->UpdateHorizontalSlider(boundaryGRect, contentGRect);
+		{
+			m_hScrollBar->SetGlobalPosition(globalRect.Left(), globalRect.Bottom() - m_hScrollBar->m_size.h);
+			if (m_vScrollBar->m_visible) {
+				m_hScrollBar->SetWidth(m_size.w - m_vScrollBar->m_size.w);
+			}
+			else {
+				m_hScrollBar->SetWidth(m_size.w);
+			}
+			m_hScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_hScrollBar->GetGlobalRect());
+			m_hScrollBar->UpdateHorizontalSlider(boundaryGRect, contentGRect);
+		}
+
 		
 		// update vScrollBar
-		m_vScrollBar->SetGlobalPosition(globalRect.Right() - m_vScrollBar->m_size.w, globalRect.Top());
-		m_vScrollBar->SetHeight(m_size.h - m_hScrollBar->m_size.h);
-		m_vScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_vScrollBar->GetGlobalRect());
-		m_vScrollBar->UpdateVerticalSlider(boundaryGRect, contentGRect);
+		{
+			m_vScrollBar->SetGlobalPosition(globalRect.Right() - m_vScrollBar->m_size.w, globalRect.Top());
+			if (m_hScrollBar->m_visible) {
+				m_vScrollBar->SetHeight(m_size.h - m_hScrollBar->m_size.h);
+			}
+			else {
+				m_vScrollBar->SetHeight(m_size.h);
+			}
+			m_vScrollBar->m_visibleGRect = CalcVisibleGlobalRect(m_visibleGRect, m_visibleGRect, m_vScrollBar->GetGlobalRect());
+			m_vScrollBar->UpdateVerticalSlider(boundaryGRect, contentGRect);
+		}
 
-		m_hScrollBar->m_visible = !(IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w));
-		m_vScrollBar->m_visible = !(IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h));
+
+		// m_hScrollBar->m_visible = !IsZeroApprox(m_hScrollBar->m_slider.globalRect.size.w);
+		// m_vScrollBar->m_visible = !IsZeroApprox(m_vScrollBar->m_slider.globalRect.size.h);
 
 		if (!m_hScrollBar->m_visible && m_hScrollBar->m_dragSliderData.canDragging) m_hScrollBar->m_dragSliderData.canDragging = false;
 		if (!m_vScrollBar->m_visible && m_vScrollBar->m_dragSliderData.canDragging) m_vScrollBar->m_dragSliderData.canDragging = false;

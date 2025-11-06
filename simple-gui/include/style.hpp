@@ -77,6 +77,7 @@ namespace SimpleGui {
 		ComboBoxBackground,
 		ComboBoxForeground,
 		ComboBoxBorder,
+		ComboBoxToggleBackground,
 		ComboBoxItemSelected,
 		ComboBoxItemHovered,
 

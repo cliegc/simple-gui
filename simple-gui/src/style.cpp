@@ -220,6 +220,13 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::CheckBoxCheckedFlag] = Color(0x8250dfff);
 		style->colors[ThemeColorFlags::CheckBoxCheckRectBorder] = Color(0x3d444dff);
 
+		style->colors[ThemeColorFlags::ComboBoxBackground] = Color(47, 47, 47);
+		style->colors[ThemeColorFlags::ComboBoxForeground] = Color::WHITE;
+		style->colors[ThemeColorFlags::ComboBoxBorder] = Color(0x3d444dff);
+		style->colors[ThemeColorFlags::ComboBoxToggleBackground] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::ComboBoxItemSelected] = Color(0x8250dfff);
+		style->colors[ThemeColorFlags::ComboBoxItemHovered] = Color(0x8250df64);
+
 		return style;
 	}
 

@@ -16,9 +16,7 @@ namespace SimpleGui {
     void BaseComponent::PreparationOfUpdateChildren() {
         // add caches of children to m_children, and clear caches
         for (auto &child: m_childCaches) {
-            auto temp = child.get();
             m_children.push_back(std::move(child));
-            temp->EnteredComponentTree();
         }
         m_childCaches.clear();
 
@@ -254,6 +252,12 @@ namespace SimpleGui {
     //	m_children.reserve(count);
     //}
 
+    void BaseComponent::SetVisible(bool visible) {
+        if (m_visible == visible) return;
+        m_visible = visible;
+        visibleChanged.Emit(visible);
+    }
+
     void BaseComponent::AddChild(std::unique_ptr<BaseComponent> child) {
         if (!child || child->GetParent() == this) {
             SG_WARN("AddChild: this child is null or parent of child already is this.");
@@ -264,14 +268,11 @@ namespace SimpleGui {
             return;
         }
 
-        //child->m_parent = this;
-        //child->m_window = m_window;
         SetComponentOwner(child.get(), m_window, this);
         child->m_needRemove = false;
         auto temp = child.get();
         m_children.push_back(std::move(child));
         temp->EnteredComponentTree();
-        // SDL_Log("AddChild: child entered component tree.\n");
         SG_INFO("AddChild: child entered component tree");
     }
 
@@ -282,10 +283,11 @@ namespace SimpleGui {
             return;
         }
 
-        child->m_parent = this;
-        child->m_window = m_window;
+        SetComponentOwner(child.get(), m_window, this);
         child->m_needRemove = false;
+        auto temp = child.get();
         m_childCaches.push_back(std::move(child));
+        temp->EnteredComponentTree();
     }
 
     BaseComponent *BaseComponent::GetChildAt(size_t idx) const {
@@ -426,7 +428,7 @@ namespace SimpleGui {
         this->target = target;
         enabled = false;
         isFirstShown = true;
-        m_timer = std::make_unique<Timer>(1.5f);
+        m_timer = std::make_unique<Timer>(MOUSE_SATY_DURATION);
         m_timer->SetOneShot(true);
         m_timer->timeout.Connect("on_timeout",
                                  [this, target]() {
