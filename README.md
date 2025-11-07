@@ -28,4 +28,5 @@ Windows
 - SDL3: [libsdl-org/SDL: Simple DirectMedia Layer](https://github.com/libsdl-org/SDL)
 - SDL_ttf: [libsdl-org/SDL_ttf: Support for TrueType (.ttf) font files with Simple Directmedia Layer.](https://github.com/libsdl-org/SDL_ttf)
 - SDL_image: [libsdl-org/SDL_image: Image decoding for many popular formats for Simple Directmedia Layer.](https://github.com/libsdl-org/SDL_image)
-- utf8cpp: [nemtrif/utfcpp: UTF-8 with C++ in a Portable Way](https://github.com/nemtrif/utfcpp)  
+- utf8cpp: [nemtrif/utfcpp: UTF-8 with C++ in a Portable Way](https://github.com/nemtrif/utfcpp)
+- tinyxml2: [leethomason/tinyxml2: TinyXML2 is a simple, small, efficient, C++ XML parser that can be easily integrated into other programs.](https://github.com/leethomason/tinyxml2)

@@ -418,7 +418,7 @@ static void TestComboBox() {
     // auto cbb = dp->AddChild<ComboBox>(items);
 
     auto cbb = dp->AddChild<ComboBox>();
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 150; ++i) {
         cbb->AddItem(std::format("test combobox: item {}", i));
     }
 

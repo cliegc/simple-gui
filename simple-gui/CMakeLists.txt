@@ -5,7 +5,8 @@ set(THIRD_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdlib)
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # 创建静态库目标
-add_library(SimpleGui STATIC ${SOURCES})
+add_library(SimpleGui STATIC ${SOURCES}
+        3rdlib/TinyXML2/tinyxml2.cpp)
 
 # 设置包含目录
 target_include_directories(SimpleGui
@@ -16,6 +17,7 @@ target_include_directories(SimpleGui
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdlib/SDL3_image/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdlib/utfcpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdlib/utfcpp/utf8>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdlib/TinyXML2>
         $<INSTALL_INTERFACE:include>
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src

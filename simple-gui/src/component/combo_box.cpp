@@ -102,8 +102,8 @@ namespace SimpleGui {
 		m_itemLbls.push_back(lbl);
 
 		const float w = lbl->GetSize().w;
-		m_maxItemsListWidth = m_maxItemsListWidth < w ? w + 25 : m_maxItemsListWidth;
-		m_itemsPanel->SetWidth(m_maxItemsListWidth);
+		const float width = m_maxItemsListWidth < w ? w + 20 : m_maxItemsListWidth;
+		m_itemsPanel->SetWidth(width);
 
 		auto height = y + lbl->GetSize().h;
 		if (height <= m_maxItemsListHeight) {
@@ -111,7 +111,7 @@ namespace SimpleGui {
 		}
 	}
 
-	bool ComboBox::HandleToggleItemsList(Event* event) const {
+	bool ComboBox::HandleToggleItemsList(Event* event) {
 		if (auto ev = event->Convert<MouseButtonEvent>();
 			ev && ev->IsPressed(MouseButton::Left) &&
 			(m_toggleRect.visibleGRect.ContainPoint(ev->GetPosition()) ||
@@ -119,6 +119,8 @@ namespace SimpleGui {
 			m_itemsPanel->SetVisible(!m_itemsPanel->IsVisible());
 			if (m_itemsPanel->IsVisible()) {
 				SetSafePositionForItemList();
+				m_hoveringLbl = nullptr;
+				m_lastHoveredLbl = nullptr;
 			}
 			return true;
 		}
@@ -290,15 +292,19 @@ namespace SimpleGui {
 		}
 	}
 
+	// TODO: fix bug
 	void ComboBox::RemoveItem(size_t index) {
 		if (index >= m_items.size()) return;
 		if (m_items.empty() || m_itemLbls.empty()) return;
 
 		const auto lbl = m_itemLbls[index];
 
+		if (lbl == m_lastSelectedLbl) m_lastSelectedLbl = nullptr;
+
 		m_items.erase(m_items.begin() + index);
 		m_itemLbls.erase(m_itemLbls.begin() + index);
 		m_itemsPanel->RemoveChildDeferred(lbl);
+
 
 		if (m_itemLbls.empty()) {
 			m_masterItemLbl->SetText("");
@@ -307,16 +313,17 @@ namespace SimpleGui {
 			m_currIndex = 0;
 		}
 		else {
-			if (index == m_itemLbls.size()) {
-				auto lastSelectedIndex = m_currIndex;
-				SetCurrentItem(index - 1);
-				if (lastSelectedIndex == index) {
-					m_lastSelectedLbl = nullptr;
+			if (index == m_currIndex) {
+				if (m_currIndex == m_items.size()) {
+					SetCurrentItem(m_currIndex - 1);
 				}
-			}
-			else {
-				SetCurrentItem(index);
+				else {
+					SetCurrentItem(m_currIndex);
+				}
 				m_lastSelectedLbl = nullptr;
+			}
+			else if (index < m_currIndex) {
+				m_currIndex--;
 			}
 		}
 

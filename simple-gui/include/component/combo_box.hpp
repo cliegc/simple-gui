@@ -62,7 +62,7 @@ namespace SimpleGui {
 
 		void AddItem(const std::string& item, bool addToItems);
 
-		bool HandleToggleItemsList(Event* event) const;
+		bool HandleToggleItemsList(Event* event);
 		bool HandleSelectItem(Event* event);
 		void RenderToggleRect(Renderer& renderer);
 		void RenderItemsList(Renderer& renderer);
