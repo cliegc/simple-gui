@@ -42,8 +42,8 @@ namespace SimpleGui {
 	void BoxLayout::SetWeights(const std::vector<int>& weights) {
 		m_weights.clear();
 
-		for (int i = 0; i < weights.size(); ++i) {
-			int weight = weights[i] < 0 ? 1 : weights[i];
+		for (const int i : weights) {
+			int weight = i < 0 ? 1 : i;
 			m_weights.push_back(weight);
 		}
 	}

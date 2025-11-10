@@ -20,7 +20,9 @@ namespace SimpleGui {
 		m_ttfText = UniqueTextPtr(ttf_text);
 		m_padding = m_window->GetCurrentStyle()->componentPadding;
 		AdjustSize(m_ttfText.get());
-		m_text = "";
+
+		m_text.clear();
+		m_text.shrink_to_fit();
 	}
 
 	void Label::Update() {

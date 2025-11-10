@@ -15,6 +15,8 @@ namespace SimpleGui {
 		Border,
 		Disabled,
 
+		SplitLayoutHandle,
+
 		LabelBackground,
 		LabelForeground,
 		LabelBorder,

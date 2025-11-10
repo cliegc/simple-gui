@@ -54,7 +54,7 @@ namespace SimpleGui {
 
 		template<typename T, typename ...Args>
 		T* AddExtendedFunctions(Args&& ...args) {
-			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T ����̳��� ExtendedFunctions");
+			static_assert(std::is_base_of<ExtendedFunctions, T>::value, "T的基类必须是ExtendedFunctions");
 			if (m_functions.contains(GetID<T>())) return (T*)m_functions[GetID<T>()].get();
 			auto functions = std::make_unique<T>(std::forward<Args>(args)...);
 			auto ptr = functions.get();

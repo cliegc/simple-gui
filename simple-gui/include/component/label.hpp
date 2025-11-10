@@ -6,7 +6,7 @@
 namespace SimpleGui {
 	class Label final : public BaseComponent {
 	public:
-		explicit Label(std::string_view text);
+		explicit Label(std::string_view text = "label");
 		~Label() override = default;
 
 		std::string GetText() const;

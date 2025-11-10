@@ -14,6 +14,7 @@ namespace SimpleGui {
 
 		m_itemsPanel = std::make_unique<ScrollPanel>();
 		m_itemsPanel->SetVisible(false);
+		m_itemsPanel->SetWidth(m_maxItemsListWidth);
 		m_itemsPanel->SetHeight(m_maxItemsListHeight);
 		m_itemsPanel->CustomThemeColor(ThemeColorFlags::ScrollPanelBackground, GetThemeColor(ThemeColorFlags::ComboBoxBackground));
 		m_itemsPanel->CustomThemeColor(ThemeColorFlags::ScrollPanelBorder, GetThemeColor(ThemeColorFlags::ComboBoxBorder));
@@ -102,8 +103,10 @@ namespace SimpleGui {
 		m_itemLbls.push_back(lbl);
 
 		const float w = lbl->GetSize().w;
-		const float width = m_maxItemsListWidth < w ? w + 20 : m_maxItemsListWidth;
-		m_itemsPanel->SetWidth(width);
+		if (m_maxItemsListWidth < w) {
+			m_maxItemsListWidth = w + 30;
+			m_itemsPanel->SetWidth(m_maxItemsListWidth);
+		}
 
 		auto height = y + lbl->GetSize().h;
 		if (height <= m_maxItemsListHeight) {
@@ -150,7 +153,7 @@ namespace SimpleGui {
 		}
 
 		if (auto ev = event->Convert<MouseMotionEvent>()) {
-			if (!m_itemsPanel->GetGlobalRect().ContainPoint(ev->GetPosition())) {
+			if (!m_itemsPanel->GetContentGlobalRect().ContainPoint(ev->GetPosition())) {
 				m_lastHoveredLbl = m_hoveringLbl;
 				m_hoveringLbl = nullptr;
 				return false;
@@ -292,7 +295,6 @@ namespace SimpleGui {
 		}
 	}
 
-	// TODO: fix bug
 	void ComboBox::RemoveItem(size_t index) {
 		if (index >= m_items.size()) return;
 		if (m_items.empty() || m_itemLbls.empty()) return;
@@ -311,6 +313,7 @@ namespace SimpleGui {
 			m_selectedLbl = nullptr;
 			m_lastSelectedLbl = nullptr;
 			m_currIndex = 0;
+			m_maxItemsListWidth = 0;
 		}
 		else {
 			if (index == m_currIndex) {
@@ -354,7 +357,13 @@ namespace SimpleGui {
 		m_lastSelectedLbl = nullptr;
 		m_selectedLbl = nullptr;
 		m_currIndex = 0;
+		m_maxItemsListWidth = 0;
 		m_masterItemLbl->SetText("");
+		m_itemsPanel->SetHeight(m_maxItemsListHeight);
+	}
+
+	void ComboBox::SetMaxItemsListHeight(float height) {
+		m_maxItemsListHeight = height;
 		m_itemsPanel->SetHeight(m_maxItemsListHeight);
 	}
 }

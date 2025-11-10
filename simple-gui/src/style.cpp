@@ -161,6 +161,8 @@ namespace SimpleGui {
 		style->colors[ThemeColorFlags::Foreground] = Color::WHITE;
 		style->colors[ThemeColorFlags::Border] = Color(0x3d444dff);
 
+		style->colors[ThemeColorFlags::SplitLayoutHandle] = Color(0x8250dfff);
+
 		style->colors[ThemeColorFlags::LabelBackground] = Color::TRANSPARENT;
 		style->colors[ThemeColorFlags::LabelForeground] = Color::WHITE;
 		style->colors[ThemeColorFlags::LabelBorder] = Color::TRANSPARENT;

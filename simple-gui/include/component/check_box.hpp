@@ -32,7 +32,7 @@ namespace SimpleGui {
 
 	class CheckBox final : public BaseComponent {
 	public:
-		explicit CheckBox(std::string_view text);
+		explicit CheckBox(std::string_view text = "check box");
 		~CheckBox() override = default;
 
 		bool HandleEvent(Event* event) override;

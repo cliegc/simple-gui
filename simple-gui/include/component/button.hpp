@@ -8,7 +8,7 @@
 namespace SimpleGui {
 	class Button  : public BaseComponent {
 	public:
-		explicit Button(std::string_view text);
+		explicit Button(std::string_view text = "button");
 		~Button() override = default;
 
 		std::string GetText() const;

@@ -69,6 +69,12 @@ namespace SimpleGui {
 		SetupTipLabel();
 	}
 
+	void TextureRect::SetTexture(std::string_view path) {
+		m_texture = SG_GuiManager.GetWindow().GetRenderer().CreateSharedTexture(path);
+		SetScaleMode(m_scaleMode);
+		SetupTipLabel();
+	}
+
 	TextureStretchMode TextureRect::GetTextureStretchMode() const {
 		return m_textureStretchMode;
 	}

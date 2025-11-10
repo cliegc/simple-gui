@@ -1,5 +1,6 @@
 ﻿#include <format>
 #include <simple_gui.hpp>
+#include <ui_loader/component_register.hpp>
 
 
 using namespace SimpleGui;
@@ -409,22 +410,14 @@ static void TestTextureRect() {
 
 static void TestComboBox() {
     auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test combobox");
-    dp->SetSize(300, 300);
-
-    // std::vector<std::string> items;
-    // for (int i = 0; i < 30; ++i) {
-    //     items.push_back(std::format("test combobox: item {}", i));
-    // }
-    // auto cbb = dp->AddChild<ComboBox>(items);
+    dp->SetSize(600, 400);
 
     auto cbb = dp->AddChild<ComboBox>();
     for (int i = 0; i < 150; ++i) {
         cbb->AddItem(std::format("test combobox: item {}", i));
     }
 
-    // cbb->CustomThemeColor(ThemeColorFlags::ComboBoxToggleBackground, Color::GREEN);
-    cbb->CustomThemeColor(ThemeColorFlags::ComboBoxForeground, Color::GREEN);
-
+    cbb->SetMaxItemsListHeight(350);
     cbb->SetSize(200, 30);
     cbb->SetToolTipEnabled(true);
     cbb->currentItemChanged.Connect("on_current_item_changed",
@@ -432,22 +425,37 @@ static void TestComboBox() {
             SG_INFO("on_current_item_changed: index = {}, item = {}", index, item);
         });
 
-    // cbb->SetCurrentItem("test combobox: item 15");
-    // cbb->SetCurrentItem(1);
+    cbb->SetCurrentItem(0);
 
     auto tipLbl = cbb->SetToolTip<Label>("");
     tipLbl->CustomThemeColor(ThemeColorFlags::LabelBackground, Color(0, 0, 0, 180));
-    tipLbl->visibleChanged.Connect("on_tip_changed",
-        [tipLbl, cbb](bool visible) {
-           if (!visible) return;
+
+    {
+        auto changeTip = [tipLbl, cbb](bool visible) {
+            if (!visible) return;
             tipLbl->SetText(cbb->GetCurrentItem());
-        });
+        };
+
+        tipLbl->visibleChanged.Connect("on_visible_changed", changeTip);
+    }
+
 
     auto layout = dp->AddChild<BoxLayout>(Direction::Vertical);
     layout->SetWidth(240);
     layout->SetSpacing(3);
     layout->SetSizeConfigH(ComponentSizeConfig::Expanding);
     layout->SetPosition(240, 0);
+
+    class DrawBorder: public ExtendedFunctions {
+    public:
+        Color color = Color::WHITE;
+
+        void Render(Renderer &renderer) override {
+            renderer.RenderRect(m_target->GetVisibleGlobalRect().Grow(3, 3, 3, 3), color, false);
+        }
+    };
+
+    layout->AddExtendedFunctions<DrawBorder>()->color = Color::GREEN;
 
     auto btn1 = layout->AddChild<Button>("remove cbb item: front");
     btn1->clicked.Connect("on_clicked",
@@ -481,7 +489,8 @@ static void TestComboBox() {
 }
 
 static void TestBoxLayout() {
-    auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>("test box layout");
+    auto dp = SG_GuiManager.GetWindow().AddComponent<DraggablePanel>();
+    dp->SetTitle("test box layout");
     auto scrollbar = dp->AddChild<ScrollBar>(Direction::Vertical);
     scrollbar->SetSize(15, 100);
 
@@ -567,11 +576,29 @@ static void ViewImage() {
 }
 
 
+static void TestComponentRegister() {
+    ComponentRegister::Init();
+
+    auto btn = SG_CMP_REG.CreateComponent("Button");
+    auto btn_ptr = btn.get();
+    SG_GuiManager.GetWindow().GetRootComponent().AddChild(std::move(btn));
+
+    SG_CMP_REG.SetComponentProperty("Button", "text", btn_ptr, { "hello world" });
+    SG_CMP_REG.SetComponentProperty("Button", "position-y", btn_ptr, { "200.0" });
+    SG_CMP_REG.SetComponentProperty("Button", "width", btn_ptr, { "300.0" });
+
+    // SG_CMP_REG.SetComponentProperty("Button", "theme-color", btn_ptr, { ThemeColorFlags::ButtonForeground, Color::GREEN });
+}
+
 int main(int argc, char **argv) {
     GuiManager::Init(argc, argv, R"(C:\WINDOWS\Fonts\simhei.ttf)");
-    Window &win = SG_GuiManager.GetWindow("sandbox", 640, 480);
+    Window &win = SG_GuiManager.GetWindow("sandbox", 960, 640);
     win.GetFont().SetSize(14);
     // win.SwitchStyle(StyleManager::LightStyle);
+
+    // auto lbl = win.AddComponent<Label>();
+    // lbl->SetText("hello world");
+    // lbl->GetFont().SetSize(72);
 
     // TestScrollBar();
     // TestScrollPanel();
@@ -585,6 +612,7 @@ int main(int argc, char **argv) {
     // ViewImage();
     TestComboBox();
     // TestBoxLayout();
+    // TestComponentRegister();
 
     // auto style = win.CopyStyle("new style", StyleManager::DarkStyle);
     // style->colors[ThemeColorFlags::DraggablePanelHandle] = Color::GREEN;

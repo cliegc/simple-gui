@@ -12,6 +12,7 @@ namespace SimpleGui {
 
 		std::shared_ptr<Texture> GetTexture() const;
 		void SetTexture(const std::shared_ptr<Texture> &texture);
+		void SetTexture(std::string_view path);
 
 		TextureStretchMode GetTextureStretchMode() const;
 		void SetTextureStretchMode(TextureStretchMode mode);

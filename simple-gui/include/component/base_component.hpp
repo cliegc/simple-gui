@@ -174,6 +174,9 @@ namespace SimpleGui {
 
 	public:
 		Signal<bool> visibleChanged;
+		Signal<> enteredTree;
+		Signal<> exitedTree;
+		Signal<> resized;
 
 	protected:
 		class ToolTip final {

@@ -32,7 +32,7 @@ namespace SimpleGui {
 		void ClearItems();
 
 		float GetMaxItemsListHeight() const { return m_maxItemsListHeight; }
-		void SetMaxItemsListHeight(float height) { m_maxItemsListHeight = height; }
+		void SetMaxItemsListHeight(float height);
 
 		bool IsAutoHideItemsList() const { return m_autoHideItemsList; }
 		void SetAutoHideItemsList(bool hide) { m_autoHideItemsList = hide; }

@@ -6,11 +6,14 @@ namespace SimpleGui {
 	class ScrollBar final : public BaseComponent {
 		friend class ScrollPanel;
 	public:
-		explicit ScrollBar(Direction direction);
+		explicit ScrollBar(Direction direction = Direction::Vertical);
 		~ScrollBar() override = default;
 
 		BaseComponent* GetTarget() const { return m_target; }
 		void SetTarget(BaseComponent* target) { m_target = target; }
+
+		Direction GetDirection() const { return m_direction; }
+		void SetDirection(Direction direction) { m_direction = direction; }
 
 		void SetScroll(float scale);
 
