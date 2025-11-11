@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-![](.\screenshot\example1.png)
+![输入图片说明](screenshot/example1.png)
 
 ## 第三方库
 
