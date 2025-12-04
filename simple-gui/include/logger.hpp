@@ -68,9 +68,9 @@ namespace SimpleGui {
             std::stringstream ss;
             ss << "SimpleGui [ERROR]: "
                     << CurrentDateTime() << " - " << std::vformat(
-                        message, std::make_format_args(std::forward<Args>(args)...))
-                    << "\nFUNC: " << location.function_name()
-                    << "\nLINE: " << location.line() << "\n\n";
+                        message, std::make_format_args(std::forward<Args>(args)...)) << "\n";
+                    // << "\nFUNC: " << location.function_name()
+                    // << "\nLINE: " << location.line() << "\n\n";
 
             OutputToConsole(LogLevel::Error, ss.str());
             RetainLogs(LogLevel::Error, ss.str());

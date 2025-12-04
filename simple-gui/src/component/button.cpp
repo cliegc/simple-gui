@@ -11,8 +11,11 @@ namespace SimpleGui {
 	void Button::EnteredComponentTree() {
 		SetComponentOwner(m_lbl.get(), m_window, this);
 		BaseComponent::EnteredComponentTree(m_lbl.get());
-		SetSize(m_lbl->GetSize());
-		SetMinSize(m_lbl->GetMinSize());
+		const Vec2 lblSize = m_lbl->GetSize();
+		const float w = m_size.w > lblSize.w ? m_size.w : lblSize.w;
+		const float h = m_size.h > lblSize.h ? m_size.h : lblSize.h;
+		SetSize(w, h);
+		SetMinSize(m_size);
 		m_lbl->SetTextAlignments(TextAlignment::Center, TextAlignment::Center);
 	}
 

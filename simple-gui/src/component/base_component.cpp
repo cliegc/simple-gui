@@ -16,14 +16,20 @@ namespace SimpleGui {
     void BaseComponent::PreparationOfUpdateChildren() {
         // add caches of children to m_children, and clear caches
         for (auto &child: m_childCaches) {
+            const auto ptr = child.get();
             m_children.push_back(std::move(child));
+            ptr->EnteredComponentTree();
+            ptr->enteredTree();
         }
         m_childCaches.clear();
 
         // remove NeedRemove children from m_children
         for (auto it = m_children.begin(); it != m_children.end();) {
             if (!(*it) || (*it)->m_needRemove) {
-                if ((*it) && (*it)->m_needRemove) (*it)->ExitedComponentTree();
+                if ((*it) && (*it)->m_needRemove) {
+                    (*it)->ExitedComponentTree();
+                    (*it)->exitedTree();
+                }
                 it = m_children.erase(it);
             } else {
                 ++it;
@@ -273,6 +279,7 @@ namespace SimpleGui {
         auto temp = child.get();
         m_children.push_back(std::move(child));
         temp->EnteredComponentTree();
+        temp->enteredTree();
         SG_INFO("AddChild: child entered component tree");
     }
 
@@ -285,9 +292,9 @@ namespace SimpleGui {
 
         SetComponentOwner(child.get(), m_window, this);
         child->m_needRemove = false;
-        auto temp = child.get();
+        // auto temp = child.get();
         m_childCaches.push_back(std::move(child));
-        temp->EnteredComponentTree();
+        // temp->EnteredComponentTree();
     }
 
     BaseComponent *BaseComponent::GetChildAt(size_t idx) const {
@@ -315,6 +322,7 @@ namespace SimpleGui {
             child->m_parent = nullptr;
             child->m_window = nullptr;
             child->ExitedComponentTree();
+            child->exitedTree();
             return child;
         }
 
@@ -333,6 +341,7 @@ namespace SimpleGui {
             child->m_window = nullptr;
             //child->m_needRemove = true;			// 其实不需要使用need_remove标记，移动后，原位置上为nullptr
             child->ExitedComponentTree();
+            child->exitedTree();
             return child;
         }
 

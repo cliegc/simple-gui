@@ -110,15 +110,19 @@ namespace SimpleGui {
 	}
 
 	std::string Label::GetText() const {
-		if (m_ttfText->text == nullptr) {
-			return "";
+		if (!m_ttfText || m_ttfText->text == nullptr) {
+			return m_text;
 		}
 		return m_ttfText->text;
 	}
 
 	void Label::SetText(std::string_view text) {
-		TTF_SetTextString(m_ttfText.get(), text.data(), text.size());
-		AdjustSize(m_ttfText.get());
+		// 未进入组件树之前调用该函数的情况
+		if (!m_ttfText) m_text = text;
+		else {
+			TTF_SetTextString(m_ttfText.get(), text.data(), text.size());
+			AdjustSize(m_ttfText.get());
+		}
 	}
 
 	TextAlignments Label::GetTextAlignments() const {

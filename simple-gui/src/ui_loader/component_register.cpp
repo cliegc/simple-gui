@@ -1,4 +1,6 @@
 #include "ui_loader/component_register.hpp"
+
+#include "logger.hpp"
 #include "component/component.hpp"
 #include "ui_loader/type_convert.hpp"
 
@@ -8,22 +10,22 @@
 
 
 namespace SimpleGui {
-    bool ComponentRegister::s_initialized = false;
+    bool ComponentRegistry::s_initialized = false;
 
-    void ComponentRegister::RegisterComponent(const std::string &className, const ComponentConstructor &constructor) {
+    void ComponentRegistry::RegisterComponent(const std::string &className, const ComponentConstructor &constructor) {
         if (m_infos.contains(className)) return;
         m_infos.emplace(className, std::move(ComponentInfo{}));
         m_infos[className].constructor = constructor;
     }
 
-    void ComponentRegister::RegisterComponentProperty(const std::string &className, const std::string &property,
+    void ComponentRegistry::RegisterComponentProperty(const std::string &className, const std::string &property,
         const ComponentPropertySetter &func) {
         if (!m_infos.contains(className)) return;
         if (m_infos[className].properties.contains(property)) return;
         m_infos[className].properties.emplace(property, func);
     }
 
-    void ComponentRegister::CopyComponentProperty(const std::string &name, const std::string &target,
+    void ComponentRegistry::CopyComponentProperty(const std::string &name, const std::string &target,
         const std::string &property) {
         if (!m_infos.contains(name) || !m_infos.contains(target)) return;
         if (m_infos[name].properties.contains(property)) return;
@@ -35,7 +37,7 @@ namespace SimpleGui {
         info.properties.emplace(property, targetInfo.properties[property]);
     }
 
-    void ComponentRegister::CopyComponentAllProperties(const std::string &name, const std::string &target) {
+    void ComponentRegistry::CopyComponentAllProperties(const std::string &name, const std::string &target) {
         if (!m_infos.contains(name) || !m_infos.contains(target)) return;
         for (auto& [property, setter] : m_infos[target].properties) {
             if (m_infos[name].properties.contains(property)) continue;
@@ -43,13 +45,13 @@ namespace SimpleGui {
         }
     }
 
-    std::unique_ptr<BaseComponent> ComponentRegister::CreateComponent(const std::string& className) {
+    std::unique_ptr<BaseComponent> ComponentRegistry::CreateComponent(const std::string& className) {
         const auto it = m_infos.find(className);
         if (it == m_infos.end()) return nullptr;
         return it->second.constructor();
     }
 
-    void ComponentRegister::SetComponentProperty(const std::string &className, const std::string &property,
+    void ComponentRegistry::SetComponentProperty(const std::string &className, const std::string &property,
         BaseComponent *cmp, const std::vector<std::string> &args) {
         const auto it = m_infos.find(className);
         if (it == m_infos.end()) return;
@@ -59,7 +61,7 @@ namespace SimpleGui {
         }
     }
 
-    void ComponentRegister::Init() {
+    void ComponentRegistry::Init() {
         if (s_initialized) return;
 
         // BaseComponent
@@ -231,7 +233,7 @@ namespace SimpleGui {
         SG_CMP_REG_REG_PROPERTY(TextureRect, "flip-h", [](SG_CMP_REG_PROPERTY_SETTER_ARGS) {
             static_cast<TextureRect*>(cmp)->SetFlipH(std::any_cast<bool>(args[0]));
         });
-                SG_CMP_REG_REG_PROPERTY(TextureRect, "scale-mode", [](SG_CMP_REG_PROPERTY_SETTER_ARGS) {
+        SG_CMP_REG_REG_PROPERTY(TextureRect, "scale-mode", [](SG_CMP_REG_PROPERTY_SETTER_ARGS) {
             static_cast<TextureRect*>(cmp)->SetFlipV(std::any_cast<bool>(args[0]));
         });
 

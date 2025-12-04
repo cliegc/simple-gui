@@ -19,18 +19,29 @@ namespace SimpleGui {
         void SetWeights(const std::vector<int>& weights);
 
     private:
-        struct SplitHandle final {
+        struct Splitter final {
             ComponentElementRect rect{};
             float toggleRange{ 2.5f };
             bool draw{ true };
             bool visible{ true };
         };
 
+        struct DragSplitterData final {
+            Vec2 startMousePos;
+            Vec2 startSplitterPos;
+            bool canDrag{ false };
+            bool dragging{ false };
+        };
+
         Direction m_direction;
-        SplitHandle m_handle{};
+        Splitter m_splitter{};
+        DragSplitterData m_dragSplitterData{};
         std::vector<int> m_weights{};
+        bool m_needUpdateWeights{ true };
 
         void UpdateHorizontalDirection();
         void UpdateVerticalDirection();
+        void UpdateWeights(Direction direction);
+        void HandleDragSplitter(Event* event, Direction direction);
     };
 }

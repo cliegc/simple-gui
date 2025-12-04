@@ -67,6 +67,6 @@ namespace SimpleGui {
 		void RenderToggleRect(Renderer& renderer);
 		void RenderItemsList(Renderer& renderer);
 
-		void SetSafePositionForItemList() const;
+		void SetSafePositionForItemsList() const;
 	};
 }

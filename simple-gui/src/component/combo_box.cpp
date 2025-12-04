@@ -96,22 +96,26 @@ namespace SimpleGui {
 	void ComboBox::AddItem(const std::string &item, bool addToItems) {
 		if (addToItems) m_items.push_back(item);
 
-		const float y = m_itemLbls.empty() ? 0 : m_itemLbls.back()->GetRect().Bottom();
 		const auto lbl = m_itemsPanel->AddChildDeferred<Label>(item);
 		lbl->SetSizeConfigW(ComponentSizeConfig::Expanding);
-		lbl->SetPosition(0, y);
 		m_itemLbls.push_back(lbl);
 
-		const float w = lbl->GetSize().w;
-		if (m_maxItemsListWidth < w) {
-			m_maxItemsListWidth = w + 30;
-			m_itemsPanel->SetWidth(m_maxItemsListWidth);
-		}
+		lbl->enteredTree.Connect("SG_CBB_ITEM_LBL_on_entered_tree", [lbl, this] {
+			const auto& lbls = m_itemsPanel->GetChildren();
+			const float y = lbls.size() == 1 ? 0 : lbls[lbls.size() - 2]->GetRect().Bottom();
+			lbl->SetPosition(0, y);
 
-		auto height = y + lbl->GetSize().h;
-		if (height <= m_maxItemsListHeight) {
-			m_itemsPanel->SetHeight(height);
-		}
+			const float w = lbl->GetSize().w;
+			if (m_maxItemsListWidth < w) {
+				m_maxItemsListWidth = w + 30;
+				m_itemsPanel->SetWidth(m_maxItemsListWidth);
+			}
+
+			auto height = y + lbl->GetSize().h;
+			if (height <= m_maxItemsListHeight) {
+				m_itemsPanel->SetHeight(height);
+			}
+		});
 	}
 
 	bool ComboBox::HandleToggleItemsList(Event* event) {
@@ -121,7 +125,7 @@ namespace SimpleGui {
 			m_visibleGRect.ContainPoint(ev->GetPosition()))) {
 			m_itemsPanel->SetVisible(!m_itemsPanel->IsVisible());
 			if (m_itemsPanel->IsVisible()) {
-				SetSafePositionForItemList();
+				SetSafePositionForItemsList();
 				m_hoveringLbl = nullptr;
 				m_lastHoveredLbl = nullptr;
 			}
@@ -239,7 +243,7 @@ namespace SimpleGui {
 		renderer.SetTopRender(false);
 	}
 
-	void ComboBox::SetSafePositionForItemList() const {
+	void ComboBox::SetSafePositionForItemsList() const {
 		const Rect rootContentGRect = m_window->GetRootComponent().GetContentGlobalRect();
 		const Rect gRect = GetGlobalRect();
 		Rect panelGRect = m_itemsPanel->GetGlobalRect();
@@ -267,6 +271,8 @@ namespace SimpleGui {
 	}
 
 	void ComboBox::SetCurrentItem(size_t index) {
+		if (m_itemLbls.empty()) return;
+
 		index = SDL_clamp(index, 0, m_items.size() - 1);
 		auto lbl = m_itemLbls[index];
 

@@ -1,7 +1,8 @@
 ﻿#include <format>
 #include <simple_gui.hpp>
 #include <ui_loader/component_register.hpp>
-#include <ui_loader/refl/type.hpp>
+
+#include "ui_loader/ui_loader.hpp"
 
 
 using namespace SimpleGui;
@@ -414,11 +415,11 @@ static void TestComboBox() {
     dp->SetSize(600, 400);
 
     auto cbb = dp->AddChild<ComboBox>();
-    for (int i = 0; i < 150; ++i) {
+    for (int i = 0; i < 10; ++i) {
         cbb->AddItem(std::format("test combobox: item {}", i));
     }
 
-    cbb->SetMaxItemsListHeight(350);
+    // cbb->SetMaxItemsListHeight(350);
     cbb->SetSize(200, 30);
     cbb->SetToolTipEnabled(true);
     cbb->currentItemChanged.Connect("on_current_item_changed",
@@ -576,42 +577,8 @@ static void ViewImage() {
     SG_GuiManager.GetWindow().GetRootComponent().AddExtendedFunctions<OpenDroppedFile>();
 }
 
-
-static void TestComponentRegister() {
-    ComponentRegister::Init();
-
-    auto btn = SG_CMP_REG.CreateComponent("Button");
-    auto btn_ptr = btn.get();
-    SG_GuiManager.GetWindow().GetRootComponent().AddChild(std::move(btn));
-
-    SG_CMP_REG.SetComponentProperty("Button", "text", btn_ptr, { "hello world" });
-    SG_CMP_REG.SetComponentProperty("Button", "position-y", btn_ptr, { "200.0" });
-    SG_CMP_REG.SetComponentProperty("Button", "width", btn_ptr, { "300.0" });
-
-    // SG_CMP_REG.SetComponentProperty("Button", "theme-color", btn_ptr, { ThemeColorFlags::ButtonForeground, Color::GREEN });
-}
-
 static void TestClassRegistry() {
-    enum class Colors {
-        Red,
-        Green,
-        Blue,
-    };
 
-    SG_TYPE_REGISTRY(Colors).Register("Colors")
-        .Add("Red", Colors::Red)
-        .Add("Green", Colors::Green)
-        .Add("Blue", Colors::Blue);
-
-    auto enumName = SG_TYPE_REGISTRY_TYPE_INFO(Colors).GetName();
-    SG_INFO("enum class Colors: name = {}", enumName);
-
-    for (const auto& [name, value] : SG_TYPE_REGISTRY_TYPE_INFO(Colors).GetItems()) {
-        SG_INFO("enum class Colors: item name = {}, item value = {}", name, value);
-    }
-
-    if (auto info = SG_TYPE_REGISTRY_TYPE_INFO_STR("Colors")->Convert<refl::Enum>()) std::cout << info->GetName() << std::endl;
-    else std::cout << "Colors not found" << std::endl;
 
 }
 
@@ -635,10 +602,8 @@ int main(int argc, char **argv) {
     // TestTextureRect();
     // TestDraggablePanel();
     // ViewImage();
-    // TestComboBox();
+    TestComboBox();
     // TestBoxLayout();
-    // TestComponentRegister();
-    TestClassRegistry();
 
     // auto style = win.CopyStyle("new style", StyleManager::DarkStyle);
     // style->colors[ThemeColorFlags::DraggablePanelHandle] = Color::GREEN;
